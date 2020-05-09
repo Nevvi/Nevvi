@@ -18,4 +18,4 @@ jobs:
     - name: Deploy to S3
       run: |
         aws s3 sync public s3://${{ secrets.AWS_S3_BUCKET }}/
-        aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }}
+        aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths /
