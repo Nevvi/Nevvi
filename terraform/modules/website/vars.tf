@@ -2,6 +2,11 @@ variable "site_name" {
   description = "The full name of the site"
 }
 
+variable "create_www_alias" {
+  description = "Whether or not A record is created for www"
+  default = false
+}
+
 variable "site_zone" {
   description = "The zone the site lives in"
 }

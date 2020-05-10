@@ -17,7 +17,7 @@ data "template_file" "bucket_policy" {
   template = "${file("${path.module}/bucket_policy.json")}"
   vars = {
     origin_access_identity_arn = aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn
-    bucket = var.site_name
+    bucket = "${var.site_name}-source"
     account_arn = data.aws_caller_identity.current.arn
   }
 }
@@ -37,28 +37,12 @@ resource "aws_s3_bucket_public_access_block" "site_logs_public_block" {
 }
 
 resource "aws_s3_bucket" "site" {
-  bucket = var.site_name
+  bucket = "${var.site_name}-source"
   policy = data.template_file.bucket_policy.rendered
 }
 
 resource "aws_s3_bucket_public_access_block" "site_public_block" {
   bucket = aws_s3_bucket.site.id
-
-  block_public_acls   = true
-  block_public_policy = true
-  ignore_public_acls = true
-  restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket" "site_redirect" {
-  bucket = "www.${var.site_name}"
-  website {
-    redirect_all_requests_to = var.site_name
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "site_redirect_public_block" {
-  bucket = aws_s3_bucket.site_redirect.id
 
   block_public_acls   = true
   block_public_policy = true
@@ -149,13 +133,14 @@ resource "aws_route53_record" "site" {
   }
 }
 
-//resource "aws_route53_record" "www_site" {
-//  zone_id = data.aws_route53_zone.site.zone_id
-//  name = "www.${var.site_name}"
-//  type = "A"
-//  alias {
-//    name = aws_cloudfront_distribution.website_cdn.domain_name
-//    zone_id  = aws_cloudfront_distribution.website_cdn.hosted_zone_id
-//    evaluate_target_health = false
-//  }
-//}
+resource "aws_route53_record" "www_site" {
+  count = var.create_www_alias ? 1 : 0
+  zone_id = data.aws_route53_zone.site.zone_id
+  name = "www.${var.site_name}"
+  type = "A"
+  alias {
+    name = aws_cloudfront_distribution.website_cdn.domain_name
+    zone_id  = aws_cloudfront_distribution.website_cdn.hosted_zone_id
+    evaluate_target_health = false
+  }
+}

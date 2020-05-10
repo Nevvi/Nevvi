@@ -16,8 +16,9 @@ terraform {
 module "website" {
   source = "../modules/website"
   site_name = "nevvi.net"
+  create_www_alias = true
   site_zone = "nevvi.net."
-  site_cert_name = "nevvi.net"
+  site_cert_name = "www.nevvi.net"
   cloudfront_cname_aliases = ["nevvi.net", "www.nevvi.net"]
   environment = var.environment
 }
