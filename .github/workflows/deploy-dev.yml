@@ -17,6 +17,7 @@ jobs:
         aws configure set default.region us-east-1
     - name: Build project
       run: |
+        npm install
         npm run-script build
     - name: Deploy to S3
       run: |
