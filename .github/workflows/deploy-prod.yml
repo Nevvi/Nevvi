@@ -1,4 +1,4 @@
-name: Upload Website
+name: Upload Prod Website
 
 on:
   push:

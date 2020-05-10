@@ -1,6 +1,6 @@
 variable "site_name" {
   description = "My site"
-  default = "development.nevvi.net"
+  default = "nevvi.net"
 }
 
 variable "site_zone" {
@@ -15,5 +15,5 @@ variable "site_cert_name" {
 
 variable "environment" {
   description = "Environment"
-  default = "development"
+  default = "production"
 }

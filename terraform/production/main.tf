@@ -80,7 +80,7 @@ resource "aws_cloudfront_distribution" "website_cdn" {
   enabled      = true
   price_class  = "PriceClass_200"
   http_version = "http1.1"
-  aliases = ["${var.site_name}"]
+  aliases = ["${var.site_name}", "www.${var.site_name}"]
 
   origin {
     origin_id   = "origin-bucket-${aws_s3_bucket.site.id}"
@@ -140,6 +140,17 @@ data "aws_route53_zone" "site" {
 resource "aws_route53_record" "site" {
   zone_id = data.aws_route53_zone.site.zone_id
   name = var.site_name
+  type = "A"
+  alias {
+    name = aws_cloudfront_distribution.website_cdn.domain_name
+    zone_id  = aws_cloudfront_distribution.website_cdn.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "www_site" {
+  zone_id = data.aws_route53_zone.site.zone_id
+  name = "www.${var.site_name}"
   type = "A"
   alias {
     name = aws_cloudfront_distribution.website_cdn.domain_name
