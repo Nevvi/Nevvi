@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Welcome to Nevvi!
+          Welcome to Nevvi - {process.env.REACT_APP_ENVIRONMENT}!
         </p>
         <a
           className="App-link"

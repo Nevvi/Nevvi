@@ -19,6 +19,8 @@ jobs:
       run: |
         npm install
         npm run-script build
+      env:
+        - REACT_APP_ENVIRONMENT: Development
     - name: Deploy to S3
       run: |
         aws s3 sync build s3://${{ secrets.AWS_DEVELOPMENT_S3_BUCKET }}/
