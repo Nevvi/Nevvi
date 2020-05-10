@@ -1,9 +1,9 @@
-name: Upload Prod Website
+name: Upload Dev Website
 
 on:
   push:
     branches:
-    - master
+    - develop
 
 jobs:
   deploy:
@@ -17,5 +17,5 @@ jobs:
         aws configure set default.region us-east-1
     - name: Deploy to S3
       run: |
-        aws s3 sync public s3://${{ secrets.AWS_S3_BUCKET }}/
-        aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths /
+        aws s3 sync public s3://${{ secrets.AWS_DEVELOPMENT_S3_BUCKET }}/
+        aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DEVELOPMENT_DISTRIBUTION_ID }} --paths /
