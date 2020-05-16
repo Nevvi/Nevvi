@@ -1,17 +1,4 @@
-provider "aws" {
-  profile = "default"
-  region = "us-east-1"
-}
-
 data "aws_caller_identity" "current" {}
-
-terraform {
-  backend "s3" {
-    bucket = "nevvi-development-terraform-remote-state"
-    key    = "terraform-state"
-    region = "us-east-1"
-  }
-}
 
 data "template_file" "bucket_policy" {
   template = "${file("${path.module}/bucket_policy.json")}"

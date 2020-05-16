@@ -21,3 +21,8 @@ module "website" {
   cloudfront_cname_aliases = ["development.nevvi.net"]
   environment = var.environment
 }
+
+module "user_pool" {
+  source = "../modules/authentication"
+  user_pool_name = "nevvi-development-public_users"
+}
