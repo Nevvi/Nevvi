@@ -1,8 +1,13 @@
 import React, {Component} from 'react';
+import history from './History'
 import Home from './Home.js';
 
+// auth
+import CreateAccount from './authentication/CreateAccount.js';
+import Login from './authentication/Login.js';
+
 import {
-    BrowserRouter as Router,
+    Router,
     Switch,
     Route,
     Link
@@ -12,19 +17,17 @@ import {
 class App extends Component {
     render() {
         return (
-            <Router>
+            <Router history={history}>
                 <div>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                    </ul>
-
-                    <hr />
-
                     <Switch>
                         <Route exact path="/">
                             <Home />
+                        </Route>
+                        <Route path="/createAccount">
+                            <CreateAccount />
+                        </Route>
+                        <Route path="/login">
+                            <Login />
                         </Route>
                     </Switch>
                 </div>
