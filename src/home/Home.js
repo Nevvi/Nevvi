@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
+import logo from '../logo.svg';
 import * as jwt from 'jsonwebtoken';
 import './Home.css';
-import history from './History';
+import history from '../History';
 import axios from 'axios';
-import {setTokenHeaders, clearTokenHeaders} from "./authentication/Utils";
+import {setTokenHeaders, clearTokenHeaders} from "../authentication/Utils";
 
 class Home extends Component {
     constructor(props) {
@@ -26,7 +26,7 @@ class Home extends Component {
         // Remove globally
         try {
             await axios.post(
-                `${process.env.REACT_APP_API_BASE_URL}/tyler-authentication/v1/logout`
+                `/authentication/v1/logout`
             )
         } catch (e) {
             console.log(`ERROR: Failed to log out`, e)

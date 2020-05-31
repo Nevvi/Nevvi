@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import history from './History'
-import Home from './Home.js';
+import Home from './home/Home.js';
 
 // auth
 import CreateAccount from './authentication/CreateAccount.js';
