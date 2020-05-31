@@ -20,7 +20,7 @@ class CreateAccount extends Component {
     async registerAccount(username, password) {
         try {
             await axios.post(
-                `${process.env.REACT_APP_API_BASE_URL}/tyler-authentication/v1/register`,
+                `${process.env.REACT_APP_API_BASE_URL}/authentication/v1/register`,
                 {username, password}
             )
             const authentication = await login(username, password)

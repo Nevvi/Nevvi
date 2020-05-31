@@ -4,7 +4,7 @@ export async function login(username, password) {
     console.log("Logging in!")
     try {
         const response = await axios.post(
-            `${process.env.REACT_APP_API_BASE_URL}/tyler-authentication/v1/login`,
+            `${process.env.REACT_APP_API_BASE_URL}/authentication/v1/login`,
             {username, password}
         )
 
