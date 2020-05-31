@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import * as jwt from 'jsonwebtoken';
 import './Home.css';
 import history from './History';
+import axios from 'axios';
+import {setTokenHeaders, clearTokenHeaders} from "./authentication/Utils";
 
 class Home extends Component {
     constructor(props) {
@@ -13,15 +15,32 @@ class Home extends Component {
         this.logoutAccount = this.logoutAccount.bind(this);
     }
 
-    logout() {
-        // TODO - call API
-        localStorage.removeItem('Authentication')
-        this.setState({authentication: undefined})
+    componentDidMount() {
+        const authentication = this.state.authentication
+        if (authentication) {
+            setTokenHeaders(authentication.IdToken, authentication.AccessToken)
+        }
     }
 
-    logoutAccount(event) {
+    async logout() {
+        // Remove globally
+        try {
+            await axios.post(
+                `${process.env.REACT_APP_API_BASE_URL}/tyler-authentication/v1/logout`
+            )
+        } catch (e) {
+            console.log(`ERROR: Failed to log out`, e)
+        }
+
+        // Remove locally
+        localStorage.removeItem('Authentication')
+        this.setState({authentication: undefined})
+        clearTokenHeaders()
+    }
+
+    async logoutAccount(event) {
         event.preventDefault()
-        this.logout()
+        await this.logout()
     }
 
     render() {

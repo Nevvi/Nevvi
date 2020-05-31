@@ -19,12 +19,16 @@ class CreateAccount extends Component {
 
     async registerAccount(username, password) {
         try {
+            // Create the account
             await axios.post(
                 `${process.env.REACT_APP_API_BASE_URL}/authentication/v1/register`,
                 {username, password}
             )
-            const authentication = await login(username, password)
-            localStorage.setItem('Authentication', JSON.stringify(authentication))
+
+            // Log in to the account
+            await login(username, password)
+
+            // Default go back to the home page
             history.push('/')
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e

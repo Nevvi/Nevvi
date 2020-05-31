@@ -19,8 +19,7 @@ class Login extends Component {
     async loginAccount(event) {
         event.preventDefault()
         try {
-            const authentication = await login(this.state.username, this.state.password)
-            localStorage.setItem('Authentication', JSON.stringify(authentication))
+            await login(this.state.username, this.state.password)
             history.push('/')
         } catch (e) {
             alert(e)
