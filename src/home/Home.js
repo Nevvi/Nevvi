@@ -26,7 +26,7 @@ class Home extends Component {
         // Remove globally
         try {
             await axios.post(
-                `/authentication/v1/logout`
+                `/api/authentication/v1/logout`
             )
         } catch (e) {
             console.log(`ERROR: Failed to log out`, e)

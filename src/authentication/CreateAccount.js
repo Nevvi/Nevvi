@@ -21,7 +21,7 @@ class CreateAccount extends Component {
         try {
             // Create the account
             await axios.post(
-                `/authentication/v1/register`,
+                `/api/authentication/v1/register`,
                 {username, password}
             )
 

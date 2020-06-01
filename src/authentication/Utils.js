@@ -4,7 +4,7 @@ export async function login(username, password) {
     console.log("Logging in!")
     try {
         const response = await axios.post(
-            `/authentication/v1/login`,
+            `/api/authentication/v1/login`,
             {username, password}
         )
 
