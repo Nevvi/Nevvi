@@ -15,22 +15,20 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import ReactDOM from "react-dom";
-import history from './History'
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+// @material-ui/icons
+import Dashboard from "@material-ui/icons/Dashboard";
 
-// core components
-import Home from "layouts/Home.js";
+// core components/views for Home layout
+import DashboardPage from "views/Dashboard/Dashboard.js";
 
-import "assets/css/material-dashboard-react.css?v=1.9.0";
+const dashboardRoutes = [
+  {
+    path: "home",
+    name: "Dashboard",
+    icon: Dashboard,
+    component: DashboardPage,
+    layout: "/"
+  }
+];
 
-ReactDOM.render(
-    <Router history={history}>
-        <Switch>
-            <Route path="/" component={Home} />
-            <Redirect from="/" to="/home" />
-        </Switch>
-    </Router>,
-    document.getElementById("root")
-);
+export default dashboardRoutes;
