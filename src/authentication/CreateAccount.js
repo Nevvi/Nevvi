@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import logo from '../logo.svg';
 import axios from 'axios';
-import {login} from "./Utils";
 import history from '../History'
+import {Button, Col, Form} from "react-bootstrap";
 
 class CreateAccount extends Component {
     constructor(props) {
@@ -26,7 +25,7 @@ class CreateAccount extends Component {
             )
 
             // Log in to the account
-            await login(username, password)
+            await this.props.login(username, password)
 
             // Default go back to the home page
             history.push('/')
@@ -45,30 +44,22 @@ class CreateAccount extends Component {
     render() {
         const isDisabled = this.state.username === '' || this.state.password === ''
         return (
-            <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    <p>
-                        Welcome to Nevvi - {process.env.REACT_APP_ENVIRONMENT}!
-                    </p>
-
-                    <form onSubmit={this.createAccount}>
-                        <label>
-                            Username:
-                            <input name="username" type="text" value={this.state.username}
-                                   onChange={this.handleChange}/>
-                        </label>
-                        <br/>
-                        <label>
-                            Password:
-                            <input name="password" type="password" value={this.state.password}
-                                   onChange={this.handleChange}/>
-                        </label>
-                        <br/>
-                        <input type="submit" disabled={isDisabled} value="Create Account"/>
-                    </form>
-                </header>
-            </div>
+            <Col md={{ span: 2 }}>
+                <Form>
+                    <Form.Group controlId="formBasicUsername">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control type="text" placeholder="Enter username" onChange={this.handleChange} name="username" value={this.state.username}/>
+                        <Form.Text className="text-muted">
+                            You will use this to login.
+                        </Form.Text>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicPassword">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" placeholder="Password" onChange={this.handleChange} name="password" value={this.state.password}/>
+                    </Form.Group>
+                    <Button variant="primary" type="submit" disabled={isDisabled} onClick={this.createAccount}>Create Account</Button>
+                </Form>
+            </Col>
         );
     }
 }
