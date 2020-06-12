@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import history from '../History'
+import history from '../../History'
 import {Button, Col, Form} from "react-bootstrap";
 
 class CreateAccount extends Component {

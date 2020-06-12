@@ -1,21 +1,28 @@
 import React, {Component} from 'react';
 import history from './History'
-import Home from './home/Home.js';
+import Home from './components/home/Home.js';
 
 // auth
-import CreateAccount from './authentication/CreateAccount.js';
-import Login from './authentication/Login.js';
+import CreateAccount from './components/authentication/CreateAccount.js';
+import Login from './components/authentication/Login.js';
 
 import {
     Router,
     Switch,
-    Route,
+    Route, Redirect,
 } from "react-router-dom";
-import {clearTokenHeaders, setTokenHeaders} from "./authentication/Utils";
+import {clearTokenHeaders, setTokenHeaders} from "./utils/AuthUtils";
 import axios from "axios";
-import NavigationBar from "./Navbar";
+import NavigationBar from "./components/navbar/Navbar";
 import {Container, Row} from "react-bootstrap";
 
+const InsecureRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={(props) => {
+        return (!rest.loggedIn
+            ? <Component {...rest} />
+            : <Redirect to='/'/>)
+    }}/>
+)
 
 class App extends Component {
     constructor(props) {
@@ -23,7 +30,7 @@ class App extends Component {
         const authentication = localStorage.getItem('Authentication')
         this.state = {
             authentication: authentication ? JSON.parse(authentication) : null,
-            loggedIn: authentication !== undefined
+            loggedIn: authentication !== undefined && authentication !== null
         }
 
         this.login = this.login.bind(this);
@@ -84,12 +91,8 @@ class App extends Component {
                                 <Route exact path="/">
                                     <Home loggedIn={this.state.loggedIn}/>
                                 </Route>
-                                <Route path="/createAccount">
-                                    <CreateAccount login={this.login}/>
-                                </Route>
-                                <Route path="/login">
-                                    <Login login={this.login}/>
-                                </Route>
+                                <InsecureRoute path="/createAccount" loggedIn={this.state.loggedIn} login={this.login} component={CreateAccount} />
+                                <InsecureRoute path="/login" loggedIn={this.state.loggedIn} login={this.login} component={Login}/>
                             </Switch>
                         </Row>
                     </Container>

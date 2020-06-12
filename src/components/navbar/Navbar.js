@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import history from './History'
+import history from '../../History'
 
 import {Button, Nav, Navbar} from "react-bootstrap";
 
