@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import history from '../../History'
 import {Button, Col, Form} from "react-bootstrap";
+import Loading from "../loading/Loading";
 
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.state = {username: '', password: ''};
+        this.state = {username: '', password: '', loading: undefined, done: undefined};
 
         this.handleChange = this.handleChange.bind(this);
         this.loginAccount = this.loginAccount.bind(this);
@@ -18,11 +19,12 @@ class Login extends Component {
     async loginAccount(event) {
         event.preventDefault()
         try {
+            this.setState({loading: true})
             await this.props.login(this.state.username, this.state.password)
             history.push('/')
         } catch (e) {
+            this.setState({username: '', password: '', loading: undefined})
             alert(e)
-            this.setState({username: '', password: ''})
         }
     }
 
@@ -41,7 +43,11 @@ class Login extends Component {
                         <Form.Control type="password" placeholder="Password" onChange={this.handleChange}
                                       name="password" value={this.state.password}/>
                     </Form.Group>
-                    <Button variant="primary" type="submit" disabled={isDisabled} onClick={this.loginAccount}>Login</Button>
+                    <Loading
+                        component={<Button variant="primary" type="submit" disabled={isDisabled} onClick={this.loginAccount}>Login</Button>}
+                        loading={this.state.loading}
+                        done={this.state.done}
+                    />
                 </Form>
             </Col>
         );

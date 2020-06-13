@@ -2,11 +2,12 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import history from '../../History'
 import {Button, Col, Form} from "react-bootstrap";
+import Loading from "../loading/Loading";
 
 class CreateAccount extends Component {
     constructor(props) {
         super(props);
-        this.state = {username: '', password: ''};
+        this.state = {username: '', password: '', loading: undefined, done: undefined};
 
         this.handleChange = this.handleChange.bind(this);
         this.createAccount = this.createAccount.bind(this);
@@ -18,6 +19,7 @@ class CreateAccount extends Component {
 
     async registerAccount(username, password) {
         try {
+            this.setState({loading: true})
             // Create the account
             await axios.post(
                 `/api/authentication/v1/register`,
@@ -32,7 +34,7 @@ class CreateAccount extends Component {
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
             alert(message)
-            this.setState({username: '', password: ''})
+            this.setState({username: '', password: '', loading: undefined, done: undefined})
         }
     }
 
@@ -57,7 +59,11 @@ class CreateAccount extends Component {
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Password" onChange={this.handleChange} name="password" value={this.state.password}/>
                     </Form.Group>
-                    <Button variant="primary" type="submit" disabled={isDisabled} onClick={this.createAccount}>Create Account</Button>
+                    <Loading
+                        component={<Button variant="primary" type="submit" disabled={isDisabled} onClick={this.createAccount}>Create Account</Button>}
+                        loading={this.state.loading}
+                        done={this.state.done}
+                    />
                 </Form>
             </Col>
         );

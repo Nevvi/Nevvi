@@ -65,6 +65,10 @@ class App extends Component {
 
     async logout() {
         console.log("Logging out!")
+
+        // Remove locally
+        localStorage.removeItem('Authentication')
+
         // Remove globally
         try {
             await axios.post(
@@ -74,8 +78,6 @@ class App extends Component {
             console.log(`ERROR: Failed to log out`, e)
         }
 
-        // Remove locally
-        localStorage.removeItem('Authentication')
         this.setState({authentication: undefined, loggedIn: false})
         clearTokenHeaders()
     }

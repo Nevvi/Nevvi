@@ -6,7 +6,9 @@ import history from '../../History'
 class Home extends Component {
     render() {
         if (this.props.loggedIn) {
-            return <div>Hello!</div>
+            return <div>
+                Hello!
+            </div>
         }
 
         return <Button variant="primary" onClick={() => {history.push('/createAccount')}}>Create Account</Button>
