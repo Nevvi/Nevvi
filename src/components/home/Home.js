@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import './Home.css';
 import {Button} from "react-bootstrap";
 import history from '../../History'
 

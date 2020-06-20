@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import './Account.css';
 import {getUser, updateUser} from '../../utils/ApiUtils'
 import Loading from "../loading/Loading";
 import {Button, Col, Form} from "react-bootstrap";
