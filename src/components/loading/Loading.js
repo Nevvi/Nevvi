@@ -26,7 +26,7 @@ const doneOptions = {
 
 export default class Loading extends React.Component {
     render() {
-        if (!this.props.loading && !this.props.done) return this.props.component
+        if (!this.props.loading && !this.props.done && this.props.component) return this.props.component
 
         return (
             <div>

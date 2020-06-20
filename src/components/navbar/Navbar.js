@@ -16,21 +16,32 @@ class NavigationBar extends Component {
 
     render() {
         const isLoggedIn = this.props.loggedIn
-        return (
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand onClick={() => {history.push('/')}}>Nevvi</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+
+        const navs = isLoggedIn ?
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="mr-auto">
+                        <Nav.Link onClick={() => {history.push('/')}}>Home</Nav.Link>
+                        <Nav.Link onClick={() => {history.push('/account')}}>Account</Nav.Link>
+                    </Nav>
+                    <Nav>
+                        <Button variant="link" onClick={this.logoutAccount}>Logout</Button>
+                    </Nav>
+                </Navbar.Collapse>
+            :
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
                         <Nav.Link onClick={() => {history.push('/')}}>Home</Nav.Link>
                     </Nav>
                     <Nav>
-                        {isLoggedIn ?
-                            <Button variant="link" onClick={this.logoutAccount}>Logout</Button> :
-                            <Button variant="link" onClick={() => {history.push('/login')}}>Login</Button>
-                        }
+                        <Button variant="link" onClick={() => {history.push('/login')}}>Login</Button>
                     </Nav>
                 </Navbar.Collapse>
+
+        return (
+            <Navbar bg="light" expand="lg">
+                <Navbar.Brand onClick={() => {history.push('/')}}>Nevvi</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                {navs}
             </Navbar>
         )
     }

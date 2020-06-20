@@ -1,16 +1,21 @@
 import React, {Component} from 'react';
 import history from './History'
-import Home from './components/home/Home.js';
 
-// auth
+// UIs
+import Home from './components/home/Home.js';
+import Account from './components/account/Account.js';
+
+// Auth
 import CreateAccount from './components/authentication/CreateAccount.js';
 import Login from './components/authentication/Login.js';
 
 import {
     Router,
     Switch,
-    Route, Redirect,
+    Route,
+    Redirect,
 } from "react-router-dom";
+
 import {clearTokenHeaders, setTokenHeaders} from "./utils/AuthUtils";
 import axios from "axios";
 import NavigationBar from "./components/navbar/Navbar";
@@ -19,6 +24,14 @@ import {Container, Row} from "react-bootstrap";
 const InsecureRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => {
         return (!rest.loggedIn
+            ? <Component {...rest} />
+            : <Redirect to='/'/>)
+    }}/>
+)
+
+const SecureRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={(props) => {
+        return (rest.loggedIn
             ? <Component {...rest} />
             : <Redirect to='/'/>)
     }}/>
@@ -102,6 +115,7 @@ class App extends Component {
                                 <Route exact path="/">
                                     <Home loggedIn={this.state.loggedIn} userId={this.state.userId}/>
                                 </Route>
+                                <SecureRoute path="/account" loggedIn={this.state.loggedIn} userId={this.state.userId} component={Account} />
                                 <InsecureRoute path="/createAccount" loggedIn={this.state.loggedIn} login={this.login} component={CreateAccount} />
                                 <InsecureRoute path="/login" loggedIn={this.state.loggedIn} login={this.login} component={Login}/>
                             </Switch>
