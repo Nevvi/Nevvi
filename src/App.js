@@ -27,10 +27,13 @@ const InsecureRoute = ({ component: Component, ...rest }) => (
 class App extends Component {
     constructor(props) {
         super(props);
+
         const authentication = localStorage.getItem('Authentication')
+        const userId = localStorage.getItem('UserId')
         this.state = {
             authentication: authentication ? JSON.parse(authentication) : null,
-            loggedIn: authentication !== undefined && authentication !== null
+            loggedIn: authentication !== undefined && authentication !== null,
+            userId: userId
         }
 
         this.login = this.login.bind(this);
@@ -52,10 +55,16 @@ class App extends Component {
                 {username, password}
             )
 
+            // Globally set auth info
             const authentication = response.data.AuthenticationResult
-            this.setState({loggedIn: true, authentication: authentication})
             localStorage.setItem('Authentication', JSON.stringify(authentication))
             setTokenHeaders(authentication.IdToken, authentication.AccessToken)
+
+            // Globally set user id
+            const userId = response.data.User.Id
+            localStorage.setItem('UserId', userId)
+
+            this.setState({loggedIn: true, authentication: authentication, userId: userId})
 
             return authentication
         } catch (e) {
@@ -78,7 +87,7 @@ class App extends Component {
             console.log(`ERROR: Failed to log out`, e)
         }
 
-        this.setState({authentication: undefined, loggedIn: false})
+        this.setState({authentication: undefined, loggedIn: false, userId: undefined})
         clearTokenHeaders()
     }
 
@@ -91,7 +100,7 @@ class App extends Component {
                         <Row noGutters className="justify-content-center">
                             <Switch>
                                 <Route exact path="/">
-                                    <Home loggedIn={this.state.loggedIn}/>
+                                    <Home loggedIn={this.state.loggedIn} userId={this.state.userId}/>
                                 </Route>
                                 <InsecureRoute path="/createAccount" loggedIn={this.state.loggedIn} login={this.login} component={CreateAccount} />
                                 <InsecureRoute path="/login" loggedIn={this.state.loggedIn} login={this.login} component={Login}/>
