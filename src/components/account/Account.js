@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import './Account.css';
-import {getUser} from '../../utils/ApiUtils'
+import {getUser, updateUser} from '../../utils/ApiUtils'
 import Loading from "../loading/Loading";
 import {Button, Col, Form} from "react-bootstrap";
 
 class Account extends Component {
     constructor(props) {
         super(props);
-        this.state = {user: null, loading: undefined, done: undefined}
+        this.state = {user: null, updateUser: null, loading: undefined, done: undefined}
+
+        this.handleChange = this.handleChange.bind(this);
         this.updateAccount = this.updateAccount.bind(this);
     }
 
@@ -17,19 +19,44 @@ class Account extends Component {
         this.setState({loading: true})
         getUser(userId)
             .then(res => {
-                this.setState({user: res, loading: undefined, done: undefined})
+                const userCopy = JSON.parse(JSON.stringify(res))
+                this.setState({user: res, updateUser: userCopy, loading: undefined, done: undefined})
             })
             .catch(err => {
-                console.log("ERROR", err)
+                alert(err)
                 this.setState({loading: undefined, done: undefined})
             })
     }
 
+    handleChange(event) {
+        const user = this.state.updateUser
+        user[event.target.name] = event.target.value
+        this.setState({updateUser: user});
+    }
+
     async updateAccount(event) {
         event.preventDefault()
+        const updates = {}
+        Object.keys(this.state.updateUser).forEach(key => {
+            if (JSON.stringify(this.state.user[key]) !== JSON.stringify(this.state.updateUser[key])) {
+                updates[key] = this.state.updateUser[key]
+            }
+        })
+
+        this.setState({loading: true})
+        updateUser(this.props.userId, updates)
+            .then(res => {
+                const userCopy = JSON.parse(JSON.stringify(res))
+                this.setState({user: res, updateUser: userCopy, loading: undefined, done: undefined})
+            })
+            .catch(err => {
+                alert(err)
+                this.setState({loading: undefined, done: undefined})
+            })
     }
 
     render() {
+        // Initial page load
         if (!this.state.user) {
             return <Loading
                 component={<div/>}
@@ -38,8 +65,8 @@ class Account extends Component {
             />
         }
 
-        const isDisabled = true
-
+        // Subsequent page load
+        const isDisabled = JSON.stringify(this.state.user) === JSON.stringify(this.state.updateUser)
         return (
             <Col md={{ span: 4 }}>
                 <Form>
@@ -49,11 +76,11 @@ class Account extends Component {
                     </Form.Group>
                     <Form.Group controlId="formFirstName">
                         <Form.Label>First Name</Form.Label>
-                        <Form.Control type="text" placeholder="First Name" name="firstName" value={this.state.user.firstName} readOnly/>
+                        <Form.Control type="text" placeholder="First Name" name="firstName" onChange={this.handleChange} value={this.state.updateUser.firstName}/>
                     </Form.Group>
                     <Form.Group controlId="formLastName">
                         <Form.Label>Last Name</Form.Label>
-                        <Form.Control type="text" placeholder="Last Name" name="lastName" value={this.state.user.lastName} readOnly/>
+                        <Form.Control type="text" placeholder="Last Name" name="lastName" onChange={this.handleChange} value={this.state.updateUser.lastName}/>
                     </Form.Group>
                     <Loading
                         component={<Button variant="primary" type="submit" disabled={isDisabled} onClick={this.updateAccount}>Update</Button>}
