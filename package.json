@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
+    "braintree-web-drop-in-react": "^1.1.1",
     "express": "^4.17.1",
     "history": "^4.10.1",
     "http-proxy-middleware": "^1.0.4",

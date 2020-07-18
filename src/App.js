@@ -4,6 +4,7 @@ import history from './History'
 // UIs
 import Home from './components/home/Home.js';
 import Account from './components/account/Account.js';
+import Payment from './components/payment/Payment.js';
 
 // Auth
 import CreateAccount from './components/authentication/CreateAccount.js';
@@ -116,6 +117,7 @@ class App extends Component {
                                     <Home loggedIn={this.state.loggedIn} userId={this.state.userId}/>
                                 </Route>
                                 <SecureRoute path="/account" loggedIn={this.state.loggedIn} userId={this.state.userId} component={Account} />
+                                <SecureRoute path="/payment" loggedIn={this.state.loggedIn} userId={this.state.userId} component={Payment} />
                                 <InsecureRoute path="/createAccount" loggedIn={this.state.loggedIn} login={this.login} component={CreateAccount} />
                                 <InsecureRoute path="/login" loggedIn={this.state.loggedIn} login={this.login} component={Login}/>
                             </Switch>
