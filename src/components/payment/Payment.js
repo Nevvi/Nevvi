@@ -2,13 +2,14 @@ import React, {Component} from 'react';
 import {getPaymentToken, createTransaction} from '../../utils/ApiUtils'
 import Loading from "../loading/Loading";
 import {Button, Col, Form} from "react-bootstrap";
+import history from '../../History'
 
 import DropIn from "braintree-web-drop-in-react";
 
 class Payment extends Component {
     constructor(props) {
         super(props);
-        this.state = {loading: undefined, done: undefined, clientToken: null, instance: null, nonce: null, amount: undefined}
+        this.state = {loading: undefined, done: undefined, clientToken: null, instance: null, nonce: null, amount: ""}
 
         this.handleChange = this.handleChange.bind(this);
         this.setupPayment = this.setupPayment.bind(this);
@@ -39,8 +40,14 @@ class Payment extends Component {
     async donate() {
         this.setState({loading: true})
         const transactionResponse = await createTransaction(this.state.nonce, this.state.amount)
-        console.log(transactionResponse)
-        this.setState({loading: undefined, done: undefined})
+        if (transactionResponse.success) {
+            alert("Thanks!")
+        } else {
+            console.log(transactionResponse)
+            alert("Something bad happened..")
+        }
+        this.setState({loading: undefined, done: undefined, amount: "", nonce: undefined})
+        history.push("/account")
     }
 
     render() {

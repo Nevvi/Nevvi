@@ -42,10 +42,16 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        const authentication = localStorage.getItem('Authentication')
+        let authentication = localStorage.getItem('Authentication')
         const userId = localStorage.getItem('UserId')
+
+        if (authentication) {
+            authentication = JSON.parse(authentication)
+            setTokenHeaders(authentication.IdToken, authentication.AccessToken)
+        }
+
         this.state = {
-            authentication: authentication ? JSON.parse(authentication) : null,
+            authentication: authentication,
             loggedIn: authentication !== undefined && authentication !== null,
             userId: userId
         }
