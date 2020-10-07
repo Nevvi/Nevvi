@@ -1,8 +1,6 @@
-import {Button, Col, Row, Table} from "react-bootstrap";
+import {Col, Table} from "react-bootstrap";
 import React, {Component} from 'react';
-import { useParams } from 'react-router';
 import Loading from "../loading/Loading";
-import history from '../../History';
 import {optimizeLineup} from "../../utils/ApiUtils";
 
 class DailyFantasyContest extends Component {
