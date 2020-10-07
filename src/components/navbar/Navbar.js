@@ -23,6 +23,7 @@ class NavigationBar extends Component {
                         <Nav.Link onClick={() => {history.push('/')}}>Home</Nav.Link>
                         <Nav.Link onClick={() => {history.push('/account')}}>Account</Nav.Link>
                         <Nav.Link onClick={() => {history.push('/payment')}}>Payment</Nav.Link>
+                        <Nav.Link onClick={() => {history.push('/dfs')}}>DFS</Nav.Link>
                     </Nav>
                     <Nav>
                         <Button variant="link" onClick={this.logoutAccount}>Logout</Button>
