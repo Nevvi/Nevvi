@@ -5,8 +5,6 @@ import history from './History'
 import Home from './components/home/Home.js';
 import Account from './components/account/Account.js';
 import Payment from './components/payment/Payment.js';
-import DailyFantasySports from './components/dfs/DailyFantasySports.js';
-import DailyFantasyContest from './components/dfs/DailyFantasyContest.js';
 
 // Auth
 import CreateAccount from './components/authentication/CreateAccount.js';
@@ -126,8 +124,6 @@ class App extends Component {
                                 </Route>
                                 <SecureRoute path="/account" loggedIn={this.state.loggedIn} userId={this.state.userId} component={Account} />
                                 <SecureRoute path="/payment" loggedIn={this.state.loggedIn} userId={this.state.userId} component={Payment} />
-                                <SecureRoute path="/dfs/:contestId" loggedIn={this.state.loggedIn} userId={this.state.userId} component={DailyFantasyContest} />
-                                <SecureRoute path="/dfs" loggedIn={this.state.loggedIn} userId={this.state.userId} component={DailyFantasySports} />
                                 <InsecureRoute path="/createAccount" loggedIn={this.state.loggedIn} login={this.login} component={CreateAccount} />
                                 <InsecureRoute path="/login" loggedIn={this.state.loggedIn} login={this.login} component={Login}/>
                             </Switch>
