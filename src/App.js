@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import history from './History'
 
 // UIs
 import Home from './components/home/Home.js';
@@ -11,126 +10,72 @@ import CreateAccount from './components/authentication/CreateAccount.js';
 import Login from './components/authentication/Login.js';
 
 import {
-    Router,
     Switch,
     Route,
     Redirect,
+    Router
 } from "react-router-dom";
 
-import {clearTokenHeaders, setTokenHeaders} from "./utils/AuthUtils";
-import axios from "axios";
 import NavigationBar from "./components/navbar/Navbar";
 import {Container, Row} from "react-bootstrap";
+import {inject, observer, Provider} from "mobx-react";
 
-const InsecureRoute = ({ component: Component, ...rest }) => (
+import AuthStore from "./stores/AuthStore";
+import {createBrowserHistory} from "history";
+import {RouterStore, syncHistoryWithStore} from "mobx-react-router";
+
+const browserHistory = createBrowserHistory();
+const routingStore = new RouterStore();
+const authStore = new AuthStore();
+
+const stores = {
+    // Key can be whatever you want
+    routingStore: routingStore,
+    authStore: authStore
+}
+
+const history = syncHistoryWithStore(browserHistory, routingStore);
+
+const InsecureRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
     <Route {...rest} render={(props) => {
-        return (!rest.loggedIn
+        return (!authStore.isLoggedIn
             ? <Component {...rest} />
             : <Redirect to='/'/>)
     }}/>
-)
+)))
 
-const SecureRoute = ({ component: Component, ...rest }) => (
+const SecureRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
     <Route {...rest} render={(props) => {
-        return (rest.loggedIn
+        return (authStore.isLoggedIn
             ? <Component {...rest} />
             : <Redirect to='/'/>)
     }}/>
-)
+)))
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-
-        let authentication = localStorage.getItem('Authentication')
-        const userId = localStorage.getItem('UserId')
-
-        if (authentication) {
-            authentication = JSON.parse(authentication)
-            setTokenHeaders(authentication.IdToken, authentication.AccessToken)
-        }
-
-        this.state = {
-            authentication: authentication,
-            loggedIn: authentication !== undefined && authentication !== null,
-            userId: userId
-        }
-
-        this.login = this.login.bind(this);
-        this.logout = this.logout.bind(this);
-    }
 
     componentDidMount() {
-        const authentication = this.state.authentication
-        if (authentication) {
-            setTokenHeaders(authentication.IdToken, authentication.AccessToken)
-        }
-    }
-
-    async login(username, password) {
-        console.log("Logging in!")
-        try {
-            const response = await axios.post(
-                `/api/authentication/v1/login`,
-                {username, password}
-            )
-
-            // Globally set auth info
-            const authentication = response.data.AuthenticationResult
-            localStorage.setItem('Authentication', JSON.stringify(authentication))
-            setTokenHeaders(authentication.IdToken, authentication.AccessToken)
-
-            // Globally set user id
-            const userId = response.data.User.Id
-            localStorage.setItem('UserId', userId)
-
-            this.setState({loggedIn: true, authentication: authentication, userId: userId})
-
-            return authentication
-        } catch (e) {
-            throw new Error(`Login failed because ${e.response.data}`)
-        }
-    }
-
-    async logout() {
-        console.log("Logging out!")
-
-        // Remove locally
-        localStorage.removeItem('Authentication')
-
-        // Remove globally
-        try {
-            await axios.post(
-                `/api/authentication/v1/logout`
-            )
-        } catch (e) {
-            console.log(`ERROR: Failed to log out`, e)
-        }
-
-        this.setState({authentication: undefined, loggedIn: false, userId: undefined})
-        clearTokenHeaders()
+        authStore.reload()
     }
 
     render() {
         return (
-            <Router history={history}>
-                <div>
-                    <NavigationBar loggedIn={this.state.loggedIn} logOut={this.logout}/>
-                    <Container fluid className="app-container">
-                        <Row noGutters className="justify-content-center">
+            <Provider {...stores}>
+                <NavigationBar/>
+                <Container fluid className="app-container">
+                    <Row noGutters className="justify-content-center">
+                        <Router history={history}>
                             <Switch>
-                                <Route exact path="/">
-                                    <Home loggedIn={this.state.loggedIn} userId={this.state.userId}/>
-                                </Route>
-                                <SecureRoute path="/account" loggedIn={this.state.loggedIn} userId={this.state.userId} component={Account} />
-                                <SecureRoute path="/payment" loggedIn={this.state.loggedIn} userId={this.state.userId} component={Payment} />
-                                <InsecureRoute path="/createAccount" loggedIn={this.state.loggedIn} login={this.login} component={CreateAccount} />
-                                <InsecureRoute path="/login" loggedIn={this.state.loggedIn} login={this.login} component={Login}/>
+                                <Route exact path="/"> <Home/> </Route>
+                                <SecureRoute path="/account" component={Account}/>
+                                <SecureRoute path="/payment" component={Payment}/>
+                                <InsecureRoute path="/createAccount" component={CreateAccount}/>
+                                <InsecureRoute path="/login" component={Login}/>
                             </Switch>
-                        </Row>
-                    </Container>
-                </div>
-            </Router>
+                        </Router>
+                    </Row>
+                </Container>
+            </Provider>
         )
     }
 }

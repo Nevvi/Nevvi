@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import history from '../../History'
 import {Button, Col, Form} from "react-bootstrap";
 import Loading from "../loading/Loading";
+import {inject, observer} from "mobx-react";
 
 class CreateAccount extends Component {
     constructor(props) {
@@ -18,6 +18,8 @@ class CreateAccount extends Component {
     }
 
     async registerAccount(username, password) {
+        const {authStore, routingStore} = this.props;
+
         try {
             this.setState({loading: true})
             // Create the account
@@ -27,10 +29,10 @@ class CreateAccount extends Component {
             )
 
             // Log in to the account
-            await this.props.login(username, password)
+            await authStore.login(username, password)
 
             // Default go back to the home page
-            history.push('/')
+            routingStore.push('/')
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
             alert(message)
@@ -70,4 +72,4 @@ class CreateAccount extends Component {
     }
 }
 
-export default CreateAccount;
+export default inject('routingStore', 'authStore')(observer(CreateAccount));

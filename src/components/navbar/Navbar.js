@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import history from '../../History'
 
 import {Button, Nav, Navbar} from "react-bootstrap";
+import {inject, observer} from "mobx-react";
 
 class NavigationBar extends Component {
     constructor(props) {
@@ -11,18 +11,19 @@ class NavigationBar extends Component {
 
     async logoutAccount(event) {
         event.preventDefault()
-        await this.props.logOut()
+        await this.props.authStore.logout()
+        this.props.routingStore.push("/")
     }
 
     render() {
-        const isLoggedIn = this.props.loggedIn
+        const { routingStore, authStore } = this.props
 
-        const navs = isLoggedIn ?
+        const navs = authStore.isLoggedIn ?
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link onClick={() => {history.push('/')}}>Home</Nav.Link>
-                        <Nav.Link onClick={() => {history.push('/account')}}>Account</Nav.Link>
-                        <Nav.Link onClick={() => {history.push('/payment')}}>Payment</Nav.Link>
+                        <Nav.Link onClick={() => {routingStore.push('/')}}>Home</Nav.Link>
+                        <Nav.Link onClick={() => {routingStore.push('/account')}}>Account</Nav.Link>
+                        <Nav.Link onClick={() => {routingStore.push('/payment')}}>Payment</Nav.Link>
                     </Nav>
                     <Nav>
                         <Button variant="link" onClick={this.logoutAccount}>Logout</Button>
@@ -31,16 +32,16 @@ class NavigationBar extends Component {
             :
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link onClick={() => {history.push('/')}}>Home</Nav.Link>
+                        <Nav.Link onClick={() => {routingStore.push('/')}}>Home</Nav.Link>
                     </Nav>
                     <Nav>
-                        <Button variant="link" onClick={() => {history.push('/login')}}>Login</Button>
+                        <Button variant="link" onClick={() => {routingStore.push('/login')}}>Login</Button>
                     </Nav>
                 </Navbar.Collapse>
 
         return (
             <Navbar bg="light" expand="lg">
-                <Navbar.Brand onClick={() => {history.push('/')}}>Nevvi</Navbar.Brand>
+                <Navbar.Brand onClick={() => {routingStore.push('/')}}>Nevvi</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 {navs}
             </Navbar>
@@ -48,4 +49,4 @@ class NavigationBar extends Component {
     }
 }
 
-export default NavigationBar;
+export default inject("routingStore", "authStore")(observer(NavigationBar));

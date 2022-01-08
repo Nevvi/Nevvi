@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import history from '../../History'
 import {Button, Col, Form} from "react-bootstrap";
 import Loading from "../loading/Loading";
+import {inject, observer} from "mobx-react";
 
 class Login extends Component {
     constructor(props) {
@@ -18,10 +18,11 @@ class Login extends Component {
 
     async loginAccount(event) {
         event.preventDefault()
+        const {authStore, routingStore} = this.props;
         try {
             this.setState({loading: true})
-            await this.props.login(this.state.username, this.state.password)
-            history.push('/')
+            await authStore.login(this.state.username, this.state.password)
+            routingStore.push('/')
         } catch (e) {
             this.setState({username: '', password: '', loading: undefined})
             alert(e)
@@ -54,4 +55,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default inject('routingStore', 'authStore')(observer(Login));

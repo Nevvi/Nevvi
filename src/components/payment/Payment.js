@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {getPaymentToken, createTransaction} from '../../utils/ApiUtils'
 import Loading from "../loading/Loading";
 import {Button, Col, Form} from "react-bootstrap";
-import history from '../../History'
 
 import DropIn from "braintree-web-drop-in-react";
+import {inject, observer} from "mobx-react";
 
 class Payment extends Component {
     constructor(props) {
@@ -38,6 +38,7 @@ class Payment extends Component {
     }
 
     async donate() {
+        const {routingStore} = this.props;
         this.setState({loading: true})
         const transactionResponse = await createTransaction(this.state.nonce, this.state.amount)
         if (transactionResponse.success) {
@@ -47,7 +48,7 @@ class Payment extends Component {
             alert("Something bad happened..")
         }
         this.setState({loading: undefined, done: undefined, amount: "", nonce: undefined})
-        history.push("/account")
+        routingStore.push("/account")
     }
 
     render() {
@@ -90,4 +91,4 @@ class Payment extends Component {
     }
 }
 
-export default Payment;
+export default inject('routingStore')(observer(Payment));

@@ -11,7 +11,7 @@ export async function updateUser(userId, updates) {
 }
 
 export async function getPaymentToken() {
-    const res = await axios.post(`/api/tyler-payment/v1/token`, {})
+    const res = await axios.post(`/api/payment/v1/token`, {})
     return res.data
 }
 

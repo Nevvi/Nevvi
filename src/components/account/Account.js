@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {getUser, updateUser} from '../../utils/ApiUtils'
 import Loading from "../loading/Loading";
 import {Button, Col, Form} from "react-bootstrap";
+import {inject, observer} from "mobx-react";
 
 class Account extends Component {
     constructor(props) {
@@ -13,10 +14,10 @@ class Account extends Component {
     }
 
     componentDidMount() {
-        const userId = this.props.userId
+        const {authStore} = this.props;
 
         this.setState({loading: true})
-        getUser(userId)
+        getUser(authStore.userId)
             .then(res => {
                 const userCopy = JSON.parse(JSON.stringify(res))
                 this.setState({user: res, updateUser: userCopy, loading: undefined, done: undefined})
@@ -35,6 +36,8 @@ class Account extends Component {
 
     async updateAccount(event) {
         event.preventDefault()
+
+        const {authStore} = this.props;
         const updates = {}
         Object.keys(this.state.updateUser).forEach(key => {
             if (JSON.stringify(this.state.user[key]) !== JSON.stringify(this.state.updateUser[key])) {
@@ -43,7 +46,7 @@ class Account extends Component {
         })
 
         this.setState({loading: true})
-        updateUser(this.props.userId, updates)
+        updateUser(authStore.userId, updates)
             .then(res => {
                 const userCopy = JSON.parse(JSON.stringify(res))
                 this.setState({user: res, updateUser: userCopy, loading: undefined, done: undefined})
@@ -92,4 +95,4 @@ class Account extends Component {
     }
 }
 
-export default Account;
+export default inject("authStore")(observer(Account));

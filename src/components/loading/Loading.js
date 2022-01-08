@@ -1,6 +1,6 @@
 import React from "react";
 import FadeIn from "react-fade-in";
-import Lottie from "react-lottie";
+import Lottie from "lottie-react";
 import "bootstrap/dist/css/bootstrap.css";
 
 import animation from "./animation.json";
@@ -33,8 +33,8 @@ export default class Loading extends React.Component {
                 <FadeIn>
                     <div className="d-flex justify-content-center align-items-center">
                         {this.props.done ?
-                            <Lottie options={doneOptions} height={120} width={120}/> :
-                            <Lottie options={loadingOptions} height={120} width={120}/>
+                            <Lottie {...doneOptions}/> :
+                            <Lottie {...loadingOptions}/>
                         }
                     </div>
                 </FadeIn>
