@@ -39,9 +39,13 @@ class Account extends Component {
         return (
             <Col md={{ span: 4 }}>
                 <Form>
-                    <Form.Group controlId="formBasicUsername">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder="Username" name="username" value={user.username} readOnly/>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control type="text" placeholder="Email" name="email" value={user.email} readOnly/>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicPhone">
+                        <Form.Label>Phone</Form.Label>
+                        <Form.Control type="text" placeholder="Phone Number" name="phoneNumber" value={user.phoneNumber} readOnly/>
                     </Form.Group>
                     <Form.Group controlId="formFirstName">
                         <Form.Label>First Name</Form.Label>

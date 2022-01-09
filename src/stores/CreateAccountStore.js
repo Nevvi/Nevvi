@@ -3,8 +3,14 @@ import {toast} from "react-toastify";
 import axios from "axios";
 
 class LoginStore {
-    username = ''
+    email = ''
+    phoneNumber = ''
     password = ''
+
+    waitingConfirmationCode = false
+    confirmationCodeDestination = ''
+    confirmationCode = ''
+
     loading = false
 
     constructor(routingStore, authStore) {
@@ -16,17 +22,14 @@ class LoginStore {
     async createAccount() {
         try {
             this.setLoading(true)
-            // Create the account
-            await axios.post(`/api/authentication/v1/register`, {username: this.username, password: this.password})
+            // Create the unconfirmed account
+            const registerResponse = await axios.post(
+                `/api/authentication/v1/register`,
+                {email: this.email, phoneNumber: this.phoneNumber, password: this.password}
+            )
 
-            // Log in to the account
-            await this.authStore.login(this.username, this.password)
-
-            this.setUsername('')
-            this.setPassword('')
-
-            // Default go back to the home page
-            this.routingStore.push('/')
+            this.setConfirmationCodeDestination(registerResponse.data.codeDeliveryDestination)
+            this.setWaitingConfirmationCode(true)
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
             toast.error(`Create account failed because ${message}`)
@@ -35,12 +38,57 @@ class LoginStore {
         }
     }
 
-    setUsername(username) {
-        this.username = username
+    async confirmAccount() {
+        try {
+            this.setLoading(true)
+            // Confirm the account using email as the username
+            await axios.post(
+                `/api/authentication/v1/confirm`,
+                {username: this.email, confirmationCode: this.confirmationCode}
+            )
+
+            // Log in to the account
+            await this.authStore.login(this.email, this.password)
+
+            this.setEmail('')
+            this.setPhoneNumber('')
+            this.setPassword('')
+            this.setConfirmationCodeDestination('')
+            this.setWaitingConfirmationCode(false)
+            this.setLoading(false)
+
+            // Default go back to the home page
+            this.routingStore.push('/')
+        } catch (e) {
+            const message = e.response && e.response.data ? e.response.data : e
+            toast.error(`Failed to confirm account because ${message}`)
+        } finally {
+            this.setConfirmationCode('')
+        }
+    }
+
+    setEmail(email) {
+        this.email = email
+    }
+
+    setPhoneNumber(phoneNumber) {
+        this.phoneNumber = phoneNumber
     }
 
     setPassword(password) {
         this.password = password
+    }
+
+    setWaitingConfirmationCode(waitingConfirmationCode) {
+        this.waitingConfirmationCode = waitingConfirmationCode
+    }
+
+    setConfirmationCodeDestination(confirmationCodeDestination) {
+        this.confirmationCodeDestination = confirmationCodeDestination
+    }
+
+    setConfirmationCode(confirmationCode) {
+        this.confirmationCode = confirmationCode
     }
 
     setLoading(loading) {
