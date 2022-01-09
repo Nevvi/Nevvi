@@ -48,7 +48,7 @@ class AuthStore {
             this.setAccessToken(response.data.accessToken)
             this.setUserId(response.data.id)
         } catch (e) {
-            throw new Error(`Login failed because ${e.response.data}`)
+            throw new Error(e.response.data)
         }
     }
 

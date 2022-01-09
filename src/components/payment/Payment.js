@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {getPaymentToken, createTransaction} from '../../utils/ApiUtils'
 import Loading from "../loading/Loading";
 import {Button, Col, Form} from "react-bootstrap";
 
@@ -9,80 +8,51 @@ import {inject, observer} from "mobx-react";
 class Payment extends Component {
     constructor(props) {
         super(props);
-        this.state = {loading: undefined, done: undefined, clientToken: null, instance: null, nonce: null, amount: ""}
-
-        this.handleChange = this.handleChange.bind(this);
-        this.setupPayment = this.setupPayment.bind(this);
         this.donate = this.donate.bind(this);
     }
 
     componentDidMount() {
-        this.setState({loading: true})
-        getPaymentToken()
-            .then(res => {
-                this.setState({clientToken: res.clientToken, loading: undefined, done: undefined})
-            })
-            .catch(err => {
-                alert(err)
-                this.setState({loading: undefined, done: undefined})
-            })
-    }
-
-    handleChange(event) {
-        this.setState({[event.target.name]: event.target.value});
-    }
-
-    async setupPayment() {
-        const { nonce } = await this.state.instance.requestPaymentMethod();
-        this.setState({nonce})
+        const {paymentStore} = this.props
+        paymentStore.getPaymentToken()
     }
 
     async donate() {
-        const {routingStore} = this.props;
-        this.setState({loading: true})
-        const transactionResponse = await createTransaction(this.state.nonce, this.state.amount)
-        if (transactionResponse.success) {
-            alert("Thanks!")
-        } else {
-            console.log(transactionResponse)
-            alert("Something bad happened..")
-        }
-        this.setState({loading: undefined, done: undefined, amount: "", nonce: undefined})
+        const {routingStore, paymentStore} = this.props;
+        await paymentStore.makePayment()
         routingStore.push("/account")
     }
 
     render() {
+        const {paymentStore} = this.props
         // Initial page load
-        if (!this.state.clientToken) {
-            return <Loading
-                component={<div/>}
-                loading={this.state.loading}
-                done={this.state.done}
-            />
+        if (!paymentStore.clientIdToken) {
+            return <Loading component={<div/>} loading={paymentStore.loading}/>
         }
 
         // Subsequent page load
-        const isDisabled = !this.state.amount
+        const isDisabled = !paymentStore.amount
         return (
             <Col md={{ span: 4 }}>
                 <div>
                     <DropIn
-                        options={{ authorization: this.state.clientToken }}
-                        onInstance={(instance) => (this.setState({instance: instance}))}
+                        options={{ authorization: paymentStore.clientIdToken }}
+                        onInstance={(instance) => (paymentStore.setInstance(instance))}
                     />
-                    <Button onClick={this.setupPayment}>Confirm</Button>
+                    <Button onClick={async () => await paymentStore.initializePayment()}>Confirm</Button>
                 </div>
-                {this.state.nonce ? <div>
+                {paymentStore.nonce ? <div>
                     <br/>
                     <Form>
                         <Form.Group controlId="formBasicAmount">
                             <Form.Label>Amount</Form.Label>
-                            <Form.Control type="text" placeholder="Amount" name="amount" value={this.state.amount} onChange={this.handleChange}/>
+                            <Form.Control type="text"
+                                          placeholder="Amount"
+                                          value={paymentStore.amount}
+                                          onChange={(e) => paymentStore.setAmount(e.target.value)}/>
                         </Form.Group>
                         <Loading
                             component={<Button variant="primary" type="submit" disabled={isDisabled} onClick={this.donate}>Donate</Button>}
-                            loading={this.state.loading}
-                            done={this.state.done}
+                            loading={paymentStore.loading}
                         />
                     </Form>
                 </div> : <div/>}
@@ -91,4 +61,4 @@ class Payment extends Component {
     }
 }
 
-export default inject('routingStore')(observer(Payment));
+export default inject('routingStore', 'paymentStore')(observer(Payment));

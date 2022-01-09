@@ -16,6 +16,8 @@ import {
     Router
 } from "react-router-dom";
 
+import { ToastContainer } from 'react-toastify';
+
 import NavigationBar from "./components/navbar/Navbar";
 import {Container, Row} from "react-bootstrap";
 import {inject, observer, Provider} from "mobx-react";
@@ -23,15 +25,26 @@ import {inject, observer, Provider} from "mobx-react";
 import AuthStore from "./stores/AuthStore";
 import {createBrowserHistory} from "history";
 import {RouterStore, syncHistoryWithStore} from "mobx-react-router";
+import AccountStore from "./stores/AccountStore";
+import LoginStore from "./stores/LoginStore";
+import CreateAccountStore from "./stores/CreateAccountStore";
+import PaymentStore from "./stores/PaymentStore";
 
 const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
 const authStore = new AuthStore();
+const paymentStore = new PaymentStore();
+const accountStore = new AccountStore();
+const loginStore = new LoginStore(routingStore, authStore);
+const createAccountStore = new CreateAccountStore(routingStore, authStore);
 
 const stores = {
-    // Key can be whatever you want
     routingStore: routingStore,
-    authStore: authStore
+    authStore: authStore,
+    paymentStore: paymentStore,
+    accountStore: accountStore,
+    loginStore: loginStore,
+    createAccountStore: createAccountStore
 }
 
 const history = syncHistoryWithStore(browserHistory, routingStore);
@@ -61,6 +74,7 @@ class App extends Component {
     render() {
         return (
             <Provider {...stores}>
+                <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false}/>
                 <NavigationBar/>
                 <Container fluid className="app-container">
                     <Row noGutters className="justify-content-center">

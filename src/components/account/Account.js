@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {getUser, updateUser} from '../../utils/ApiUtils'
 import Loading from "../loading/Loading";
 import {Button, Col, Form} from "react-bootstrap";
 import {inject, observer} from "mobx-react";
@@ -7,87 +6,54 @@ import {inject, observer} from "mobx-react";
 class Account extends Component {
     constructor(props) {
         super(props);
-        this.state = {user: null, updateUser: null, loading: undefined, done: undefined}
 
         this.handleChange = this.handleChange.bind(this);
         this.updateAccount = this.updateAccount.bind(this);
     }
 
     componentDidMount() {
-        const {authStore} = this.props;
-
-        this.setState({loading: true})
-        getUser(authStore.userId)
-            .then(res => {
-                const userCopy = JSON.parse(JSON.stringify(res))
-                this.setState({user: res, updateUser: userCopy, loading: undefined, done: undefined})
-            })
-            .catch(err => {
-                alert(err)
-                this.setState({loading: undefined, done: undefined})
-            })
+        const {authStore, accountStore} = this.props;
+        accountStore.getUser(authStore.userId)
     }
 
     handleChange(event) {
-        const user = this.state.updateUser
-        user[event.target.name] = event.target.value
-        this.setState({updateUser: user});
+        const {accountStore} = this.props;
+        accountStore.updateUser(event.target.name, event.target.value)
     }
 
     async updateAccount(event) {
         event.preventDefault()
-
-        const {authStore} = this.props;
-        const updates = {}
-        Object.keys(this.state.updateUser).forEach(key => {
-            if (JSON.stringify(this.state.user[key]) !== JSON.stringify(this.state.updateUser[key])) {
-                updates[key] = this.state.updateUser[key]
-            }
-        })
-
-        this.setState({loading: true})
-        updateUser(authStore.userId, updates)
-            .then(res => {
-                const userCopy = JSON.parse(JSON.stringify(res))
-                this.setState({user: res, updateUser: userCopy, loading: undefined, done: undefined})
-            })
-            .catch(err => {
-                alert(err)
-                this.setState({loading: undefined, done: undefined})
-            })
+        const {accountStore} = this.props;
+        await accountStore.saveUser()
     }
 
     render() {
         // Initial page load
-        if (!this.state.user) {
-            return <Loading
-                component={<div/>}
-                loading={this.state.loading}
-                done={this.state.done}
-            />
+        const {accountStore} = this.props;
+        const user = accountStore.user;
+        if (!user) {
+            return <Loading component={<div/>} loading={accountStore.loading}/>
         }
 
         // Subsequent page load
-        const isDisabled = JSON.stringify(this.state.user) === JSON.stringify(this.state.updateUser)
         return (
             <Col md={{ span: 4 }}>
                 <Form>
                     <Form.Group controlId="formBasicUsername">
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder="Username" name="username" value={this.state.user.username} readOnly/>
+                        <Form.Control type="text" placeholder="Username" name="username" value={user.username} readOnly/>
                     </Form.Group>
                     <Form.Group controlId="formFirstName">
                         <Form.Label>First Name</Form.Label>
-                        <Form.Control type="text" placeholder="First Name" name="firstName" onChange={this.handleChange} value={this.state.updateUser.firstName}/>
+                        <Form.Control type="text" placeholder="First Name" name="firstName" onChange={this.handleChange} value={user.firstName}/>
                     </Form.Group>
                     <Form.Group controlId="formLastName">
                         <Form.Label>Last Name</Form.Label>
-                        <Form.Control type="text" placeholder="Last Name" name="lastName" onChange={this.handleChange} value={this.state.updateUser.lastName}/>
+                        <Form.Control type="text" placeholder="Last Name" name="lastName" onChange={this.handleChange} value={user.lastName}/>
                     </Form.Group>
                     <Loading
-                        component={<Button variant="primary" type="submit" disabled={isDisabled} onClick={this.updateAccount}>Update</Button>}
-                        loading={this.state.loading}
-                        done={this.state.done}
+                        component={<Button variant="primary" type="submit" onClick={this.updateAccount}>Update</Button>}
+                        loading={accountStore.loading}
                     />
                 </Form>
             </Col>
@@ -95,4 +61,4 @@ class Account extends Component {
     }
 }
 
-export default inject("authStore")(observer(Account));
+export default inject("authStore", "accountStore")(observer(Account));
