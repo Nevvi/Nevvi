@@ -14,8 +14,9 @@ class AccountStore {
     async getUser(userId) {
         this.setLoading(true)
         try {
-            const res = await axios.get(`/api/user/v1/users/${userId}`)
-            res.data.id = userId
+            const res = await axios.get(`/api/authentication/v1/users/${userId}`)
+            res.data.emailVerified = res.data.emailVerified === 'true'
+            res.data.phoneVerified = res.data.phoneVerified === 'true'
             this.setUser(res.data)
         } catch (e) {
             toast.error(`Login failed because ${e.response.data}`)
@@ -28,10 +29,12 @@ class AccountStore {
         this.setLoading(true)
         try {
             const userUpdates = JSON.parse(JSON.stringify(this.user))
-            delete userUpdates["id"]
+            delete userUpdates["userId"]
             delete userUpdates["email"]
-            delete userUpdates["phoneNumber"]
-            const res = await axios.patch(`/api/user/v1/users/${this.user.id}`, userUpdates)
+            delete userUpdates["emailVerified"]
+            delete userUpdates["phone"]
+            delete userUpdates["phoneVerified"]
+            const res = await axios.patch(`/api/authentication/v1/users/${this.user.userId}`, userUpdates)
             this.setUser(res.data)
         } catch (e) {
             toast.error(`Failed to update user because ${e.response.data}`)

@@ -7,18 +7,12 @@ class Account extends Component {
     constructor(props) {
         super(props);
 
-        this.handleChange = this.handleChange.bind(this);
         this.updateAccount = this.updateAccount.bind(this);
     }
 
     componentDidMount() {
         const {authStore, accountStore} = this.props;
         accountStore.getUser(authStore.userId)
-    }
-
-    handleChange(event) {
-        const {accountStore} = this.props;
-        accountStore.updateUser(event.target.name, event.target.value)
     }
 
     async updateAccount(event) {
@@ -40,20 +34,16 @@ class Account extends Component {
             <Col md={{ span: 4 }}>
                 <Form>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control type="text" placeholder="Email" name="email" value={user.email} readOnly/>
+                        <Form.Label> Email ({user.emailVerified ? 'verified' : 'unverified'}) </Form.Label>
+                        <Form.Control type="text" placeholder="Email" value={user.email} readOnly/>
                     </Form.Group>
                     <Form.Group controlId="formBasicPhone">
-                        <Form.Label>Phone</Form.Label>
-                        <Form.Control type="text" placeholder="Phone Number" name="phoneNumber" value={user.phoneNumber} readOnly/>
+                        <Form.Label>Phone ({user.phoneVerified ? 'verified' : 'unverified'})</Form.Label>
+                        <Form.Control type="text" placeholder="Phone Number" value={user.phone} readOnly/>
                     </Form.Group>
-                    <Form.Group controlId="formFirstName">
-                        <Form.Label>First Name</Form.Label>
-                        <Form.Control type="text" placeholder="First Name" name="firstName" onChange={this.handleChange} value={user.firstName}/>
-                    </Form.Group>
-                    <Form.Group controlId="formLastName">
-                        <Form.Label>Last Name</Form.Label>
-                        <Form.Control type="text" placeholder="Last Name" name="lastName" onChange={this.handleChange} value={user.lastName}/>
+                    <Form.Group controlId="formName">
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control type="text" placeholder="Name" value={user.name} onChange={(e) => accountStore.updateUser("name", e.target.value)}/>
                     </Form.Group>
                     <Loading
                         component={<Button variant="primary" type="submit" onClick={this.updateAccount}>Update</Button>}
