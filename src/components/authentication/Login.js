@@ -21,10 +21,10 @@ class Login extends Component {
         return (
             <Col md={{span: 2}}>
                 <Form>
-                    <Form.Group controlId="formBasicUsername">
-                        <Form.Label>Username</Form.Label>
+                    <Form.Group controlId="formEmail">
+                        <Form.Label>Email</Form.Label>
                         <Form.Control type="text"
-                                      placeholder="Enter username"
+                                      placeholder="Enter Email"
                                       onChange={(e) => loginStore.setUsername(e.target.value)}
                                       value={loginStore.username}/>
                     </Form.Group>

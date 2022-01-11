@@ -4,7 +4,6 @@ import axios from "axios";
 
 class LoginStore {
     email = ''
-    phoneNumber = ''
     password = ''
 
     waitingConfirmationCode = false
@@ -25,7 +24,7 @@ class LoginStore {
             // Create the unconfirmed account
             const registerResponse = await axios.post(
                 `/api/authentication/v1/register`,
-                {email: this.email, phoneNumber: this.phoneNumber, password: this.password}
+                {email: this.email, password: this.password}
             )
 
             this.setConfirmationCodeDestination(registerResponse.data.codeDeliveryDestination)
@@ -51,7 +50,6 @@ class LoginStore {
             await this.authStore.login(this.email, this.password)
 
             this.setEmail('')
-            this.setPhoneNumber('')
             this.setPassword('')
             this.setConfirmationCodeDestination('')
             this.setWaitingConfirmationCode(false)
@@ -69,10 +67,6 @@ class LoginStore {
 
     setEmail(email) {
         this.email = email
-    }
-
-    setPhoneNumber(phoneNumber) {
-        this.phoneNumber = phoneNumber
     }
 
     setPassword(password) {

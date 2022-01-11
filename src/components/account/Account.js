@@ -37,10 +37,6 @@ class Account extends Component {
                         <Form.Label> Email ({user.emailVerified ? 'verified' : 'unverified'}) </Form.Label>
                         <Form.Control type="text" placeholder="Email" value={user.email} readOnly/>
                     </Form.Group>
-                    <Form.Group controlId="formBasicPhone">
-                        <Form.Label>Phone ({user.phoneVerified ? 'verified' : 'unverified'})</Form.Label>
-                        <Form.Control type="text" placeholder="Phone Number" value={user.phone} readOnly/>
-                    </Form.Group>
                     <Form.Group controlId="formName">
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" placeholder="Name" value={user.name} onChange={(e) => accountStore.updateUser("name", e.target.value)}/>

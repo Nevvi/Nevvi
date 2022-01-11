@@ -18,7 +18,7 @@ class CreateAccount extends Component {
 
     render() {
         const {createAccountStore} = this.props
-        const isDisabled = createAccountStore.email === '' || createAccountStore.phoneNumber === '' || createAccountStore.password === ''
+        const isDisabled = createAccountStore.email === '' || createAccountStore.password === ''
 
         return (
             <Col md={{ span: 2 }}>
@@ -29,13 +29,6 @@ class CreateAccount extends Component {
                                       placeholder="Enter email"
                                       onChange={(e) => createAccountStore.setEmail(e.target.value)}
                                       value={createAccountStore.email}/>
-                    </Form.Group>
-                    <Form.Group controlId="newAccountPhoneNumber">
-                        <Form.Label>Phone Number</Form.Label>
-                        <Form.Control type="text"
-                                      placeholder="Enter phone number"
-                                      onChange={(e) => createAccountStore.setPhoneNumber(e.target.value)}
-                                      value={createAccountStore.phoneNumber}/>
                     </Form.Group>
                     <Form.Group controlId="newAccountPassword">
                         <Form.Label>Password</Form.Label>
