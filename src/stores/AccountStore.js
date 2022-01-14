@@ -63,7 +63,7 @@ class AccountStore {
     async confirmPhone() {
         try {
             this.setLoading(true)
-            const response = await axios.post(`/api/authentication/v1/users/${this.user.userId}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
+            await axios.post(`/api/authentication/v1/users/${this.user.userId}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
             this.setConfirmationCodePrompt(DEFAULT_PROMPT)
             this.setWaitingConfirmationCode(false)
             this.updateUser("phoneNumberVerified", true)
