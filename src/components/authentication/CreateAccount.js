@@ -42,14 +42,19 @@ class CreateAccount extends Component {
                         loading={createAccountStore.loading}
                     />
                 </Form>
+                <Button variant="contained" onClick={() => createAccountStore.setWaitingConfirmationCode(true)}>Confirm Account</Button>
                 <Dialog open={createAccountStore.waitingConfirmationCode}>
                     <DialogTitle>Confirm Account</DialogTitle>
                     <DialogContent>
-                        <DialogContentText>
-                            You're account has been created! We have sent a confirmation code to
-                            {createAccountStore.confirmationCodeDestination} which you can use to
-                            finish setting up your account.
-                        </DialogContentText>
+                        <DialogContentText>{createAccountStore.confirmationCodePrompt}</DialogContentText>
+                        <TextField
+                            margin="dense"
+                            label="Email"
+                            fullWidth
+                            variant="standard"
+                            value={createAccountStore.email}
+                            onChange={(e) => createAccountStore.setEmail(e.target.value)}
+                        />
                         <TextField
                             autoFocus
                             margin="dense"
@@ -61,6 +66,7 @@ class CreateAccount extends Component {
                         />
                     </DialogContent>
                     <DialogActions>
+                        <Button onClick={() => createAccountStore.cancelConfirm()}>Cancel</Button>
                         <Button onClick={() => createAccountStore.confirmAccount()}>Confirm</Button>
                     </DialogActions>
                 </Dialog>

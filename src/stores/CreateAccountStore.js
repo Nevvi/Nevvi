@@ -2,12 +2,14 @@ import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
 import axios from "axios";
 
+const DEFAULT_PROMPT = 'Enter the confirmation code that we previously sent to your email'
+
 class LoginStore {
     email = ''
     password = ''
 
     waitingConfirmationCode = false
-    confirmationCodeDestination = ''
+    confirmationCodePrompt = DEFAULT_PROMPT
     confirmationCode = ''
 
     loading = false
@@ -27,7 +29,9 @@ class LoginStore {
                 {email: this.email, password: this.password}
             )
 
-            this.setConfirmationCodeDestination(registerResponse.data.codeDeliveryDestination)
+            this.setConfirmationCodePrompt(`You're account has been created! We have sent a confirmation code to 
+                            ${registerResponse.data.codeDeliveryDestination} which you can use to finish setting up 
+                            your account.`)
             this.setWaitingConfirmationCode(true)
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
@@ -35,6 +39,11 @@ class LoginStore {
         } finally {
             this.setLoading(false)
         }
+    }
+
+    cancelConfirm() {
+        this.setConfirmationCodePrompt(DEFAULT_PROMPT)
+        this.setWaitingConfirmationCode(false)
     }
 
     async confirmAccount() {
@@ -46,17 +55,22 @@ class LoginStore {
                 {username: this.email, confirmationCode: this.confirmationCode}
             )
 
-            // Log in to the account
-            await this.authStore.login(this.email, this.password)
+            if (this.password) {
+                // If user created an account in this same session auto log them in
+                await this.authStore.login(this.email, this.password)
+                this.routingStore.push('/')
+                toast.success("Successfully verified account")
+            } else {
+                // If the user is confirming there account separately go to login page
+                this.routingStore.push('/login')
+                toast.success("Successfully verified account. You can now use that email to log in.")
+            }
 
             this.setEmail('')
             this.setPassword('')
-            this.setConfirmationCodeDestination('')
+            this.setConfirmationCodePrompt(DEFAULT_PROMPT)
             this.setWaitingConfirmationCode(false)
             this.setLoading(false)
-
-            // Default go back to the home page
-            this.routingStore.push('/')
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
             toast.error(`Failed to confirm account because ${message}`)
@@ -77,8 +91,8 @@ class LoginStore {
         this.waitingConfirmationCode = waitingConfirmationCode
     }
 
-    setConfirmationCodeDestination(confirmationCodeDestination) {
-        this.confirmationCodeDestination = confirmationCodeDestination
+    setConfirmationCodePrompt(confirmationCodePrompt) {
+        this.confirmationCodePrompt = confirmationCodePrompt
     }
 
     setConfirmationCode(confirmationCode) {
