@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Loading from "../loading/Loading";
-import {Button, Col, Form} from "react-bootstrap";
+import {Col, Form} from "react-bootstrap";
+import {Button} from "@mui/material";
 
 import DropIn from "braintree-web-drop-in-react";
 import {inject, observer} from "mobx-react";

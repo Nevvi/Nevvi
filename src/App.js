@@ -7,6 +7,7 @@ import Payment from './components/payment/Payment.js';
 
 // Auth
 import CreateAccount from './components/authentication/CreateAccount.js';
+import ConfirmAccount from "./components/authentication/ConfirmAccount";
 import Login from './components/authentication/Login.js';
 
 import {
@@ -19,7 +20,6 @@ import {
 import { ToastContainer } from 'react-toastify';
 
 import NavigationBar from "./components/navbar/Navbar";
-import {Container, Row} from "react-bootstrap";
 import {inject, observer, Provider} from "mobx-react";
 
 import AuthStore from "./stores/AuthStore";
@@ -29,14 +29,19 @@ import AccountStore from "./stores/AccountStore";
 import LoginStore from "./stores/LoginStore";
 import CreateAccountStore from "./stores/CreateAccountStore";
 import PaymentStore from "./stores/PaymentStore";
+import {Grid} from "@mui/material";
+import ConfirmAccountStore from "./stores/ConfirmAccountStore";
+import ConfirmAttributeStore from "./stores/ConfirmAttributeStore";
 
 const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
 const authStore = new AuthStore();
 const paymentStore = new PaymentStore();
 const accountStore = new AccountStore();
+const confirmAttributeStore = new ConfirmAttributeStore(routingStore, accountStore);
 const loginStore = new LoginStore(routingStore, authStore);
-const createAccountStore = new CreateAccountStore(routingStore, authStore);
+const confirmAccountStore = new ConfirmAccountStore(routingStore);
+const createAccountStore = new CreateAccountStore(routingStore, authStore, confirmAccountStore);
 
 const stores = {
     routingStore: routingStore,
@@ -44,7 +49,9 @@ const stores = {
     paymentStore: paymentStore,
     accountStore: accountStore,
     loginStore: loginStore,
-    createAccountStore: createAccountStore
+    createAccountStore: createAccountStore,
+    confirmAccountStore: confirmAccountStore,
+    confirmAttributeStore: confirmAttributeStore
 }
 
 const history = syncHistoryWithStore(browserHistory, routingStore);
@@ -76,19 +83,20 @@ class App extends Component {
             <Provider {...stores}>
                 <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false}/>
                 <NavigationBar/>
-                <Container fluid className="app-container">
-                    <Row noGutters className="justify-content-center">
+                <Grid container rowSpacing={2} style={{marginTop: "1rem", padding: "0 1rem"}}>
+                    <Grid item xs={12} style={{paddingTop: "0.3rem"}}>
                         <Router history={history}>
                             <Switch>
                                 <Route exact path="/"> <Home/> </Route>
                                 <SecureRoute path="/account" component={Account}/>
                                 <SecureRoute path="/payment" component={Payment}/>
                                 <InsecureRoute path="/createAccount" component={CreateAccount}/>
+                                <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
                                 <InsecureRoute path="/login" component={Login}/>
                             </Switch>
                         </Router>
-                    </Row>
-                </Container>
+                    </Grid>
+                </Grid>
             </Provider>
         )
     }

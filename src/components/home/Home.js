@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Button} from "react-bootstrap";
 import {inject, observer} from "mobx-react";
+import {Button} from "@mui/material";
 
 class Home extends Component {
     render() {
@@ -11,7 +11,7 @@ class Home extends Component {
             </div>
         }
 
-        return <Button variant="primary" onClick={() => {routingStore.push('/createAccount')}}>Create Account</Button>
+        return <Button variant="contained" color="primary" onClick={() => {routingStore.push('/createAccount')}}>Create Account</Button>
     }
 }
 

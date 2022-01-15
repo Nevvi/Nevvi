@@ -2,22 +2,16 @@ import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
 import axios from "axios";
 
-const DEFAULT_PROMPT = 'Enter the confirmation code that we previously sent to your email'
-
-class LoginStore {
+class CreateAccountStore {
     email = ''
     password = ''
-
-    waitingConfirmationCode = false
-    confirmationCodePrompt = DEFAULT_PROMPT
-    confirmationCode = ''
-
     loading = false
 
-    constructor(routingStore, authStore) {
+    constructor(routingStore, authStore, confirmAccountStore) {
         makeAutoObservable(this)
         this.routingStore = routingStore
         this.authStore = authStore
+        this.confirmAccountStore = confirmAccountStore
     }
 
     async createAccount() {
@@ -29,53 +23,24 @@ class LoginStore {
                 {email: this.email, password: this.password}
             )
 
-            this.setConfirmationCodePrompt(`You're account has been created! We have sent a confirmation code to 
-                            ${registerResponse.data.codeDeliveryDestination} which you can use to finish setting up 
-                            your account.`)
-            this.setWaitingConfirmationCode(true)
+            const {email, password} = this
+            this.confirmAccountStore.setEmail(email)
+            this.confirmAccountStore.setCallback(async () => {
+                await this.authStore.login(email, password)
+                this.routingStore.push('/')
+            })
+            this.confirmAccountStore.setConfirmationCodePrompt(`You're account has been created! We have sent a 
+                confirmation code to ${registerResponse.data.codeDeliveryDestination} which you can use to finish 
+                setting up your account.`)
+            this.routingStore.push('/confirmAccount')
+
+            this.setEmail('')
+            this.setPassword('')
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
             toast.error(`Create account failed because ${message}`)
         } finally {
             this.setLoading(false)
-        }
-    }
-
-    cancelConfirm() {
-        this.setConfirmationCodePrompt(DEFAULT_PROMPT)
-        this.setWaitingConfirmationCode(false)
-    }
-
-    async confirmAccount() {
-        try {
-            this.setLoading(true)
-            // Confirm the account using email as the username
-            await axios.post(
-                `/api/authentication/v1/confirm`,
-                {username: this.email, confirmationCode: this.confirmationCode}
-            )
-
-            if (this.password) {
-                // If user created an account in this same session auto log them in
-                await this.authStore.login(this.email, this.password)
-                this.routingStore.push('/')
-                toast.success("Successfully verified account")
-            } else {
-                // If the user is confirming there account separately go to login page
-                this.routingStore.push('/login')
-                toast.success("Successfully verified account. You can now use that email to log in.")
-            }
-
-            this.setEmail('')
-            this.setPassword('')
-            this.setConfirmationCodePrompt(DEFAULT_PROMPT)
-            this.setWaitingConfirmationCode(false)
-            this.setLoading(false)
-        } catch (e) {
-            const message = e.response && e.response.data ? e.response.data : e
-            toast.error(`Failed to confirm account because ${message}`)
-        } finally {
-            this.setConfirmationCode('')
         }
     }
 
@@ -87,21 +52,9 @@ class LoginStore {
         this.password = password
     }
 
-    setWaitingConfirmationCode(waitingConfirmationCode) {
-        this.waitingConfirmationCode = waitingConfirmationCode
-    }
-
-    setConfirmationCodePrompt(confirmationCodePrompt) {
-        this.confirmationCodePrompt = confirmationCodePrompt
-    }
-
-    setConfirmationCode(confirmationCode) {
-        this.confirmationCode = confirmationCode
-    }
-
     setLoading(loading) {
         this.loading = loading
     }
 }
 
-export default LoginStore;
+export default CreateAccountStore;

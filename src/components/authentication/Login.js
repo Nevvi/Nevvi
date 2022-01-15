@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Button, Col, Form} from "react-bootstrap";
-import Loading from "../loading/Loading";
+import {Box, Grid, TextField} from "@mui/material";
 import {inject, observer} from "mobx-react";
+import {LoadingButton} from "@mui/lab";
 
 class Login extends Component {
     constructor(props) {
@@ -19,27 +19,41 @@ class Login extends Component {
         const {loginStore} = this.props;
         const isDisabled = loginStore.username === '' || loginStore.password === ''
         return (
-            <Col md={{span: 2}}>
-                <Form>
-                    <Form.Group controlId="formEmail">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control type="text"
-                                      placeholder="Enter Email"
-                                      onChange={(e) => loginStore.setUsername(e.target.value)}
-                                      value={loginStore.username}/>
-                    </Form.Group>
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password"
-                                      onChange={(e) => loginStore.setPassword(e.target.value)}
-                                      value={loginStore.password}/>
-                    </Form.Group>
-                    <Loading
-                        component={<Button variant="primary" type="submit" disabled={isDisabled} onClick={this.loginAccount}>Login</Button>}
-                        loading={loginStore.loading}
+            <Grid container rowSpacing={1}>
+                <Grid item xs={12}>
+                    <TextField
+                        fullWidth
+                        variant="standard"
+                        id="username-input"
+                        label="Email"
+                        type="text"
+                        value={loginStore.username}
+                        onChange={(e) => loginStore.setUsername(e.target.value)}
                     />
-                </Form>
-            </Col>
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        fullWidth
+                        variant="standard"
+                        id="password-input"
+                        label="Password"
+                        type="password"
+                        value={loginStore.password}
+                        onChange={(e) => loginStore.setPassword(e.target.value)}
+                    />
+                </Grid>
+                <Box mt={2}>
+                    <LoadingButton
+                        size={"small"}
+                        variant="contained"
+                        color="primary"
+                        loading={loginStore.loading}
+                        disabled={isDisabled}
+                        onClick={this.loginAccount}>
+                        Login
+                    </LoadingButton>
+                </Box>
+            </Grid>
         );
     }
 }

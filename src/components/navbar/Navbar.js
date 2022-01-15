@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
-import {Button, Nav, Navbar} from "react-bootstrap";
+import {Nav, Navbar} from "react-bootstrap";
+import {Button} from "@mui/material";
 import {inject, observer} from "mobx-react";
 
 class NavigationBar extends Component {
@@ -26,7 +27,7 @@ class NavigationBar extends Component {
                         <Nav.Link onClick={() => {routingStore.push('/payment')}}>Payment</Nav.Link>
                     </Nav>
                     <Nav>
-                        <Button variant="link" onClick={this.logoutAccount}>Logout</Button>
+                        <Button variant="text" color="primary" onClick={this.logoutAccount}>Logout</Button>
                     </Nav>
                 </Navbar.Collapse>
             :
@@ -35,7 +36,7 @@ class NavigationBar extends Component {
                         <Nav.Link onClick={() => {routingStore.push('/')}}>Home</Nav.Link>
                     </Nav>
                     <Nav>
-                        <Button variant="link" onClick={() => {routingStore.push('/login')}}>Login</Button>
+                        <Button variant="text" color="primary" onClick={() => {routingStore.push('/login')}}>Login</Button>
                     </Nav>
                 </Navbar.Collapse>
 

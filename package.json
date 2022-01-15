@@ -5,6 +5,8 @@
   "proxy": "http://localhost:3001",
   "dependencies": {
     "@emotion/styled": "^11.6.0",
+    "@material-ui/icons": "^4.11.2",
+    "@mui/lab": "^5.0.0-alpha.64",
     "@mui/material": "^5.2.7",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.0",
