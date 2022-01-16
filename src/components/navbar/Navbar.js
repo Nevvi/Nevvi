@@ -7,7 +7,40 @@ import {inject, observer} from "mobx-react";
 class NavigationBar extends Component {
     constructor(props) {
         super(props);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleRoute = this.handleRoute.bind(this);
         this.logoutAccount = this.logoutAccount.bind(this);
+
+        this.state = {
+            isNavExpanded: false
+        };
+    }
+
+    setIsNavExpanded(isNavExpanded) {
+        this.setState({isNavExpanded: isNavExpanded});
+    }
+
+    handleClick(e) {
+        if (this.node.contains(e.target)) {
+            // if clicked inside menu do something
+        } else {
+            // If clicked outside menu, close the navbar.
+            this.setState({isNavExpanded: false});
+        }
+    }
+
+    handleRoute(route) {
+        const {routingStore} = this.props;
+        routingStore.push(route)
+        this.setIsNavExpanded(false)
+    }
+
+    componentDidMount() {
+        document.addEventListener('click', this.handleClick, false);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this.handleClick, false);
     }
 
     async logoutAccount(event) {
@@ -17,35 +50,36 @@ class NavigationBar extends Component {
     }
 
     render() {
-        const { routingStore, authStore } = this.props
+        const {authStore} = this.props
 
         const navs = authStore.isLoggedIn ?
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
-                        <Nav.Link onClick={() => {routingStore.push('/')}}>Home</Nav.Link>
-                        <Nav.Link onClick={() => {routingStore.push('/account')}}>Account</Nav.Link>
-                        <Nav.Link onClick={() => {routingStore.push('/payment')}}>Payment</Nav.Link>
-                    </Nav>
-                    <Nav>
-                        <Button variant="text" color="primary" onClick={this.logoutAccount}>Logout</Button>
-                    </Nav>
-                </Navbar.Collapse>
-            :
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
-                        <Nav.Link onClick={() => {routingStore.push('/')}}>Home</Nav.Link>
-                    </Nav>
-                    <Nav>
-                        <Button variant="text" color="primary" onClick={() => {routingStore.push('/login')}}>Login</Button>
-                    </Nav>
-                </Navbar.Collapse>
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto" style={{textAlign: "center"}}>
+                    <Nav.Link onClick={() => {this.handleRoute('/')}}>Home</Nav.Link>
+                    <Nav.Link onClick={() => {this.handleRoute('/account')}}>Account</Nav.Link>
+                    <Nav.Link onClick={() => {this.handleRoute('/payment')}}>Payment</Nav.Link>
+                </Nav>
+                <Nav>
+                    <Button variant="text" color="primary" onClick={this.logoutAccount}>Logout</Button>
+                </Nav>
+            </Navbar.Collapse> :
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto" style={{textAlign: "center"}}>
+                    <Nav.Link onClick={() => {this.handleRoute('/')}}>Home</Nav.Link>
+                </Nav>
+                <Nav>
+                    <Button variant="text" color="primary" onClick={() => {this.handleRoute('/login')}}>Login</Button>
+                </Nav>
+            </Navbar.Collapse>
 
         return (
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand onClick={() => {routingStore.push('/')}}>Nevvi</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                {navs}
-            </Navbar>
+            <div ref={node => this.node = node}>
+                <Navbar bg="light" expand="lg" collapseOnSelect expanded={this.state.isNavExpanded}>
+                    <Navbar.Brand onClick={() => {this.handleRoute('/')}}>Nevvi</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => this.setIsNavExpanded(!this.state.isNavExpanded)}/>
+                    {navs}
+                </Navbar>
+            </div>
         )
     }
 }
