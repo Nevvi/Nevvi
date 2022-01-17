@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import {Nav, Navbar} from "react-bootstrap";
-import {Button} from "@mui/material";
 import {inject, observer} from "mobx-react";
 
 class NavigationBar extends Component {
@@ -57,18 +56,19 @@ class NavigationBar extends Component {
                 <Nav className="mr-auto" style={{textAlign: "center"}}>
                     <Nav.Link onClick={() => {this.handleRoute('/')}}>Home</Nav.Link>
                     <Nav.Link onClick={() => {this.handleRoute('/account')}}>Account</Nav.Link>
+                    <Nav.Link onClick={() => {this.handleRoute('/groups')}}>Groups</Nav.Link>
                     <Nav.Link onClick={() => {this.handleRoute('/payment')}}>Payment</Nav.Link>
                 </Nav>
-                <Nav>
-                    <Button variant="text" color="primary" onClick={this.logoutAccount}>Logout</Button>
+                <Nav style={{textAlign: "center"}}>
+                    <Nav.Link onClick={this.logoutAccount}>Logout</Nav.Link>
                 </Nav>
             </Navbar.Collapse> :
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto" style={{textAlign: "center"}}>
                     <Nav.Link onClick={() => {this.handleRoute('/')}}>Home</Nav.Link>
                 </Nav>
-                <Nav>
-                    <Button variant="text" color="primary" onClick={() => {this.handleRoute('/login')}}>Login</Button>
+                <Nav style={{textAlign: "center"}}>
+                    <Nav.Link onClick={() => {this.handleRoute('/login')}}>Login</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
 

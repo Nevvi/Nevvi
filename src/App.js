@@ -32,6 +32,8 @@ import PaymentStore from "./stores/PaymentStore";
 import {Grid} from "@mui/material";
 import ConfirmAccountStore from "./stores/ConfirmAccountStore";
 import ConfirmAttributeStore from "./stores/ConfirmAttributeStore";
+import Groups from "./components/notifications/Groups";
+import NotificationGroupsStore from "./stores/NotificationGroupsStore";
 
 const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
@@ -42,6 +44,7 @@ const confirmAttributeStore = new ConfirmAttributeStore(routingStore, accountSto
 const loginStore = new LoginStore(routingStore, authStore);
 const confirmAccountStore = new ConfirmAccountStore(routingStore);
 const createAccountStore = new CreateAccountStore(routingStore, authStore, confirmAccountStore);
+const notificationGroupsStore = new NotificationGroupsStore();
 
 const stores = {
     routingStore: routingStore,
@@ -51,7 +54,8 @@ const stores = {
     loginStore: loginStore,
     createAccountStore: createAccountStore,
     confirmAccountStore: confirmAccountStore,
-    confirmAttributeStore: confirmAttributeStore
+    confirmAttributeStore: confirmAttributeStore,
+    notificationGroupsStore: notificationGroupsStore
 }
 
 const history = syncHistoryWithStore(browserHistory, routingStore);
@@ -89,6 +93,7 @@ class App extends Component {
                             <Switch>
                                 <Route exact path="/"> <Home/> </Route>
                                 <SecureRoute path="/account" component={Account}/>
+                                <SecureRoute path="/groups" component={Groups}/>
                                 <SecureRoute path="/payment" component={Payment}/>
                                 <InsecureRoute path="/createAccount" component={CreateAccount}/>
                                 <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
