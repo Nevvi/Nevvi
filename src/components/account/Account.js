@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Loading from "../loading/Loading";
-import {inject, observer} from "mobx-react";
+import { inject, observer } from "mobx-react";
 import {
     Box,
     Button,
@@ -12,8 +12,8 @@ import {
     Grid, InputAdornment,
     TextField
 } from "@mui/material";
-import {LoadingButton} from "@mui/lab";
-import {Check} from "@material-ui/icons";
+import { LoadingButton } from "@mui/lab";
+import { Check } from "@material-ui/icons";
 
 class Account extends Component {
     constructor(props) {
@@ -23,22 +23,22 @@ class Account extends Component {
     }
 
     componentDidMount() {
-        const {authStore, accountStore} = this.props;
+        const { authStore, accountStore } = this.props;
         accountStore.getUser(authStore.userId)
     }
 
     async updateAccount(event) {
         event.preventDefault()
-        const {accountStore} = this.props;
+        const { accountStore } = this.props;
         await accountStore.saveUser()
     }
 
     render() {
         // Initial page load
-        const {accountStore, confirmAttributeStore} = this.props;
+        const { accountStore, confirmAttributeStore } = this.props;
         const user = accountStore.user;
         if (!user) {
-            return <Loading component={<div/>} loading={accountStore.loading}/>
+            return <Loading component={<div />} loading={accountStore.loading} />
         }
 
         // Subsequent page load
@@ -55,7 +55,7 @@ class Account extends Component {
                         disabled
                         InputProps={{
                             endAdornment: <InputAdornment position="end">
-                                {user.emailVerified ? <Check/> : ''}
+                                {user.emailVerified ? <Check /> : ''}
                             </InputAdornment>
                         }}
                     />
@@ -65,7 +65,7 @@ class Account extends Component {
                         fullWidth
                         variant="standard"
                         id="phone-input"
-                        label="Phone Number"
+                        label="Phone Number (+1XXXXXXXXXX)"
                         type="text"
                         disabled={user.phoneNumberVerified}
                         value={user.phoneNumber}
@@ -79,7 +79,7 @@ class Account extends Component {
                                     >
                                         Verify
                                     </LoadingButton> :
-                                    <Check/>
+                                    <Check />
                                 }
                             </InputAdornment> : ''
                         }}

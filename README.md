@@ -3,7 +3,7 @@
 ![Develop](https://github.com/Nevvi/Nevvi/actions/workflows/deploy-dev.yml/badge.svg)
 ![Production](https://github.com/Nevvi/Nevvi/actions/workflows/deploy-prod.yml/badge.svg)
 
-Nevvi is a quick and easy to use application to create an opt-in notification group for broadcasting text messages. 
+Nevvi is a quick and easy to use application to create an opt-in notification group for broadcasting text messages.
 
 As an owner of a group all you have to do is create an account online, confirm your phone number, and tell us the
 name of the group (e.g. Tyler's Wedding). From there you will receive a 5-digit code for your group which people
@@ -23,6 +23,10 @@ This application is the UI that makes it all happen.
 ## Available Scripts
 
 In the project directory, you can run:
+
+### `npm install`
+
+Installs package dependencies.
 
 ### `npm start`
 
