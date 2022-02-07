@@ -28,7 +28,8 @@ class Groups extends Component {
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Name</TableCell>
+                                <TableCell>ID</TableCell>
+                                <TableCell align="right">Name</TableCell>
                                 <TableCell align="right">Subscribers</TableCell>
                                 <TableCell align="right">Messages</TableCell>
                                 <TableCell align="right">Created</TableCell>
@@ -40,7 +41,8 @@ class Groups extends Component {
                                     key={group.name}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                 >
-                                    <TableCell component="th" scope="row">{group.name}</TableCell>
+                                    <TableCell component="th" scope="row">{group.id}</TableCell>
+                                    <TableCell align="right">{group.name}</TableCell>
                                     <TableCell align="right">0</TableCell>
                                     <TableCell align="right">0</TableCell>
                                     <TableCell align="right">{group.createDate}</TableCell>
