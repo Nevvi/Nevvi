@@ -1,15 +1,5 @@
 import React, {Component} from 'react';
 
-// UIs
-import Home from './components/home/Home.js';
-import Account from './components/account/Account.js';
-import Payment from './components/payment/Payment.js';
-
-// Auth
-import CreateAccount from './components/authentication/CreateAccount.js';
-import ConfirmAccount from "./components/authentication/ConfirmAccount";
-import Login from './components/authentication/Login.js';
-
 import {
     Switch,
     Route,
@@ -18,22 +8,34 @@ import {
 } from "react-router-dom";
 
 import { ToastContainer } from 'react-toastify';
-
-import NavigationBar from "./components/navbar/Navbar";
-import {inject, observer, Provider} from "mobx-react";
-
-import AuthStore from "./stores/AuthStore";
 import {createBrowserHistory} from "history";
 import {RouterStore, syncHistoryWithStore} from "mobx-react-router";
+import NavigationBar from "./components/navbar/Navbar";
+import {inject, observer, Provider} from "mobx-react";
+import {Grid} from "@mui/material";
+
+// UIs
+import Home from './components/home/Home.js';
+import Account from './components/account/Account.js';
+import Payment from './components/payment/Payment.js';
+import CreateGroup from "./components/notifications/CreateGroup";
+import Groups from "./components/notifications/Groups";
+
+// Auth
+import CreateAccount from './components/authentication/CreateAccount.js';
+import ConfirmAccount from "./components/authentication/ConfirmAccount";
+import Login from './components/authentication/Login.js';
+
+// Stores
+import AuthStore from "./stores/AuthStore";
 import AccountStore from "./stores/AccountStore";
 import LoginStore from "./stores/LoginStore";
 import CreateAccountStore from "./stores/CreateAccountStore";
 import PaymentStore from "./stores/PaymentStore";
-import {Grid} from "@mui/material";
 import ConfirmAccountStore from "./stores/ConfirmAccountStore";
 import ConfirmAttributeStore from "./stores/ConfirmAttributeStore";
-import Groups from "./components/notifications/Groups";
 import NotificationGroupsStore from "./stores/NotificationGroupsStore";
+import CreateNotificationGroupStore from "./stores/CreateNotificationGroupStore";
 
 const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
@@ -45,6 +47,7 @@ const loginStore = new LoginStore(routingStore, authStore);
 const confirmAccountStore = new ConfirmAccountStore(routingStore);
 const createAccountStore = new CreateAccountStore(routingStore, authStore, confirmAccountStore);
 const notificationGroupsStore = new NotificationGroupsStore();
+const createNotificationGroupStore = new CreateNotificationGroupStore(authStore, routingStore);
 
 const stores = {
     routingStore: routingStore,
@@ -55,7 +58,8 @@ const stores = {
     createAccountStore: createAccountStore,
     confirmAccountStore: confirmAccountStore,
     confirmAttributeStore: confirmAttributeStore,
-    notificationGroupsStore: notificationGroupsStore
+    notificationGroupsStore: notificationGroupsStore,
+    createNotificationGroupStore: createNotificationGroupStore
 }
 
 const history = syncHistoryWithStore(browserHistory, routingStore);
@@ -93,7 +97,8 @@ class App extends Component {
                             <Switch>
                                 <Route exact path="/"> <Home/> </Route>
                                 <SecureRoute path="/account" component={Account}/>
-                                <SecureRoute path="/groups" component={Groups}/>
+                                <SecureRoute exact path="/groups" component={Groups}/>
+                                <SecureRoute exact path="/groups/create" component={CreateGroup}/>
                                 <SecureRoute path="/payment" component={Payment}/>
                                 <InsecureRoute path="/createAccount" component={CreateAccount}/>
                                 <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
