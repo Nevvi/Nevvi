@@ -2,7 +2,7 @@ import {makeAutoObservable} from "mobx";
 import axios from "axios";
 import { toast } from 'react-toastify';
 
-class AccountStore {
+class NotificationGroupStore {
     groups = []
     loading = false
 
@@ -31,4 +31,4 @@ class AccountStore {
     }
 }
 
-export default AccountStore;
+export default NotificationGroupStore;
