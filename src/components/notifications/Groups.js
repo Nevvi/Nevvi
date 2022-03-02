@@ -32,7 +32,8 @@ class Groups extends Component {
                                 <TableCell align="right">Name</TableCell>
                                 <TableCell align="right">Subscribers</TableCell>
                                 <TableCell align="right">Messages</TableCell>
-                                <TableCell align="right">Created</TableCell>
+                                <TableCell align="right">Created Date</TableCell>
+                                <TableCell align="right">Expiration Date</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -46,6 +47,7 @@ class Groups extends Component {
                                     <TableCell align="right">0</TableCell>
                                     <TableCell align="right">0</TableCell>
                                     <TableCell align="right">{group.createDate}</TableCell>
+                                    <TableCell align="right">{group.expirationDate}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
