@@ -14,6 +14,8 @@ import {
 import Loading from "../loading/Loading";
 import {Add} from "@material-ui/icons";
 
+import dayjs from "dayjs";
+
 class Groups extends Component {
     componentDidMount() {
         const {authStore, notificationGroupsStore} = this.props;
@@ -30,10 +32,9 @@ class Groups extends Component {
                             <TableRow>
                                 <TableCell>ID</TableCell>
                                 <TableCell align="right">Name</TableCell>
-                                <TableCell align="right">Subscribers</TableCell>
-                                <TableCell align="right">Messages</TableCell>
                                 <TableCell align="right">Created Date</TableCell>
                                 <TableCell align="right">Expiration Date</TableCell>
+                                <TableCell align="right">Status</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -44,10 +45,9 @@ class Groups extends Component {
                                 >
                                     <TableCell component="th" scope="row">{group.id}</TableCell>
                                     <TableCell align="right">{group.name}</TableCell>
-                                    <TableCell align="right">0</TableCell>
-                                    <TableCell align="right">0</TableCell>
-                                    <TableCell align="right">{group.createDate}</TableCell>
-                                    <TableCell align="right">{group.expirationDate}</TableCell>
+                                    <TableCell align="right">{dayjs(group.createDate).format("YYYY-MM-DD")}</TableCell>
+                                    <TableCell align="right">{dayjs(group.expirationDate).format("YYYY-MM-DD")}</TableCell>
+                                    <TableCell align="right">{group.status}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
