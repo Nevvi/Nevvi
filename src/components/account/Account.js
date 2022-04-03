@@ -36,7 +36,7 @@ class Account extends Component {
     render() {
         // Initial page load
         const {accountStore, confirmAttributeStore} = this.props;
-        const user = accountStore.user;
+        const user = accountStore.updatedUser;
         if (!user) {
             return <Loading component={<div/>} loading={accountStore.loading}/>
         }

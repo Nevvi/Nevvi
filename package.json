@@ -14,6 +14,7 @@
     "braintree-web-drop-in-react": "^1.1.1",
     "dayjs": "^1.10.8",
     "express": "^4.17.1",
+    "google-libphonenumber": "^3.2.27",
     "history": "^4.10.1",
     "http-proxy-middleware": "^1.0.4",
     "jsonwebtoken": "^8.5.1",

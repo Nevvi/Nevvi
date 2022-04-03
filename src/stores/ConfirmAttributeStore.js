@@ -42,6 +42,7 @@ class ConfirmAttributeStore {
             const user = this.userStore.user
             user["phoneNumberVerified"] = true
             this.userStore.setUser(user)
+            this.userStore.setUpdatedUser(user)
 
             this.setWaitingConfirmationCode(false)
         } catch (e) {

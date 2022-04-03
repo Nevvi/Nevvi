@@ -2,6 +2,9 @@ import {makeAutoObservable} from "mobx";
 import axios from "axios";
 import { toast } from 'react-toastify';
 
+import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber'
+const PNU = PhoneNumberUtil.getInstance();
+
 class AccountStore {
     user = null
     updatedUser = null
@@ -31,12 +34,23 @@ class AccountStore {
             Object.keys(this.updatedUser).filter(key => {
                 return this.user[key] !== this.updatedUser[key];
             }).forEach(key => {
-                userUpdates[key] = this.updatedUser[key];
+                if (key === "phoneNumber") {
+                    // Format the phone number the way the backend is expecting it
+                    const number = PNU.parseAndKeepRawInput(this.updatedUser[key], 'US');
+                    // Ideally we do this before submit
+                    if (!PNU.isValidNumberForRegion(number, 'US')) {
+                        throw new SyntaxError('Invalid phone number format')
+                    }
+                    userUpdates[key] = PNU.format(number, PhoneNumberFormat.E164);
+                } else {
+                    userUpdates[key] = this.updatedUser[key];
+                }
             })
             const res = await axios.patch(`/api/authentication/v1/users/${this.user.userId}`, userUpdates)
             this.setUser(res.data)
+            this.setUpdatedUser(res.data)
         } catch (e) {
-            toast.error(`Failed to update user because ${e.response.data}`)
+            toast.error(`Failed to update user because ${e.message ? e.message : e.response.data}`)
         } finally {
             this.setLoading(false)
         }
