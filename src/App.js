@@ -17,9 +17,6 @@ import {Grid} from "@mui/material";
 // UIs
 import Home from './components/home/Home.js';
 import Account from './components/account/Account.js';
-import Payment from './components/payment/Payment.js';
-import CreateGroup from "./components/notifications/CreateGroup";
-import Groups from "./components/notifications/Groups";
 
 // Auth
 import CreateAccount from './components/authentication/CreateAccount.js';
@@ -31,35 +28,26 @@ import AuthStore from "./stores/AuthStore";
 import AccountStore from "./stores/AccountStore";
 import LoginStore from "./stores/LoginStore";
 import CreateAccountStore from "./stores/CreateAccountStore";
-import PaymentStore from "./stores/PaymentStore";
 import ConfirmAccountStore from "./stores/ConfirmAccountStore";
 import ConfirmAttributeStore from "./stores/ConfirmAttributeStore";
-import NotificationGroupsStore from "./stores/NotificationGroupsStore";
-import CreateNotificationGroupStore from "./stores/CreateNotificationGroupStore";
 
 const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
 const authStore = new AuthStore();
-const paymentStore = new PaymentStore();
 const accountStore = new AccountStore();
 const confirmAttributeStore = new ConfirmAttributeStore(routingStore, accountStore);
 const loginStore = new LoginStore(routingStore, authStore);
 const confirmAccountStore = new ConfirmAccountStore(routingStore);
 const createAccountStore = new CreateAccountStore(routingStore, authStore, confirmAccountStore);
-const notificationGroupsStore = new NotificationGroupsStore();
-const createNotificationGroupStore = new CreateNotificationGroupStore(authStore, routingStore);
 
 const stores = {
     routingStore: routingStore,
     authStore: authStore,
-    paymentStore: paymentStore,
     accountStore: accountStore,
     loginStore: loginStore,
     createAccountStore: createAccountStore,
     confirmAccountStore: confirmAccountStore,
     confirmAttributeStore: confirmAttributeStore,
-    notificationGroupsStore: notificationGroupsStore,
-    createNotificationGroupStore: createNotificationGroupStore
 }
 
 const history = syncHistoryWithStore(browserHistory, routingStore);
@@ -97,9 +85,6 @@ class App extends Component {
                             <Switch>
                                 <Route exact path="/"> <Home/> </Route>
                                 <SecureRoute path="/account" component={Account}/>
-                                <SecureRoute exact path="/groups" component={Groups}/>
-                                <SecureRoute exact path="/groups/create" component={CreateGroup}/>
-                                <SecureRoute path="/payment" component={Payment}/>
                                 <InsecureRoute path="/createAccount" component={CreateAccount}/>
                                 <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
                                 <InsecureRoute path="/login" component={Login}/>

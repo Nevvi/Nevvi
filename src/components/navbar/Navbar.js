@@ -56,8 +56,6 @@ class NavigationBar extends Component {
                 <Nav className="mr-auto" style={{textAlign: "center"}}>
                     <Nav.Link onClick={() => {this.handleRoute('/')}}>Home</Nav.Link>
                     <Nav.Link onClick={() => {this.handleRoute('/account')}}>Account</Nav.Link>
-                    <Nav.Link onClick={() => {this.handleRoute('/groups')}}>Groups</Nav.Link>
-                    <Nav.Link onClick={() => {this.handleRoute('/payment')}}>Payment</Nav.Link>
                 </Nav>
                 <Nav style={{textAlign: "center"}}>
                     <Nav.Link onClick={this.logoutAccount}>Logout</Nav.Link>
