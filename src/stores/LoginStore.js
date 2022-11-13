@@ -1,14 +1,14 @@
 import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
+import {router} from '../router'
 
 class LoginStore {
     username = ''
     password = ''
     loading = false
 
-    constructor(routingStore, authStore) {
+    constructor(authStore) {
         makeAutoObservable(this)
-        this.routingStore = routingStore
         this.authStore = authStore
     }
 
@@ -16,7 +16,7 @@ class LoginStore {
         try {
             this.setLoading(true)
             await this.authStore.login(this.username, this.password)
-            this.routingStore.push('/')
+            router.push('/')
         } catch (e) {
             toast.error(`Login failed because ${e.message}`)
         } finally {

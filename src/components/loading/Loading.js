@@ -1,5 +1,4 @@
 import React from "react";
-import FadeIn from "react-fade-in";
 import "bootstrap/dist/css/bootstrap.css";
 
 import {CircularProgress} from "@mui/material";
@@ -11,9 +10,7 @@ export default class Loading extends React.Component {
 
         return (
             <div>
-                <FadeIn>
-                    <CircularProgress/>
-                </FadeIn>
+                <CircularProgress/>
             </div>
         );
     }

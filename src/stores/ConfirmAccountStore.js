@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
 import axios from "axios";
+import {router} from '../router'
 
 const DEFAULT_PROMPT = 'Enter the confirmation code that we previously sent to your email'
 
@@ -11,9 +12,8 @@ class ConfirmAccountStore {
     callback = null
     loading = false
 
-    constructor(routingStore) {
+    constructor() {
         makeAutoObservable(this)
-        this.routingStore = routingStore
     }
 
     async confirmAccount() {
@@ -29,7 +29,7 @@ class ConfirmAccountStore {
                 await this.callback()
                 toast.success("Successfully verified account")
             } else {
-                this.routingStore.push('/login')
+                router.push('/login')
                 toast.success("Successfully verified account. You can now use that email to log in.")
             }
 

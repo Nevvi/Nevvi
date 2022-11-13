@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import {Nav, Navbar} from "react-bootstrap";
 import {inject, observer} from "mobx-react";
+import {router} from '../../router'
 
 class NavigationBar extends Component {
     constructor(props) {
@@ -29,8 +30,7 @@ class NavigationBar extends Component {
     }
 
     handleRoute(route) {
-        const {routingStore} = this.props;
-        routingStore.push(route)
+        router.push(route)
         this.setIsNavExpanded(false)
     }
 
@@ -45,7 +45,7 @@ class NavigationBar extends Component {
     async logoutAccount(event) {
         event.preventDefault()
         await this.props.authStore.logout()
-        this.props.routingStore.push("/")
+        router.push("/")
     }
 
     render() {
@@ -82,4 +82,4 @@ class NavigationBar extends Component {
     }
 }
 
-export default inject("routingStore", "authStore")(observer(NavigationBar));
+export default inject("authStore")(observer(NavigationBar));

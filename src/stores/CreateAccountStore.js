@@ -1,15 +1,15 @@
 import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
 import axios from "axios";
+import {router} from '../router'
 
 class CreateAccountStore {
     email = ''
     password = ''
     loading = false
 
-    constructor(routingStore, authStore, confirmAccountStore) {
+    constructor(authStore, confirmAccountStore) {
         makeAutoObservable(this)
-        this.routingStore = routingStore
         this.authStore = authStore
         this.confirmAccountStore = confirmAccountStore
     }
@@ -27,12 +27,12 @@ class CreateAccountStore {
             this.confirmAccountStore.setEmail(email)
             this.confirmAccountStore.setCallback(async () => {
                 await this.authStore.login(email, password)
-                this.routingStore.push('/')
+                router.push('/')
             })
             this.confirmAccountStore.setConfirmationCodePrompt(`You're account has been created! We have sent a 
                 confirmation code to ${registerResponse.data.codeDeliveryDestination} which you can use to finish 
                 setting up your account.`)
-            this.routingStore.push('/confirmAccount')
+            router.push('/confirmAccount')
 
             this.setEmail('')
             this.setPassword('')

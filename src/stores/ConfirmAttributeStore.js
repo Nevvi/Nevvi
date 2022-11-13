@@ -10,9 +10,8 @@ class ConfirmAttributeStore {
     confirmationCode = ''
     loading = false
 
-    constructor(routingStore, userStore) {
+    constructor(userStore) {
         makeAutoObservable(this)
-        this.routingStore = routingStore
         this.userStore = userStore
     }
 

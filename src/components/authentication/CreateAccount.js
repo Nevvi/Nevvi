@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
 import { Button, TextField, Grid, Box} from "@mui/material";
 import {LoadingButton} from "@mui/lab";
+import {router} from '../../router'
 
 class CreateAccount extends Component {
     constructor(props) {
@@ -16,7 +17,7 @@ class CreateAccount extends Component {
     }
 
     render() {
-        const {createAccountStore, routingStore} = this.props
+        const {createAccountStore} = this.props
         const isDisabled = createAccountStore.email === '' || createAccountStore.password === ''
 
         return (
@@ -60,7 +61,7 @@ class CreateAccount extends Component {
                         size={"small"}
                         variant="outlined"
                         color="primary"
-                        onClick={() => routingStore.push('/confirmAccount')}
+                        onClick={() => router.push('/confirmAccount')}
                     >
                         Confirm Account
                     </Button>
@@ -70,4 +71,4 @@ class CreateAccount extends Component {
     }
 }
 
-export default inject('createAccountStore', 'routingStore')(observer(CreateAccount));
+export default inject('createAccountStore')(observer(CreateAccount));
