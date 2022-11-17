@@ -107,6 +107,50 @@ class Account extends Component {
                         onChange={(e) => accountStore.updateUser("lastName", e.target.value)}
                     />
                 </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        fullWidth
+                        variant="standard"
+                        id="street-address-input"
+                        label="Street Address"
+                        type="text"
+                        value={(user.address && user.address.street) || ""}
+                        onChange={(e) => accountStore.updateAddress("street", e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={4} style={{paddingRight: "1rem"}}>
+                    <TextField
+                        fullWidth
+                        variant="standard"
+                        id="city-input"
+                        label="City"
+                        type="text"
+                        value={(user.address && user.address.city) || ""}
+                        onChange={(e) => accountStore.updateAddress("city", e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={4} style={{paddingRight: "1rem"}}>
+                    <TextField
+                        fullWidth
+                        variant="standard"
+                        id="state-input"
+                        label="State"
+                        type="text"
+                        value={(user.address && user.address.state) || ""}
+                        onChange={(e) => accountStore.updateAddress("state", e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <TextField
+                        fullWidth
+                        variant="standard"
+                        id="zipCode-input"
+                        label="Zip Code"
+                        type="text"
+                        value={(user.address && user.address.zipCode) || ""}
+                        onChange={(e) => accountStore.updateAddress("zipCode", e.target.value)}
+                    />
+                </Grid>
                 <Box mt={2}>
                     <LoadingButton
                         size={"small"}

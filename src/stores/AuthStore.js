@@ -57,6 +57,7 @@ class AuthStore {
 
         // Remove locally
         localStorage.removeItem('Authentication')
+        localStorage.removeItem('UserId')
 
         // Remove globally
         try {
