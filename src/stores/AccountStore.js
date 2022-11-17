@@ -42,17 +42,23 @@ class AccountStore {
                         throw new SyntaxError('Invalid phone number format')
                     }
                     userUpdates[key] = PNU.format(number, PhoneNumberFormat.E164);
+                } else if (key === "address") {
+                    ["street", "city", "state", "zipCode"].forEach(addressKey => {
+                        if (!this.updatedUser[key][addressKey]) {
+                            throw new SyntaxError(`All address fields are required for updating`)
+                        }
+                    })
+                    userUpdates[key] = this.updatedUser[key];
                 } else {
                     userUpdates[key] = this.updatedUser[key];
                 }
             })
 
-            console.log(this.user, userUpdates)
             const res = await axios.patch(`/api/user/v1/users/${this.user.id}`, userUpdates)
             this.setUser(res.data)
             this.setUpdatedUser(res.data)
         } catch (e) {
-            toast.error(`Failed to update user because ${e.message ? e.message : e.response.data}`)
+            toast.error(`Failed to update user because ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
             this.setLoading(false)
         }

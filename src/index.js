@@ -41,14 +41,12 @@ const stores = {
 ReactDOM.render(
     <React.StrictMode>
         <Provider {...stores}>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false}/>
+            <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}/>
             <NavigationBar/>
-            <Grid container rowSpacing={2} style={{marginTop: "1rem", padding: "0 1rem"}}>
-                <Grid item xs={12} style={{paddingTop: "0.3rem"}}>
-                    <Router history={router.history}>
-                        <App authStore={authStore}/>
-                    </Router>
-                </Grid>
+            <Grid container rowSpacing={2} className="app-container">
+                <Router history={router.history}>
+                    <App authStore={authStore}/>
+                </Router>
             </Grid>
         </Provider>
     </React.StrictMode>,
