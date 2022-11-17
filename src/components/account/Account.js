@@ -68,7 +68,7 @@ class Account extends Component {
                         label="Phone Number"
                         type="text"
                         disabled={user.phoneNumberVerified}
-                        value={user.phoneNumber}
+                        value={user.phoneNumber || ""}
                         onChange={(e) => accountStore.updateUser("phoneNumber", e.target.value)}
                         InputProps={{
                             endAdornment: user.phoneNumber ? <InputAdornment position="end">
@@ -89,11 +89,22 @@ class Account extends Component {
                     <TextField
                         fullWidth
                         variant="standard"
-                        id="name-input"
-                        label="Name"
+                        id="first-name-input"
+                        label="First Name"
                         type="text"
-                        value={user.name}
-                        onChange={(e) => accountStore.updateUser("name", e.target.value)}
+                        value={user.firstName || ""}
+                        onChange={(e) => accountStore.updateUser("firstName", e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        fullWidth
+                        variant="standard"
+                        id="last-name-input"
+                        label="Last Name"
+                        type="text"
+                        value={user.lastName || ""}
+                        onChange={(e) => accountStore.updateUser("lastName", e.target.value)}
                     />
                 </Grid>
                 <Box mt={2}>

@@ -17,7 +17,7 @@ class AccountStore {
     async getUser(userId) {
         this.setLoading(true)
         try {
-            const res = await axios.get(`/api/authentication/v1/users/${userId}`)
+            const res = await axios.get(`/api/user/v1/users/${userId}`)
             this.setUser(res.data)
             this.setUpdatedUser(JSON.parse(JSON.stringify(res.data)))
         } catch (e) {
@@ -46,7 +46,9 @@ class AccountStore {
                     userUpdates[key] = this.updatedUser[key];
                 }
             })
-            const res = await axios.patch(`/api/authentication/v1/users/${this.user.userId}`, userUpdates)
+
+            console.log(this.user, userUpdates)
+            const res = await axios.patch(`/api/user/v1/users/${this.user.id}`, userUpdates)
             this.setUser(res.data)
             this.setUpdatedUser(res.data)
         } catch (e) {

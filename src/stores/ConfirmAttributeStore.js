@@ -19,7 +19,7 @@ class ConfirmAttributeStore {
         try {
             this.setLoading(true)
             // Create the unconfirmed account
-            const sendCodeResponse = await axios.post(`/api/authentication/v1/users/${this.userStore.user.userId}/sendCode?attribute=phone_number`)
+            const sendCodeResponse = await axios.post(`/api/authentication/v1/users/${this.userStore.user.id}/sendCode?attribute=phone_number`)
             const deliveryDetails = sendCodeResponse.data
             this.setConfirmationCodePrompt(`We have sent a text with a confirmation code to ${deliveryDetails.CodeDeliveryDetails.Destination}. Enter that code to confirm your phone number`)
             this.setWaitingConfirmationCode(true)
@@ -34,7 +34,7 @@ class ConfirmAttributeStore {
     async confirmPhone() {
         try {
             this.setLoading(true)
-            await axios.post(`/api/authentication/v1/users/${this.userStore.user.userId}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
+            await axios.post(`/api/authentication/v1/users/${this.userStore.user.id}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
             this.setConfirmationCodePrompt(DEFAULT_PROMPT)
 
             // We "could" make an API to get the latest info or just manually set it for now on successful response
