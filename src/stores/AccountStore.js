@@ -43,7 +43,8 @@ class AccountStore {
                     }
                     userUpdates[key] = PNU.format(number, PhoneNumberFormat.E164);
                 } else if (key === "address") {
-                    ["street", "city", "state", "zipCode"].forEach(addressKey => {
+                    // If updating address make sure we aren't sending over a partial one
+                    Object.keys(this.updatedUser[key]).forEach(addressKey => {
                         if (!this.updatedUser[key][addressKey]) {
                             throw new SyntaxError(`All address fields are required for updating`)
                         }
@@ -85,7 +86,7 @@ class AccountStore {
         if (value) {
             this.updatedUser.address[field] = value
         } else {
-            delete this.updatedUser.address[field]
+            this.updatedUser.address[field] = null
         }
     }
 
