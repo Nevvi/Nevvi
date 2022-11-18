@@ -7,8 +7,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {Backdrop, CircularProgress, Grid, IconButton, TableHead, TextField, Typography} from "@mui/material";
-import {ChevronRight} from "@material-ui/icons";
+import {Backdrop, CircularProgress, Grid, TableHead, TextField, Typography} from "@mui/material";
 
 class UserTable extends Component {
     render() {
