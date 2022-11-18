@@ -57,7 +57,7 @@ class Account extends Component {
                             disabled
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">
-                                    {user.emailVerified ? <Check/> : ''}
+                                    {user.emailConfirmed ? <Check/> : ''}
                                 </InputAdornment>
                             }}
                         />
@@ -69,12 +69,12 @@ class Account extends Component {
                             id="phone-input"
                             label="Phone Number"
                             type="text"
-                            disabled={user.phoneNumberVerified}
+                            disabled={user.phoneNumberConfirmed}
                             value={user.phoneNumber || ""}
                             onChange={(e) => accountStore.updateUser("phoneNumber", e.target.value)}
                             InputProps={{
                                 endAdornment: user.phoneNumber ? <InputAdornment position="end">
-                                    {!user.phoneNumberVerified ?
+                                    {!user.phoneNumberConfirmed ?
                                         <LoadingButton
                                             loading={confirmAttributeStore.loading}
                                             onClick={() => confirmAttributeStore.sendPhoneConfirmCode()}

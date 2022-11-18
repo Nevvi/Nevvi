@@ -17,6 +17,7 @@ import Account from './components/account/Account.js';
 import CreateAccount from './components/authentication/CreateAccount.js';
 import ConfirmAccount from "./components/authentication/ConfirmAccount";
 import Login from './components/authentication/Login.js';
+import UserTable from "./components/users/UserTable";
 
 
 const InsecureRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
@@ -47,6 +48,7 @@ class App extends Component {
             <Switch location={router.location}>
                 <Route exact path="/"> <Home/> </Route>
                 <SecureRoute path="/account" component={Account}/>
+                <SecureRoute path="/users" component={UserTable}/>
                 <InsecureRoute path="/createAccount" component={CreateAccount}/>
                 <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
                 <InsecureRoute path="/login" component={Login}/>
