@@ -7,7 +7,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {Backdrop, CircularProgress, Grid, TableHead, TextField, Typography} from "@mui/material";
+import {Avatar, Backdrop, CircularProgress, Grid, TableHead, TextField, Typography} from "@mui/material";
 
 class UserTable extends Component {
     render() {
@@ -40,6 +40,7 @@ class UserTable extends Component {
                                 >
                                     <TableHead>
                                         <TableRow>
+                                            <TableCell></TableCell>
                                             <TableCell>Name</TableCell>
                                             <TableCell>Email</TableCell>
                                             <TableCell>Phone Number</TableCell>
@@ -48,7 +49,10 @@ class UserTable extends Component {
                                     <TableBody>
                                         {rows.map((row, index) => {
                                             return (
-                                                <TableRow key={row.name + index}>
+                                                <TableRow key={row.firstName + row.lastName + index}>
+                                                    <TableCell sx={{padding: "10px"}}>
+                                                        <Avatar sx={{ width: "4rem", height: "4rem" }} src={row.profileImage} />
+                                                    </TableCell>
                                                     <TableCell>{row.firstName} {row.lastName}</TableCell>
                                                     <TableCell>{row.email}</TableCell>
                                                     <TableCell>{row.phoneNumber}</TableCell>

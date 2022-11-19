@@ -2,14 +2,17 @@ import React, {Component} from 'react';
 import Loading from "../loading/Loading";
 import {inject, observer} from "mobx-react";
 import {
+    Avatar,
     Box,
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Grid, InputAdornment,
+    Grid,
+    InputAdornment,
     TextField
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
@@ -44,7 +47,22 @@ class Account extends Component {
         // Subsequent page load
         return (
             <Grid container>
-                <Grid item md={4} xs={0}/>
+                <Grid item md={2} xs={0}/>
+                <Grid item md={2} xs={12} sx={{textAlign: "center"}}>
+                    <input
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id="profile-image-button"
+                        type="file"
+                        onChange={(e) => accountStore.saveUserImage(e.target.files[0])}
+                    />
+                    <label htmlFor="profile-image-button">
+                        {accountStore.imageLoading ?
+                            <Avatar className="profile-image"><CircularProgress/></Avatar> :
+                            <Avatar className="profile-image" src={user.profileImage}/>
+                        }
+                    </label>
+                </Grid>
                 <Grid container item md={4} xs={12} rowSpacing={2}>
                     <Grid item xs={12}>
                         <TextField

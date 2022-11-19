@@ -9,6 +9,8 @@ class AccountStore {
     user = null
     updatedUser = null
     loading = false
+    imageLoading = false
+    newImage = null
 
     constructor() {
         makeAutoObservable(this)
@@ -24,6 +26,26 @@ class AccountStore {
             toast.error(`Login failed because ${e.response.data}`)
         } finally {
             this.setLoading(false)
+        }
+    }
+
+    async saveUserImage(image) {
+        this.setImageLoading(true)
+        try {
+            const url = `/api/user/v1/users/${this.user.id}/image`;
+            const formData = new FormData();
+            formData.append('file', image)
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
+            await axios.post(url, formData, config)
+            await this.getUser(this.user.id)
+        } catch (e) {
+            toast.error(`Failed to save image because ${e.response.data}`)
+        } finally {
+            this.setImageLoading(false)
         }
     }
 
@@ -100,6 +122,10 @@ class AccountStore {
 
     setLoading(loading) {
         this.loading = loading
+    }
+
+    setImageLoading(imageLoading) {
+        this.imageLoading = imageLoading
     }
 }
 
