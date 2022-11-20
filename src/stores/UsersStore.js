@@ -18,7 +18,6 @@ class UsersStore {
 
     async loadUsers(continuationKey = undefined) {
         if (!this.nameFilter || this.nameFilter.length < 3) {
-            toast.warn("Need at least 3 characters in name before searching")
             this.setUsers([])
             this.setContinuationKey(undefined)
             return

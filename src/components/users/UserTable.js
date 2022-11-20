@@ -1,15 +1,24 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
-import Box from "@mui/material/Box";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import {Avatar, Backdrop, CircularProgress, Grid, TableHead, TextField, Typography} from "@mui/material";
+import {
+    Avatar,
+    Backdrop,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Grid,
+    Stack,
+    TextField,
+    Typography
+} from "@mui/material";
 
 class UserTable extends Component {
+    componentWillUnmount() {
+        const {usersStore} = this.props;
+        usersStore.setNameFilter("")
+    }
+
     render() {
         const {usersStore} = this.props;
 
@@ -19,8 +28,8 @@ class UserTable extends Component {
                 <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}} open={usersStore.loading}>
                     <CircularProgress color="inherit"/>
                 </Backdrop>
-                <Grid item md={3} xs={0}/>
-                <Grid container item md={6} xs={12} rowSpacing={2}>
+                <Grid item md={4} xs={0}/>
+                <Grid container item md={4} xs={12} rowSpacing={2}>
                     <TextField
                         id="user-name-search"
                         label="Name"
@@ -30,58 +39,51 @@ class UserTable extends Component {
                         value={usersStore.nameFilter}
                         onChange={(e) => usersStore.setNameFilter(e.target.value)}
                     />
-                    <Box sx={{width: '100%'}}>
-                        <Paper sx={{width: '100%', mb: 2, mt: 3}}>
-                            <TableContainer>
-                                <Table
-                                    sx={{minWidth: 750}}
-                                    aria-labelledby="tableTitle"
-                                    size={'medium'}
-                                >
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell></TableCell>
-                                            <TableCell>Name</TableCell>
-                                            <TableCell>Email</TableCell>
-                                            <TableCell>Phone Number</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.map((row, index) => {
-                                            return (
-                                                <TableRow key={row.firstName + row.lastName + index}>
-                                                    <TableCell sx={{padding: "10px"}}>
-                                                        <Avatar sx={{ width: "4rem", height: "4rem" }} src={row.profileImage} />
-                                                    </TableCell>
-                                                    <TableCell>{row.firstName} {row.lastName}</TableCell>
-                                                    <TableCell>{row.email}</TableCell>
-                                                    <TableCell>{row.phoneNumber}</TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            {(usersStore.users.length === 0) &&
-                                <Typography
-                                    style={{
-                                        padding: "1rem",
-                                        textAlign: "center",
-                                        fontStyle: "italic"
-                                    }}
-                                >
-                                    Enter a name filter to search for users
-                                </Typography>
-                            }
-                            {/*<IconButton*/}
-                            {/*    aria-label="nextPage"*/}
-                            {/*    disabled={usersStore.continuationKey === undefined || usersStore.loading}*/}
-                            {/*    onClick={() => {usersStore.nextPage()}}*/}
-                            {/*>*/}
-                            {/*    <ChevronRight />*/}
-                            {/*</IconButton>*/}
-                        </Paper>
-                    </Box>
+
+                    {!usersStore.nameFilter && <Typography
+                        style={{
+                            paddingTop: "1rem",
+                            textAlign: "center",
+                            fontStyle: "italic"
+                        }}
+                    >
+                        Enter a name filter to search for users
+                    </Typography>}
+
+                    {usersStore.nameFilter && usersStore.nameFilter.length > 3 && rows.length === 0 && <Typography
+                        style={{
+                            paddingTop: "1rem",
+                            textAlign: "center",
+                            fontStyle: "italic"
+                        }}
+                    >
+                        No users found
+                    </Typography>}
+
+                    {rows.map((row, index) => {
+                        return <Grid item md={6} xs={12} key={row.email + index} sx={{p: "0.5rem"}}>
+                            <Card sx={{width: "100%"}}>
+                                <CardContent sx={{pb: "0.5rem"}}>
+                                    <Stack direction="row" spacing={2} alignItems="center">
+                                        <Avatar sx={{width: "4.5rem", height: "4.5rem"}} src={row.profileImage}/>
+                                        <Stack>
+                                            <Typography variant="h6" component="div">
+                                                {row.firstName} {row.lastName}
+                                            </Typography>
+                                            <Typography component="p" sx={{fontWeight: 100, fontSize: "0.8rem"}}>
+                                                {row.email}
+                                            </Typography>
+                                            <Button size="small" sx={{
+                                                justifyContent: "left",
+                                                p: "0.5rem 0 0 0",
+                                                width: "fit-content"
+                                            }}>Connect</Button>
+                                        </Stack>
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    })}
                 </Grid>
             </Grid>
         );
