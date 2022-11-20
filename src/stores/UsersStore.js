@@ -10,9 +10,9 @@ class UsersStore {
 
     nameFilter = ""
 
-    constructor() {
+    constructor(authStore) {
         makeAutoObservable(this)
-
+        this.authStore = authStore
         reaction(() => this.nameFilter, debounce((name) => this.loadUsers(), 500))
     }
 
@@ -36,6 +36,17 @@ class UsersStore {
             toast.error(`Failed to load users due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
             this.setLoading(false)
+        }
+    }
+
+    async requestConnection(otherUserId) {
+        try {
+            const res = await axios.post(`/api/user/v1/users/${this.authStore.userId}/connections/requests?userId=${otherUserId}`)
+            toast.success('Connection request submitted')
+            return res.data
+        } catch (e) {
+            console.log(e)
+            toast.error(`Connection request failed because ${e.response.data.toLowerCase()}`)
         }
     }
 

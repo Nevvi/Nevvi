@@ -29,7 +29,7 @@ const confirmAttributeStore = new ConfirmAttributeStore(accountStore);
 const loginStore = new LoginStore(authStore);
 const confirmAccountStore = new ConfirmAccountStore();
 const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore);
-const usersStore = new UsersStore();
+const usersStore = new UsersStore(authStore);
 
 const stores = {
     authStore: authStore,

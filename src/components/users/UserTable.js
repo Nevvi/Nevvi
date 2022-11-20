@@ -3,7 +3,6 @@ import {inject, observer} from "mobx-react";
 import {
     Avatar,
     Backdrop,
-    Button,
     Card,
     CardContent,
     CircularProgress,
@@ -12,6 +11,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
+import {LoadingButton} from "@mui/lab";
 
 class UserTable extends Component {
     componentWillUnmount() {
@@ -70,14 +70,18 @@ class UserTable extends Component {
                                             <Typography variant="h6" component="div">
                                                 {row.firstName} {row.lastName}
                                             </Typography>
-                                            <Typography component="p" sx={{fontWeight: 100, fontSize: "0.8rem"}}>
-                                                {row.email}
-                                            </Typography>
-                                            <Button size="small" sx={{
-                                                justifyContent: "left",
-                                                p: "0.5rem 0 0 0",
-                                                width: "fit-content"
-                                            }}>Connect</Button>
+                                            <LoadingButton
+                                                size="small"
+                                                sx={{
+                                                    justifyContent: "left",
+                                                    p: "0.5rem 0 0 0",
+                                                    width: "fit-content"
+                                                }}
+                                                loading={usersStore.loading}
+                                                onClick={(e) => usersStore.requestConnection(row.id)}
+                                            >
+                                                Connect
+                                            </LoadingButton>
                                         </Stack>
                                     </Stack>
                                 </CardContent>
