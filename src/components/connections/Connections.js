@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
 import {
-    Avatar,
-    Box, Card, CardContent, Fab,
+    Avatar, Backdrop,
+    Box, Card, CardContent, CircularProgress, Fab,
     Grid, Stack,
     Tab,
     Tabs,
@@ -16,7 +16,7 @@ function TabPanel(props) {
     const {children, value, index, ...other} = props;
 
     return (
-        <div
+        <span
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
@@ -28,7 +28,7 @@ function TabPanel(props) {
                     <Typography>{children}</Typography>
                 </Box>
             )}
-        </div>
+        </span>
     );
 }
 
@@ -48,6 +48,9 @@ class Connections extends Component {
         const {selectedTab} = this.state
         return (
             <Grid container sx={{mt: 2}}>
+                <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}} open={connectionsStore.connectionsLoading || connectionsStore.requestsLoading}>
+                    <CircularProgress color="inherit"/>
+                </Backdrop>
                 <Grid item md={3} xs={0}/>
                 <Grid container item md={6} xs={12} rowSpacing={2}>
                     <Box style={{width: "100%"}}>
@@ -73,8 +76,7 @@ class Connections extends Component {
                                                 <Avatar sx={{width: "4.5rem", height: "4.5rem"}}
                                                         src={request.requesterImage}/>
                                                 <Stack>
-                                                    <Typography variant="h6"
-                                                                component="div">{request.requestText}</Typography>
+                                                    <Typography variant="p" component="div">{request.requestText}</Typography>
                                                     <Stack direction="row" spacing={2} alignItems="center">
                                                         <LoadingButton
                                                             size="small"
@@ -83,7 +85,7 @@ class Connections extends Component {
                                                                 p: "0.5rem 0 0 0",
                                                                 width: "fit-content"
                                                             }}
-                                                            loading={connectionsStore.loading}
+                                                            loading={connectionsStore.confirmationLoading}
                                                             onClick={(e) => connectionsStore.confirmRequest(request.requestingUserId)}
                                                         >
                                                             Accept
@@ -95,7 +97,7 @@ class Connections extends Component {
                                                                 p: "0.5rem 0 0 0",
                                                                 width: "fit-content"
                                                             }}
-                                                            loading={connectionsStore.loading}
+                                                            loading={connectionsStore.confirmationLoading}
                                                             onClick={(e) => console.log(e)}
                                                         >
                                                             Deny

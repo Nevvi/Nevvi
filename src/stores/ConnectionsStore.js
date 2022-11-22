@@ -3,7 +3,10 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 
 class UsersStore {
-    loading = false
+    connectionsLoading = false
+    requestsLoading = false
+    confirmationLoading = false
+
     connections = []
     requests = []
     nameFilter = ""
@@ -17,7 +20,7 @@ class UsersStore {
     }
 
     async loadConnections() {
-        this.setLoading(true)
+        this.setConnectionsLoading(true)
         try {
             let url = `/api/user/v1/users/${this.authStore.userId}/connections`
             const res = await axios.get(url)
@@ -25,12 +28,12 @@ class UsersStore {
         } catch(e) {
             toast.error(`Failed to load connections due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
-            this.setLoading(false)
+            this.setConnectionsLoading(false)
         }
     }
 
     async loadRequests() {
-        this.setLoading(true)
+        this.setRequestsLoading(true)
         try {
             let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests/pending`
             const res = await axios.get(url)
@@ -38,33 +41,43 @@ class UsersStore {
         } catch(e) {
             toast.error(`Failed to load connections due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
-            this.setLoading(false)
+            this.setRequestsLoading(false)
         }
     }
 
     async confirmRequest(userId) {
-        this.setLoading(true)
+        this.setConfirmationLoading(true)
         try {
             let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests/confirm`
-            const res = await axios.post(url, {otherUserId: userId})
-            this.setRequests(res.data)
+            await axios.post(url, {otherUserId: userId})
+            // await Promise.all([this.loadConnections(), this.loadRequests()])
+            await Promise.all([this.loadRequests()])
+            toast.success('Connection confirmed')
         } catch(e) {
             toast.error(`Failed to confirm request due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
-            this.setLoading(false)
+            this.setConfirmationLoading(false)
         }
     }
 
-    setLoading(loading) {
-        this.loading = loading
+    setConnectionsLoading(loading) {
+        this.connectionsLoading = loading
     }
 
     setConnections(connections) {
         this.connections = connections
     }
 
+    setRequestsLoading(loading) {
+        this.requestsLoading = loading
+    }
+
     setRequests(requests) {
         this.requests = requests
+    }
+
+    setConfirmationLoading(loading) {
+        this.confirmationLoading = loading
     }
 
     setNameFilter(nameFilter) {
