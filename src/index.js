@@ -22,6 +22,7 @@ import CreateAccountStore from "./stores/CreateAccountStore";
 import ConfirmAccountStore from "./stores/ConfirmAccountStore";
 import ConfirmAttributeStore from "./stores/ConfirmAttributeStore";
 import UsersStore from "./stores/UsersStore";
+import ConnectionsStore from "./stores/ConnectionsStore";
 
 const authStore = new AuthStore();
 const accountStore = new AccountStore();
@@ -29,6 +30,7 @@ const confirmAttributeStore = new ConfirmAttributeStore(accountStore);
 const loginStore = new LoginStore(authStore);
 const confirmAccountStore = new ConfirmAccountStore();
 const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore);
+const connectionsStore = new ConnectionsStore(authStore);
 const usersStore = new UsersStore(authStore);
 
 const stores = {
@@ -38,7 +40,8 @@ const stores = {
     createAccountStore: createAccountStore,
     confirmAccountStore: confirmAccountStore,
     confirmAttributeStore: confirmAttributeStore,
-    usersStore: usersStore
+    usersStore: usersStore,
+    connectionsStore: connectionsStore
 }
 
 ReactDOM.render(

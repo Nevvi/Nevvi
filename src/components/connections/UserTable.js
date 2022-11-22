@@ -61,7 +61,7 @@ class UserTable extends Component {
                     </Typography>}
 
                     {rows.map((row, index) => {
-                        return <Grid item md={6} xs={12} key={row.email + index} sx={{p: "0.5rem"}}>
+                        return <Grid item md={6} xs={12} key={`searched-user-card-${index}`} sx={{p: "0.5rem"}}>
                             <Card sx={{width: "100%"}}>
                                 <CardContent sx={{pb: "0.5rem"}}>
                                     <Stack direction="row" spacing={2} alignItems="center">
