@@ -71,7 +71,7 @@ class Connections extends Component {
                                         <CardContent sx={{pb: "0.5rem"}}>
                                             <Stack direction="row" spacing={2} alignItems="center">
                                                 <Avatar sx={{width: "4.5rem", height: "4.5rem"}}
-                                                        src={request.profileImage}/>
+                                                        src={request.requesterImage}/>
                                                 <Stack>
                                                     <Typography variant="h6"
                                                                 component="div">{request.requestText}</Typography>
@@ -84,7 +84,7 @@ class Connections extends Component {
                                                                 width: "fit-content"
                                                             }}
                                                             loading={connectionsStore.loading}
-                                                            onClick={(e) => console.log(e)}
+                                                            onClick={(e) => connectionsStore.confirmRequest(request.requestingUserId)}
                                                         >
                                                             Accept
                                                         </LoadingButton>

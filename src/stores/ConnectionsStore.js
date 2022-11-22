@@ -42,6 +42,19 @@ class UsersStore {
         }
     }
 
+    async confirmRequest(userId) {
+        this.setLoading(true)
+        try {
+            let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests/confirm`
+            const res = await axios.post(url, {otherUserId: userId})
+            this.setRequests(res.data)
+        } catch(e) {
+            toast.error(`Failed to confirm request due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
+        } finally {
+            this.setLoading(false)
+        }
+    }
+
     setLoading(loading) {
         this.loading = loading
     }
