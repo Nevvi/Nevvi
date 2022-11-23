@@ -48,7 +48,7 @@ class App extends Component {
         return (
             <Switch location={router.location}>
                 <Route exact path="/"> <Home/> </Route>
-                <SecureRoute path="/account" component={Account}/>
+                <SecureRoute path="/account/:userId" component={Account}/>
                 <SecureRoute path="/connections" exact={true} component={Connections}/>
                 <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
                 <InsecureRoute path="/createAccount" component={CreateAccount}/>

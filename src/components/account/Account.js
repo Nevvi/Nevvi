@@ -26,8 +26,14 @@ class Account extends Component {
     }
 
     componentDidMount() {
-        const {authStore, accountStore} = this.props;
-        accountStore.getUser(authStore.userId)
+        const {accountStore} = this.props;
+        const userId = this.props.computedMatch.params.userId;
+        accountStore.getUser(userId)
+    }
+
+    componentWillUnmount() {
+        const {accountStore} = this.props;
+        accountStore.reset()
     }
 
     async updateAccount(event) {
@@ -44,22 +50,24 @@ class Account extends Component {
             return <Loading component={<div/>} loading={accountStore.loading}/>
         }
 
+        const isMe = accountStore.isMe
+
         // Subsequent page load
         return (
             <Grid container>
-                <Grid item md={2} xs={0}/>
                 <Grid item md={2} xs={12} sx={{textAlign: "center"}}>
                     <input
                         accept="image/*"
-                        style={{ display: 'none' }}
+                        style={{display: 'none'}}
                         id="profile-image-button"
                         type="file"
+                        disabled={!isMe}
                         onChange={(e) => accountStore.saveUserImage(e.target.files[0])}
                     />
                     <label htmlFor="profile-image-button">
                         {accountStore.imageLoading ?
                             <Avatar className="profile-image"><CircularProgress/></Avatar> :
-                            <Avatar className="profile-image" src={user.profileImage}/>
+                            <Avatar className={`${isMe ? 'my-profile-image' : 'profile-image'}`} src={user.profileImage}/>
                         }
                     </label>
                 </Grid>
@@ -87,7 +95,7 @@ class Account extends Component {
                             id="phone-input"
                             label="Phone Number"
                             type="text"
-                            disabled={user.phoneNumberConfirmed}
+                            disabled={user.phoneNumberConfirmed || !isMe}
                             value={user.phoneNumber || ""}
                             onChange={(e) => accountStore.updateUser("phoneNumber", e.target.value)}
                             InputProps={{
@@ -111,6 +119,7 @@ class Account extends Component {
                             variant="standard"
                             id="first-name-input"
                             label="First Name"
+                            disabled={!isMe}
                             type="text"
                             value={user.firstName || ""}
                             onChange={(e) => accountStore.updateUser("firstName", e.target.value)}
@@ -122,6 +131,7 @@ class Account extends Component {
                             variant="standard"
                             id="last-name-input"
                             label="Last Name"
+                            disabled={!isMe}
                             type="text"
                             value={user.lastName || ""}
                             onChange={(e) => accountStore.updateUser("lastName", e.target.value)}
@@ -133,6 +143,7 @@ class Account extends Component {
                             variant="standard"
                             id="street-address-input"
                             label="Street Address"
+                            disabled={!isMe}
                             type="text"
                             value={(user.address && user.address.street) || ""}
                             onChange={(e) => accountStore.updateAddress("street", e.target.value)}
@@ -144,6 +155,7 @@ class Account extends Component {
                             variant="standard"
                             id="city-input"
                             label="City"
+                            disabled={!isMe}
                             type="text"
                             value={(user.address && user.address.city) || ""}
                             onChange={(e) => accountStore.updateAddress("city", e.target.value)}
@@ -155,6 +167,7 @@ class Account extends Component {
                             variant="standard"
                             id="state-input"
                             label="State"
+                            disabled={!isMe}
                             type="text"
                             value={(user.address && user.address.state) || ""}
                             onChange={(e) => accountStore.updateAddress("state", e.target.value)}
@@ -166,6 +179,7 @@ class Account extends Component {
                             variant="standard"
                             id="zipCode-input"
                             label="Zip Code"
+                            disabled={!isMe}
                             type="text"
                             inputProps={{maxLength: 5}}
                             value={(user.address && user.address.zipCode) || ""}
@@ -175,6 +189,7 @@ class Account extends Component {
                     <Box mt={2}>
                         <LoadingButton
                             size={"small"}
+                            sx={{display: isMe ? 'block' : 'none'}}
                             variant="contained"
                             color="primary"
                             loading={accountStore.loading}

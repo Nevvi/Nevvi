@@ -17,13 +17,17 @@ code {
     padding: 0 1rem !important;
 }
 
-.profile-image {
+.profile-image, .my-profile-image {
     width: 15rem !important;
     height: 15rem !important;
     margin-bottom: 1rem;
 }
 
-.profile-image:hover {
+.my-profile-image:hover {
     cursor: pointer;
     opacity: 0.7;
+}
+
+.connection:hover {
+    cursor: pointer;
 }

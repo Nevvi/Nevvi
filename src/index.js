@@ -25,7 +25,7 @@ import UsersStore from "./stores/UsersStore";
 import ConnectionsStore from "./stores/ConnectionsStore";
 
 const authStore = new AuthStore();
-const accountStore = new AccountStore();
+const accountStore = new AccountStore(authStore);
 const confirmAttributeStore = new ConfirmAttributeStore(accountStore);
 const loginStore = new LoginStore(authStore);
 const confirmAccountStore = new ConfirmAccountStore();

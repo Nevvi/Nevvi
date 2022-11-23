@@ -58,7 +58,7 @@ class NavigationBar extends Component {
                         this.handleRoute('/')
                     }}>Home</Nav.Link>
                     <Nav.Link onClick={() => {
-                        this.handleRoute('/account')
+                        this.handleRoute(`/account/${authStore.userId}`)
                     }}>Account</Nav.Link>
                     {connectionsStore.requests.length > 0 ?
                         <Nav.Link onClick={() => {

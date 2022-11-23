@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import axios from "axios";
 import { toast } from 'react-toastify';
+import {router} from "../router";
 
 import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber'
 const PNU = PhoneNumberUtil.getInstance();
@@ -12,18 +13,25 @@ class AccountStore {
     imageLoading = false
     newImage = null
 
-    constructor() {
+    constructor(authStore) {
         makeAutoObservable(this)
+        this.authStore = authStore
     }
 
     async getUser(userId) {
         this.setLoading(true)
         try {
-            const res = await axios.get(`/api/user/v1/users/${userId}`)
+            // If we are requesting ourselves then call the profile endpoint
+            // If we are loading someone else call the connections endpoint to restrict who can view data
+            const res = userId === this.authStore.userId ?
+                await axios.get(`/api/user/v1/users/${userId}`) :
+                await axios.get(`/api/user/v1/users/${this.authStore.userId}/connections/${userId}`)
+
             this.setUser(res.data)
             this.setUpdatedUser(JSON.parse(JSON.stringify(res.data)))
         } catch (e) {
-            toast.error(`Login failed because ${e.response.data}`)
+            toast.error(`Failed to load user because ${e.response.data}`)
+            router.push("/")
         } finally {
             this.setLoading(false)
         }
@@ -126,6 +134,18 @@ class AccountStore {
 
     setImageLoading(imageLoading) {
         this.imageLoading = imageLoading
+    }
+
+    get isMe() {
+        return this.user && this.user.id === this.authStore.userId
+    }
+
+    reset() {
+        this.user = null
+        this.updatedUser = null
+        this.loading = false
+        this.imageLoading = false
+        this.newImage = null
     }
 }
 

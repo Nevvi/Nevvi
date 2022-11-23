@@ -15,7 +15,7 @@ class UsersStore {
         makeAutoObservable(this)
         this.authStore = authStore
 
-        // this.loadConnections()
+        this.loadConnections()
         this.loadRequests()
     }
 
@@ -50,8 +50,7 @@ class UsersStore {
         try {
             let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests/confirm`
             await axios.post(url, {otherUserId: userId})
-            // await Promise.all([this.loadConnections(), this.loadRequests()])
-            await Promise.all([this.loadRequests()])
+            await Promise.all([this.loadConnections(), this.loadRequests()])
             toast.success('Connection confirmed')
         } catch(e) {
             toast.error(`Failed to confirm request due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
