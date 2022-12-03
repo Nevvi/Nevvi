@@ -83,7 +83,7 @@ class Account extends Component {
                             disabled
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">
-                                    {user.emailConfirmed ? <Check/> : ''}
+                                    {user.emailConfirmed && isMe ? <Check/> : ''}
                                 </InputAdornment>
                             }}
                         />
@@ -99,7 +99,7 @@ class Account extends Component {
                             value={user.phoneNumber || ""}
                             onChange={(e) => accountStore.updateUser("phoneNumber", e.target.value)}
                             InputProps={{
-                                endAdornment: user.phoneNumber ? <InputAdornment position="end">
+                                endAdornment: user.phoneNumber && isMe ? <InputAdornment position="end">
                                     {!user.phoneNumberConfirmed ?
                                         <LoadingButton
                                             loading={confirmAttributeStore.loading}
@@ -186,7 +186,7 @@ class Account extends Component {
                             onChange={(e) => accountStore.updateAddress("zipCode", e.target.value)}
                         />
                     </Grid>
-                    <Box mt={2}>
+                    <Box mt={2} mb={2}>
                         <LoadingButton
                             size={"small"}
                             sx={{display: isMe ? 'block' : 'none'}}

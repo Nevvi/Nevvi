@@ -113,7 +113,7 @@ class Connections extends Component {
                                                                 width: "fit-content"
                                                             }}
                                                             disabled={connectionsStore.confirmationLoading}
-                                                            onClick={(e) => console.log(e)}
+                                                            onClick={(e) => connectionsStore.denyRequest(request.requestingUserId)}
                                                         >
                                                             Deny
                                                         </Button>

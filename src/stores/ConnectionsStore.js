@@ -59,6 +59,20 @@ class UsersStore {
         }
     }
 
+    async denyRequest(userId) {
+        this.setConfirmationLoading(true)
+        try {
+            let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests/deny`
+            await axios.post(url, {otherUserId: userId})
+            await this.loadRequests()
+            toast.success('Connection denied')
+        } catch(e) {
+            toast.error(`Failed to confirm request due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
+        } finally {
+            this.setConfirmationLoading(false)
+        }
+    }
+
     setConnectionsLoading(loading) {
         this.connectionsLoading = loading
     }
