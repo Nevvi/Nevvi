@@ -31,6 +31,14 @@ class Account extends Component {
         accountStore.getUser(userId)
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {accountStore} = this.props;
+        const userId = this.props.computedMatch.params.userId;
+        if (userId && accountStore.user && accountStore.user.id !== userId) {
+            accountStore.getUser(userId)
+        }
+    }
+
     componentWillUnmount() {
         const {accountStore} = this.props;
         accountStore.reset()
