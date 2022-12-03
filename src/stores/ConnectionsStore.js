@@ -73,6 +73,10 @@ class UsersStore {
         }
     }
 
+    isConnected(userId) {
+        return this.connections.find(conn => conn.id === userId) !== undefined
+    }
+
     setConnectionsLoading(loading) {
         this.connectionsLoading = loading
     }

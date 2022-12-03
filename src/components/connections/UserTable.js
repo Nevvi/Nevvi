@@ -20,7 +20,7 @@ class UserTable extends Component {
     }
 
     render() {
-        const {usersStore} = this.props;
+        const {connectionsStore, usersStore} = this.props;
 
         const rows = usersStore.users
         return (
@@ -62,6 +62,7 @@ class UserTable extends Component {
                     </Typography>}
 
                     {rows.map((row, index) => {
+                        const isConnected = connectionsStore.isConnected(row.id);
                         return <Grid item md={2} xs={12} key={`searched-user-card-${index}`} sx={{p: "0.5rem"}}>
                             <Card sx={{width: "100%"}}>
                                 <CardContent sx={{pb: "0.5rem"}}>
@@ -71,18 +72,19 @@ class UserTable extends Component {
                                             <Typography variant="p" component="span">
                                                 {row.firstName} {row.lastName}
                                             </Typography>
-                                            <LoadingButton
-                                                size="small"
-                                                sx={{
-                                                    justifyContent: "left",
-                                                    p: "0.5rem 0 0 0",
-                                                    width: "fit-content"
-                                                }}
-                                                loading={usersStore.loading}
-                                                onClick={(e) => usersStore.requestConnection(row.id)}
-                                            >
-                                                Connect
-                                            </LoadingButton>
+                                                <LoadingButton
+                                                    size="small"
+                                                    sx={{
+                                                        justifyContent: "left",
+                                                        p: "0.5rem 0 0 0",
+                                                        width: "fit-content"
+                                                    }}
+                                                    disabled={isConnected}
+                                                    loading={usersStore.loading}
+                                                    onClick={(e) => usersStore.requestConnection(row.id)}
+                                                >
+                                                    {isConnected ? "Connected" : "Connect"}
+                                                </LoadingButton>
                                         </Stack>
                                     </Stack>
                                 </CardContent>
@@ -95,4 +97,4 @@ class UserTable extends Component {
     }
 }
 
-export default inject("usersStore")(observer(UserTable));
+export default inject("connectionsStore", "usersStore")(observer(UserTable));

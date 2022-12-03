@@ -31,7 +31,8 @@ class UsersStore {
             }
             const res = await axios.get(url)
             this.setContinuationKey(res.data.continuationKey)
-            this.setUsers(res.data.users)
+            const users = res.data.users.filter((user) => user.id !== this.authStore.userId)
+            this.setUsers(users)
         } catch(e) {
             toast.error(`Failed to load users due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
