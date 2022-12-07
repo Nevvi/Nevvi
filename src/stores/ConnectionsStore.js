@@ -15,8 +15,10 @@ class UsersStore {
         makeAutoObservable(this)
         this.authStore = authStore
 
-        this.loadConnections()
-        this.loadRequests()
+        if (this.authStore.userId) {
+            this.loadConnections()
+            this.loadRequests()
+        }
     }
 
     async loadConnections() {
