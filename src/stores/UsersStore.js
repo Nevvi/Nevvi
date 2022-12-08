@@ -42,7 +42,9 @@ class UsersStore {
 
     async requestConnection(otherUserId) {
         try {
-            const res = await axios.post(`/api/user/v1/users/${this.authStore.userId}/connections/requests?userId=${otherUserId}`)
+            let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests`
+            // TODO - dont hard code, if no permission groups prompt user to confirm ALL
+            const res = await axios.post(url, {otherUserId: otherUserId, permissionGroupName: "ALL"})
             toast.success('Connection request submitted')
             return res.data
         } catch (e) {
