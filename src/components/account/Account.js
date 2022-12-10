@@ -21,7 +21,6 @@ import {Check} from "@material-ui/icons";
 class Account extends Component {
     constructor(props) {
         super(props);
-
         this.updateAccount = this.updateAccount.bind(this);
     }
 
@@ -62,22 +61,26 @@ class Account extends Component {
 
         // Subsequent page load
         return (
-            <Grid container justifyContent={"center"}>
-                <input
-                    accept="image/*"
-                    style={{display: 'none'}}
-                    id="profile-image-button"
-                    type="file"
-                    disabled={!isMe}
-                    onChange={(e) => accountStore.saveUserImage(e.target.files[0])}
-                />
-                <label htmlFor="profile-image-button" style={{marginRight: "1rem"}}>
-                    {accountStore.imageLoading ?
-                        <Avatar className="profile-image"><CircularProgress/></Avatar> :
-                        <Avatar className={`${isMe ? 'my-profile-image' : 'profile-image'}`} src={user.profileImage}/>
-                    }
-                </label>
-                <Grid container item sm={8} md={4} xs={12} rowSpacing={2}>
+            <Grid container item xs={12} rowSpacing={2}>
+                <Grid item md={2} xs={12}>
+                    <input
+                        accept="image/*"
+                        style={{display: 'none'}}
+                        id="profile-image-button"
+                        type="file"
+                        disabled={!isMe}
+                        onChange={(e) => accountStore.saveUserImage(e.target.files[0])}
+                    />
+                    <label htmlFor="profile-image-button">
+                        {accountStore.imageLoading ?
+                            <Avatar className="profile-image"><CircularProgress/></Avatar> :
+                            <Avatar className={`${isMe ? 'my-profile-image' : 'profile-image'}`}
+                                    src={user.profileImage}/>
+                        }
+                    </label>
+                </Grid>
+
+                <Grid container item md={4} xs={12} rowSpacing={2}>
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
@@ -204,28 +207,28 @@ class Account extends Component {
                             Update
                         </LoadingButton>
                     </Box>
-                    <Dialog open={confirmAttributeStore.waitingConfirmationCode}>
-                        <DialogTitle>Confirm Phone Number</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>{confirmAttributeStore.confirmationCodePrompt}</DialogContentText>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                label="Confirmation Code"
-                                fullWidth
-                                variant="standard"
-                                value={confirmAttributeStore.confirmationCode}
-                                onChange={(e) => confirmAttributeStore.setConfirmationCode(e.target.value)}
-                            />
-                        </DialogContent>
-                        <DialogActions>
-                            <Button variant="text" color="primary"
-                                    onClick={() => confirmAttributeStore.cancelConfirm()}>Cancel</Button>
-                            <LoadingButton variant="contained" color="primary" loading={confirmAttributeStore.loading}
-                                           onClick={() => confirmAttributeStore.confirmPhone()}>Confirm</LoadingButton>
-                        </DialogActions>
-                    </Dialog>
                 </Grid>
+                <Dialog open={confirmAttributeStore.waitingConfirmationCode}>
+                    <DialogTitle>Confirm Phone Number</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>{confirmAttributeStore.confirmationCodePrompt}</DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Confirmation Code"
+                            fullWidth
+                            variant="standard"
+                            value={confirmAttributeStore.confirmationCode}
+                            onChange={(e) => confirmAttributeStore.setConfirmationCode(e.target.value)}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant="text" color="primary"
+                                onClick={() => confirmAttributeStore.cancelConfirm()}>Cancel</Button>
+                        <LoadingButton variant="contained" color="primary" loading={confirmAttributeStore.loading}
+                                       onClick={() => confirmAttributeStore.confirmPhone()}>Confirm</LoadingButton>
+                    </DialogActions>
+                </Dialog>
             </Grid>
         )
     }

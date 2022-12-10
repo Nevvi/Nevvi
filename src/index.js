@@ -7,12 +7,11 @@ import * as serviceWorker from './serviceWorker';
 
 import App from './App';
 import {ToastContainer} from "react-toastify";
-import NavigationBar from "./components/navbar/Navbar";
 import {router} from "./router";
 
 import {Router} from "react-router-dom";
 import {Provider} from "mobx-react";
-import {Grid} from "@mui/material";
+import {Grid, Stack} from "@mui/material";
 
 // Stores
 import AuthStore from "./stores/AuthStore";
@@ -23,6 +22,8 @@ import ConfirmAccountStore from "./stores/ConfirmAccountStore";
 import ConfirmAttributeStore from "./stores/ConfirmAttributeStore";
 import UsersStore from "./stores/UsersStore";
 import ConnectionsStore from "./stores/ConnectionsStore";
+import {ProSidebarProvider} from "react-pro-sidebar";
+import Navigation from "./components/navbar/Navigation";
 
 const authStore = new AuthStore();
 const accountStore = new AccountStore(authStore);
@@ -48,12 +49,16 @@ ReactDOM.render(
     <React.StrictMode>
         <Provider {...stores}>
             <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}/>
-            <NavigationBar/>
-            <Grid container rowSpacing={2} className="app-container">
+            <ProSidebarProvider>
                 <Router history={router.history}>
-                    <App authStore={authStore}/>
+                    <Stack direction="row">
+                        <Navigation/>
+                        <Grid container className="app-container">
+                            <App authStore={authStore}/>
+                        </Grid>
+                    </Stack>
                 </Router>
-            </Grid>
+            </ProSidebarProvider>
         </Provider>
     </React.StrictMode>,
     document.getElementById('root')

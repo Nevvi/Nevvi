@@ -7,34 +7,14 @@ import {
     Fab,
     Grid,
     Tab,
-    Tabs,
-    Typography,
+    Tabs
 } from "@mui/material";
 import {Add} from "@material-ui/icons";
 import {Link} from "react-router-dom";
 import {router} from "../../router";
 import UserCard from "./UserCard";
 import ConnectionRequestCard from "./ConnectionRequestCard";
-
-function TabPanel(props) {
-    const {children, value, index, ...other} = props;
-
-    return (
-        <span
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{pt: 3}}>
-                    <Typography component={"span"}>{children}</Typography>
-                </Box>
-            )}
-        </span>
-    );
-}
+import {TabPanel} from "../../util/utils";
 
 class Connections extends Component {
     constructor(props) {
