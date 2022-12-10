@@ -1,17 +1,13 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
 import {
-    Avatar,
     Backdrop,
-    Card,
-    CardContent,
     CircularProgress,
     Grid,
-    Stack,
     TextField,
     Typography
 } from "@mui/material";
-import {LoadingButton} from "@mui/lab";
+import UserCard from "./UserCard";
 
 class UserTable extends Component {
     componentWillUnmount() {
@@ -20,7 +16,7 @@ class UserTable extends Component {
     }
 
     render() {
-        const {connectionsStore, usersStore} = this.props;
+        const {usersStore} = this.props;
 
         const rows = usersStore.users
         return (
@@ -62,33 +58,8 @@ class UserTable extends Component {
                     </Typography>}
 
                     {rows.map((row, index) => {
-                        const isConnected = connectionsStore.isConnected(row.id);
                         return <Grid item md={2} xs={12} key={`searched-user-card-${index}`} sx={{p: "0.5rem"}}>
-                            <Card sx={{width: "100%"}}>
-                                <CardContent sx={{pb: "0.5rem"}}>
-                                    <Stack direction="row" spacing={2} alignItems="center">
-                                        <Avatar sx={{width: "4.5rem", height: "4.5rem"}} src={row.profileImage}/>
-                                        <Stack>
-                                            <Typography variant="p" component="span">
-                                                {row.firstName} {row.lastName}
-                                            </Typography>
-                                                <LoadingButton
-                                                    size="small"
-                                                    sx={{
-                                                        justifyContent: "left",
-                                                        p: "0.5rem 0 0 0",
-                                                        width: "fit-content"
-                                                    }}
-                                                    disabled={isConnected}
-                                                    loading={usersStore.loading}
-                                                    onClick={(e) => usersStore.requestConnection(row.id)}
-                                                >
-                                                    {isConnected ? "Connected" : "Connect"}
-                                                </LoadingButton>
-                                        </Stack>
-                                    </Stack>
-                                </CardContent>
-                            </Card>
+                            <UserCard user={row}/>
                         </Grid>
                     })}
                 </Grid>
@@ -97,4 +68,4 @@ class UserTable extends Component {
     }
 }
 
-export default inject("connectionsStore", "usersStore")(observer(UserTable));
+export default inject("usersStore")(observer(UserTable));

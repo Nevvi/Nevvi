@@ -1,4 +1,4 @@
-import {makeAutoObservable} from "mobx";
+import {makeAutoObservable, reaction} from "mobx";
 import axios from "axios";
 import { toast } from 'react-toastify';
 
@@ -15,10 +15,12 @@ class UsersStore {
         makeAutoObservable(this)
         this.authStore = authStore
 
-        if (this.authStore.userId) {
-            this.loadConnections()
-            this.loadRequests()
-        }
+        reaction(() => authStore.userId, (userId) => {
+            if (userId) {
+                this.loadRequests()
+                this.loadConnections()
+            }
+        })
     }
 
     async loadConnections() {

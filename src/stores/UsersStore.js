@@ -5,6 +5,7 @@ import {debounce} from "@mui/material";
 
 class UsersStore {
     loading = false
+    requesting = false
     users = []
     continuationKey = undefined
 
@@ -42,6 +43,7 @@ class UsersStore {
 
     async requestConnection(otherUserId) {
         try {
+            this.setRequesting(true)
             let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests`
             // TODO - dont hard code, if no permission groups prompt user to confirm ALL
             const res = await axios.post(url, {otherUserId: otherUserId, permissionGroupName: "ALL"})
@@ -50,11 +52,17 @@ class UsersStore {
         } catch (e) {
             console.log(e)
             toast.error(`Connection request failed because ${e.response.data.toLowerCase()}`)
+        } finally {
+            this.setRequesting(false)
         }
     }
 
     setLoading(loading) {
         this.loading = loading
+    }
+
+    setRequesting(requesting) {
+        this.requesting = requesting
     }
 
     setUsers(users) {

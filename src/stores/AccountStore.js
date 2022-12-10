@@ -20,6 +20,8 @@ class AccountStore {
 
     async getUser(userId) {
         this.setLoading(true)
+        this.setUpdatedUser(null)
+        this.setUser(null)
         try {
             // If we are requesting ourselves then call the profile endpoint
             // If we are loading someone else call the connections endpoint to restrict who can view data

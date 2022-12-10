@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
 import {
-    Avatar, Backdrop,
-    Box, Button, Card, CardContent, CircularProgress, Fab,
-    Grid, Stack,
+    Backdrop,
+    Box,
+    CircularProgress,
+    Fab,
+    Grid,
     Tab,
     Tabs,
     Typography,
@@ -11,6 +13,8 @@ import {
 import {Add} from "@material-ui/icons";
 import {Link} from "react-router-dom";
 import {router} from "../../router";
+import UserCard from "./UserCard";
+import ConnectionRequestCard from "./ConnectionRequestCard";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -36,6 +40,12 @@ class Connections extends Component {
     constructor(props) {
         super(props);
         this.state = {selectedTab: 0}
+    }
+
+    componentDidMount() {
+        const {connectionsStore} = this.props;
+        connectionsStore.loadConnections()
+        connectionsStore.loadRequests()
     }
 
     componentWillUnmount() {
@@ -64,64 +74,17 @@ class Connections extends Component {
                         </Tabs>
                         <TabPanel value={selectedTab} index={0}>
                             {connectionsStore.connections.map((connection, index) => {
-                                return <Grid item md={3} xs={12} key={`requesting-user-card-${index}`} className={'connection'}
+                                return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`} className={'connection'}
                                              sx={{p: "0.5rem"}} onClick={() => {router.push(`/account/${connection.id}`)}}>
-                                    <Card sx={{width: "100%"}}>
-                                        <CardContent sx={{pb: "0.5rem"}}>
-                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                <Avatar sx={{width: "4.5rem", height: "4.5rem"}}
-                                                        src={connection.profileImage}/>
-                                                <Stack>
-                                                    <Typography variant="p" component="span">{connection.firstName} {connection.lastName}</Typography>
-                                                    <Typography variant="p" component="span">{connection.email}</Typography>
-                                                </Stack>
-                                            </Stack>
-                                        </CardContent>
-                                    </Card>
+                                    <UserCard user={connection}/>
                                 </Grid>
                             })}
                         </TabPanel>
                         <TabPanel value={selectedTab} index={1}>
                             {connectionsStore.requests.map((request, index) => {
-                                return <Grid item md={3} xs={12} key={`requesting-user-card-${index}`}
+                                return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`}
                                              sx={{p: "0.5rem"}}>
-                                    <Card sx={{width: "100%"}}>
-                                        <CardContent sx={{pb: "0.5rem"}}>
-                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                <Avatar sx={{width: "4.5rem", height: "4.5rem"}}
-                                                        src={request.requesterImage}/>
-                                                <Stack>
-                                                    <Typography variant="p" component="span">{request.requestText}</Typography>
-                                                    <Stack direction="row" spacing={2} alignItems="center">
-                                                        <Button
-                                                            size="small"
-                                                            sx={{
-                                                                justifyContent: "left",
-                                                                p: "0.5rem 0 0 0",
-                                                                width: "fit-content"
-                                                            }}
-                                                            disabled={connectionsStore.confirmationLoading}
-                                                            onClick={(e) => connectionsStore.confirmRequest(request.requestingUserId)}
-                                                        >
-                                                            Accept
-                                                        </Button>
-                                                        <Button
-                                                            size="small"
-                                                            sx={{
-                                                                justifyContent: "left",
-                                                                p: "0.5rem 0 0 0",
-                                                                width: "fit-content"
-                                                            }}
-                                                            disabled={connectionsStore.confirmationLoading}
-                                                            onClick={(e) => connectionsStore.denyRequest(request.requestingUserId)}
-                                                        >
-                                                            Deny
-                                                        </Button>
-                                                    </Stack>
-                                                </Stack>
-                                            </Stack>
-                                        </CardContent>
-                                    </Card>
+                                    <ConnectionRequestCard request={request} />
                                 </Grid>
                             })}
                         </TabPanel>
