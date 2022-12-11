@@ -58,7 +58,7 @@ class UserTable extends Component {
                     </Typography>}
 
                     {rows.map((row, index) => {
-                        return <Grid item md={2} xs={12} key={`searched-user-card-${index}`} sx={{p: "0.5rem"}}>
+                        return <Grid item md={2} xs={12} key={`searched-user-card-${index}`} sx={{minWidth: "300px", p: "0.5rem"}}>
                             <UserCard user={row}/>
                         </Grid>
                     })}

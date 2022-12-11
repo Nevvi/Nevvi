@@ -5,16 +5,16 @@ import {
     Box,
     CircularProgress,
     Fab,
-    Grid,
+    Grid, IconButton,
     Tab,
     Tabs
 } from "@mui/material";
-import {Add} from "@material-ui/icons";
 import {Link} from "react-router-dom";
 import {router} from "../../router";
 import UserCard from "./UserCard";
 import ConnectionRequestCard from "./ConnectionRequestCard";
 import {TabPanel} from "../../util/utils";
+import {Add} from "@mui/icons-material";
 
 class Connections extends Component {
     constructor(props) {
@@ -55,7 +55,7 @@ class Connections extends Component {
                         <TabPanel value={selectedTab} index={0}>
                             {connectionsStore.connections.map((connection, index) => {
                                 return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`} className={'connection'}
-                                             sx={{p: "0.5rem"}} onClick={() => {router.push(`/account/${connection.id}`)}}>
+                                             sx={{p: "0.5rem", minWidth: "300px"}} onClick={() => {router.push(`/account/${connection.id}`)}}>
                                     <UserCard user={connection}/>
                                 </Grid>
                             })}
@@ -63,7 +63,7 @@ class Connections extends Component {
                         <TabPanel value={selectedTab} index={1}>
                             {connectionsStore.requests.map((request, index) => {
                                 return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`}
-                                             sx={{p: "0.5rem"}}>
+                                             sx={{p: "0.5rem", minWidth: "400px"}}>
                                     <ConnectionRequestCard request={request} />
                                 </Grid>
                             })}
@@ -71,7 +71,7 @@ class Connections extends Component {
                     </Box>
                 </Grid>
                 <Link to="/connections/new">
-                    <Fab sx={{position: 'absolute', bottom: 16, right: 16}} color="primary">
+                    <Fab sx={{position: 'fixed', bottom: 16, right: 16}} color="primary">
                         <Add/>
                     </Fab>
                 </Link>

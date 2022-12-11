@@ -16,7 +16,7 @@ import {
     TextField
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
-import {Check} from "@material-ui/icons";
+import {Check} from "@mui/icons-material";
 
 class Account extends Component {
     constructor(props) {
@@ -61,8 +61,9 @@ class Account extends Component {
 
         // Subsequent page load
         return (
-            <Grid container item xs={12} rowSpacing={2}>
-                <Grid item md={2} xs={12}>
+            <Grid container item xs={12} rowSpacing={2} columnSpacing={2}>
+                <Grid item xs={2} display={{ xs: "block", sm: "none" }}/>
+                <Grid container item md={2} xs={8} justifyContent={"center"}>
                     <input
                         accept="image/*"
                         style={{display: 'none'}}

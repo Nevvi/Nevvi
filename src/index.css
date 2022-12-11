@@ -16,12 +16,14 @@ code {
     margin-top: 1rem !important;
     padding: 0 1rem !important;
     display: block !important;
+    min-height: 100vh;
 }
 
 .profile-image, .my-profile-image {
-    width: 15rem !important;
-    height: 15rem !important;
     margin-bottom: 1rem;
+    width: 100% !important;
+    aspect-ratio: 1 !important;
+    height: inherit !important;
 }
 
 .my-profile-image:hover {
@@ -31,4 +33,31 @@ code {
 
 .connection:hover {
     cursor: pointer;
+}
+
+.menu-container {
+    display: flex;
+    height: 100vh;
+    position: relative;
+}
+
+@media screen and (min-width: 0px) and (max-width: 576px) {
+    .menu-container {
+        height: 2rem !important;
+        width: 100% !important;
+    }
+
+    .mobile-menu {
+        position: fixed !important;   /* show it on small screens */
+        height: 1rem !important;
+        width: 1rem !important;
+        top: 1.5rem !important;
+        right: 1.5rem !important;
+        padding: 0 !important;
+        color: black !important;
+    }
+}
+
+@media screen and (min-width: 577px) {
+    .mobile-menu { display: none !important; }   /* hide it elsewhere */
 }

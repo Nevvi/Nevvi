@@ -19,6 +19,8 @@ import ConfirmAccount from "./components/authentication/ConfirmAccount";
 import Login from './components/authentication/Login.js';
 import UserTable from "./components/connections/UserTable";
 import Connections from "./components/connections/Connections";
+import Navigation from "./components/navbar/Navigation";
+import {Grid, Stack} from "@mui/material";
 
 
 const InsecureRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
@@ -38,7 +40,6 @@ const SecureRoute = inject("authStore")(observer(({authStore, component: Compone
 )))
 
 class App extends Component {
-
     componentDidMount() {
         const {authStore} = this.props
         authStore.reload()
@@ -46,15 +47,20 @@ class App extends Component {
 
     render() {
         return (
-            <Switch location={router.location}>
-                <Route exact path="/"> <Home/> </Route>
-                <SecureRoute path="/account/:userId" component={Account}/>
-                <SecureRoute path="/connections" exact={true} component={Connections}/>
-                <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
-                <InsecureRoute path="/createAccount" component={CreateAccount}/>
-                <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
-                <InsecureRoute path="/login" component={Login}/>
-            </Switch>
+            <Stack direction={{sm: "column", md: "row"}}>
+                <Navigation/>
+                <Grid container className="app-container">
+                    <Switch location={router.location}>
+                        <Route exact path="/"> <Home/> </Route>
+                        <SecureRoute path="/account/:userId" component={Account}/>
+                        <SecureRoute path="/connections" exact={true} component={Connections}/>
+                        <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
+                        <InsecureRoute path="/createAccount" component={CreateAccount}/>
+                        <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
+                        <InsecureRoute path="/login" component={Login}/>
+                    </Switch>
+                </Grid>
+            </Stack>
         )
     }
 }

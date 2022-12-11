@@ -11,7 +11,6 @@ import {router} from "./router";
 
 import {Router} from "react-router-dom";
 import {Provider} from "mobx-react";
-import {Grid, Stack} from "@mui/material";
 
 // Stores
 import AuthStore from "./stores/AuthStore";
@@ -23,7 +22,6 @@ import ConfirmAttributeStore from "./stores/ConfirmAttributeStore";
 import UsersStore from "./stores/UsersStore";
 import ConnectionsStore from "./stores/ConnectionsStore";
 import {ProSidebarProvider} from "react-pro-sidebar";
-import Navigation from "./components/navbar/Navigation";
 
 const authStore = new AuthStore();
 const accountStore = new AccountStore(authStore);
@@ -51,12 +49,7 @@ ReactDOM.render(
             <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}/>
             <ProSidebarProvider>
                 <Router history={router.history}>
-                    <Stack direction="row">
-                        <Navigation/>
-                        <Grid container className="app-container">
-                            <App authStore={authStore}/>
-                        </Grid>
-                    </Stack>
+                    <App authStore={authStore}/>
                 </Router>
             </ProSidebarProvider>
         </Provider>
