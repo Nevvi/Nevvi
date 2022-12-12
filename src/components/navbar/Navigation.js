@@ -3,7 +3,7 @@ import {Menu, MenuItem, Sidebar, useProSidebar} from "react-pro-sidebar";
 import {inject, observer} from "mobx-react";
 import {router} from "../../router";
 import {Divider, IconButton} from "@mui/material";
-import {AccountCircle, Group, Home, Login, Logout, Menu as MenuIcon} from "@mui/icons-material";
+import {AccountCircle, Home, Login, Logout, Menu as MenuIcon} from "@mui/icons-material";
 
 
 function Navigation(props) {
@@ -13,7 +13,7 @@ function Navigation(props) {
         router.push("/")
     }
 
-    const {authStore, connectionsStore} = props
+    const {authStore} = props
     const {collapsed, collapseSidebar, broken} = useProSidebar();
     const [mobileToggled, setMobileToggled] = React.useState(false)
 
@@ -42,13 +42,6 @@ function Navigation(props) {
                 {authStore.isLoggedIn && <MenuItem onClick={() => handleRoute(`/account/${authStore.userId}`)}
                                                    icon={<AccountCircle/>}>Account</MenuItem>}
 
-                {authStore.isLoggedIn && (
-                    connectionsStore.requests.length > 0 ?
-                        <MenuItem onClick={() => handleRoute('/connections')} icon={<Group/>}> Connections
-                            ({connectionsStore.requests.length})</MenuItem> :
-                        <MenuItem onClick={() => handleRoute('/connections')} icon={<Group/>}> Connections </MenuItem>
-                )}
-
                 <Divider/>
                 {authStore.isLoggedIn ?
                     <MenuItem onClick={(e) => logoutAccount(e)} icon={<Logout/>}>Logout</MenuItem> :
@@ -59,4 +52,4 @@ function Navigation(props) {
     </div>;
 }
 
-export default inject("authStore", "connectionsStore")(observer(Navigation));
+export default inject("authStore")(observer(Navigation));

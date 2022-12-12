@@ -10,7 +10,6 @@ import {
 import {inject, observer} from "mobx-react";
 
 // UIs
-import Home from './components/home/Home.js';
 import Account from './components/account/Account.js';
 
 // Auth
@@ -35,7 +34,7 @@ const SecureRoute = inject("authStore")(observer(({authStore, component: Compone
     <Route {...rest} render={(props) => {
         return (authStore.isLoggedIn
             ? <Component {...rest} />
-            : <Redirect to='/'/>)
+            : <Redirect to='/createAccount'/>)
     }}/>
 )))
 
@@ -51,7 +50,7 @@ class App extends Component {
                 <Navigation/>
                 <Grid container className="app-container">
                     <Switch location={router.location}>
-                        <Route exact path="/"> <Home/> </Route>
+                        <SecureRoute path="/" exact={true} component={Connections}/>
                         <SecureRoute path="/account/:userId" component={Account}/>
                         <SecureRoute path="/connections" exact={true} component={Connections}/>
                         <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
