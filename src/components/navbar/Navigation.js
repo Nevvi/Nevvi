@@ -1,9 +1,9 @@
 import React from 'react';
-import {Menu, MenuItem, Sidebar, useProSidebar} from "react-pro-sidebar";
+import {Menu, MenuItem, Sidebar, SubMenu, useProSidebar} from "react-pro-sidebar";
 import {inject, observer} from "mobx-react";
 import {router} from "../../router";
 import {Divider, IconButton} from "@mui/material";
-import {AccountCircle, Home, Login, Logout, Menu as MenuIcon} from "@mui/icons-material";
+import {AccountCircle, Group, Home, Login, Logout, Menu as MenuIcon, Person} from "@mui/icons-material";
 
 
 function Navigation(props) {
@@ -39,8 +39,12 @@ function Navigation(props) {
 
                 <MenuItem onClick={() => handleRoute("/")} icon={<Home/>}>Home</MenuItem>
 
-                {authStore.isLoggedIn && <MenuItem onClick={() => handleRoute(`/account/${authStore.userId}`)}
-                                                   icon={<AccountCircle/>}>Account</MenuItem>}
+                {authStore.isLoggedIn &&
+                    <SubMenu label="Account" icon={<AccountCircle/>} defaultOpen={true}>
+                        <MenuItem onClick={() => handleRoute(`/account/${authStore.userId}`)} icon={<Person/>}>Personal Info</MenuItem>
+                        <MenuItem onClick={() => handleRoute(`/account/${authStore.userId}/permission-groups`)} icon={<Group/>}> Permission Groups </MenuItem>
+                    </SubMenu>
+                }
 
                 <Divider/>
                 {authStore.isLoggedIn ?

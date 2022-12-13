@@ -18,6 +18,7 @@ import {
 import {LoadingButton} from "@mui/lab";
 import {Check} from "@mui/icons-material";
 
+
 class Account extends Component {
     constructor(props) {
         super(props);
@@ -62,26 +63,27 @@ class Account extends Component {
         // Subsequent page load
         return (
             <Grid container item xs={12} rowSpacing={2} columnSpacing={2}>
-                <Grid item xs={2} display={{ xs: "block", sm: "none" }}/>
-                <Grid container item md={2} xs={8} justifyContent={"center"}>
-                    <input
-                        accept="image/*"
-                        style={{display: 'none'}}
-                        id="profile-image-button"
-                        type="file"
-                        disabled={!isMe}
-                        onChange={(e) => accountStore.saveUserImage(e.target.files[0])}
-                    />
-                    <label htmlFor="profile-image-button">
-                        {accountStore.imageLoading ?
-                            <Avatar className="profile-image"><CircularProgress/></Avatar> :
-                            <Avatar className={`${isMe ? 'my-profile-image' : 'profile-image'}`}
-                                    src={user.profileImage}/>
-                        }
-                    </label>
-                </Grid>
+                <Grid container item md={3} sm={6} xs={12} rowSpacing={2} pr={"16px"}>
+                    <Grid item xs={3}/>
 
-                <Grid container item md={4} xs={12} rowSpacing={2}>
+                    <Grid container item xs={6} justifyContent={"center"}>
+                        <input
+                            accept="image/*"
+                            style={{display: 'none'}}
+                            id="profile-image-button"
+                            type="file"
+                            disabled={!isMe}
+                            onChange={(e) => accountStore.saveUserImage(e.target.files[0])}
+                        />
+                        <label htmlFor="profile-image-button">
+                            {accountStore.imageLoading ?
+                                <Avatar className="profile-image"><CircularProgress/></Avatar> :
+                                <Avatar className={`${isMe ? 'my-profile-image' : 'profile-image'}`}
+                                        src={user.profileImage}/>
+                            }
+                        </label>
+                    </Grid>
+
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
@@ -208,7 +210,8 @@ class Account extends Component {
                             Update
                         </LoadingButton>
                     </Box>
-                </Grid>
+                </Grid >
+
                 <Dialog open={confirmAttributeStore.waitingConfirmationCode}>
                     <DialogTitle>Confirm Phone Number</DialogTitle>
                     <DialogContent>

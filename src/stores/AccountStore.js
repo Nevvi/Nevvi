@@ -122,6 +122,10 @@ class AccountStore {
         }
     }
 
+    addPermissionGroup(name, fields) {
+        this.updatedUser.permissionGroups.push({name: name.trim(), fields})
+    }
+
     setUser(user) {
         this.user = user
     }

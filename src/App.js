@@ -20,6 +20,7 @@ import UserTable from "./components/connections/UserTable";
 import Connections from "./components/connections/Connections";
 import Navigation from "./components/navbar/Navigation";
 import {Grid, Stack} from "@mui/material";
+import PermissionGroups from "./components/account/PermissionGroups";
 
 
 const InsecureRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
@@ -51,7 +52,8 @@ class App extends Component {
                 <Grid container className="app-container">
                     <Switch location={router.location}>
                         <SecureRoute path="/" exact={true} component={Connections}/>
-                        <SecureRoute path="/account/:userId" component={Account}/>
+                        <SecureRoute path="/account/:userId" exact={true} component={Account}/>
+                        <SecureRoute path="/account/:userId/permission-groups" exact={true} component={PermissionGroups}/>
                         <SecureRoute path="/connections" exact={true} component={Connections}/>
                         <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
                         <InsecureRoute path="/createAccount" component={CreateAccount}/>

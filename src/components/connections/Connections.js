@@ -38,7 +38,8 @@ class Connections extends Component {
         const {selectedTab} = this.state
         return (
             <Grid container sx={{mt: 2}}>
-                <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}} open={connectionsStore.connectionsLoading || connectionsStore.requestsLoading}>
+                <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                          open={connectionsStore.connectionsLoading || connectionsStore.requestsLoading}>
                     <CircularProgress color="inherit"/>
                 </Backdrop>
                 <Grid container item xs={12} rowSpacing={2}>
@@ -48,25 +49,31 @@ class Connections extends Component {
                             value={selectedTab}
                             onChange={(e, v) => this.setState({selectedTab: v})}
                         >
-                            <Tab label={`My Connections (${connectionsStore.connections.length})`}
-                                 key={'vertical-tab-0'}/>
+                            <Tab label={`My Connections`} key={'vertical-tab-0'}/>
                             <Tab label={`Requests (${connectionsStore.requests.length})`} key={'vertical-tab-1'}/>
                         </Tabs>
                         <TabPanel value={selectedTab} index={0}>
-                            {connectionsStore.connections.map((connection, index) => {
-                                return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`} className={'connection'}
-                                             sx={{p: "0.5rem", minWidth: "300px"}} onClick={() => {router.push(`/account/${connection.id}`)}}>
-                                    <UserCard user={connection}/>
-                                </Grid>
-                            })}
+                            <Grid container columnSpacing={2} rowSpacing={2}>
+                                {connectionsStore.connections.map((connection, index) => {
+                                    return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`}
+                                                 className={'connection'}
+                                                 sx={{p: "0.5rem", minWidth: "300px"}} onClick={() => {
+                                        router.push(`/account/${connection.id}`)
+                                    }}>
+                                        <UserCard user={connection}/>
+                                    </Grid>
+                                })}
+                            </Grid>
                         </TabPanel>
                         <TabPanel value={selectedTab} index={1}>
-                            {connectionsStore.requests.map((request, index) => {
-                                return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`}
-                                             sx={{p: "0.5rem", minWidth: "400px"}}>
-                                    <ConnectionRequestCard request={request} />
-                                </Grid>
-                            })}
+                            <Grid container columnSpacing={2} rowSpacing={2}>
+                                {connectionsStore.requests.map((request, index) => {
+                                    return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`}
+                                                 sx={{p: "0.5rem", minWidth: "400px"}}>
+                                        <ConnectionRequestCard request={request}/>
+                                    </Grid>
+                                })}
+                            </Grid>
                         </TabPanel>
                     </Box>
                 </Grid>
