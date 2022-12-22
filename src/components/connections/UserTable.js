@@ -3,7 +3,7 @@ import {inject, observer} from "mobx-react";
 import {
     Backdrop,
     CircularProgress,
-    Grid,
+    Grid, Pagination,
     TextField,
     Typography
 } from "@mui/material";
@@ -63,7 +63,19 @@ class UserTable extends Component {
                             <UserCard user={row}/>
                         </Grid>
                     })}
+
                 </Grid>
+
+                {rows.length > 0 &&
+                    <Pagination
+                        sx={{marginTop: "1rem"}}
+                        siblingCount={0}
+                        page={usersStore.page}
+                        count={usersStore.pageCount}
+                        color="primary"
+                        onChange={(e, page) => usersStore.setPage(page)}
+                    />
+                }
 
                 <PermissionGroupModal handler={(userId, group) => usersStore.requestConnection(userId, group)}/>
             </Grid>

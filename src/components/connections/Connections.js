@@ -6,8 +6,10 @@ import {
     CircularProgress,
     Fab,
     Grid,
+    Pagination,
     Tab,
-    Tabs
+    Tabs,
+    Typography
 } from "@mui/material";
 import {Link} from "react-router-dom";
 import {router} from "../../router";
@@ -16,6 +18,7 @@ import ConnectionRequestCard from "./ConnectionRequestCard";
 import {TabPanel} from "../../util/utils";
 import {Add} from "@mui/icons-material";
 import PermissionGroupModal from "./PermissionGroupModal";
+import ConnectionFilterMenu from "./ConnectionFilterMenu";
 
 class Connections extends Component {
     constructor(props) {
@@ -54,6 +57,17 @@ class Connections extends Component {
                             <Tab label={`Requests (${connectionsStore.requests.length})`} key={'vertical-tab-1'}/>
                         </Tabs>
                         <TabPanel value={selectedTab} index={0}>
+                            {connectionsStore.nameFilter && connectionsStore.nameFilter.length >= 3 && connectionsStore.connections.length === 0 && <Typography
+                                style={{
+                                    paddingTop: "1rem",
+                                    textAlign: "center",
+                                    fontStyle: "italic"
+                                }}
+                                component={"span"}
+                            >
+                                No connections found
+                            </Typography>}
+
                             <Grid container columnSpacing={2} rowSpacing={2}>
                                 {connectionsStore.connections.map((connection, index) => {
                                     return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`}
@@ -65,6 +79,17 @@ class Connections extends Component {
                                     </Grid>
                                 })}
                             </Grid>
+
+                            {connectionsStore.connections.length > 0 &&
+                                <Pagination
+                                    sx={{marginTop: "1rem"}}
+                                    siblingCount={0}
+                                    page={connectionsStore.page}
+                                    count={connectionsStore.pageCount}
+                                    color="primary"
+                                    onChange={(e, page) => connectionsStore.setPage(page)}
+                                />
+                            }
                         </TabPanel>
                         <TabPanel value={selectedTab} index={1}>
                             <Grid container columnSpacing={2} rowSpacing={2}>
@@ -78,6 +103,8 @@ class Connections extends Component {
                         </TabPanel>
                     </Box>
                 </Grid>
+
+                <ConnectionFilterMenu/>
                 <Link to="/connections/new">
                     <Fab sx={{position: 'fixed', bottom: 16, right: 16}} color="primary">
                         <Add/>
