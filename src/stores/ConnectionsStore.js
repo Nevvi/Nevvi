@@ -49,12 +49,11 @@ class UsersStore {
         }
     }
 
-    async confirmRequest(userId) {
+    async confirmRequest(userId, permissionGroup) {
         this.setConfirmationLoading(true)
         try {
             let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests/confirm`
-            // TODO - dont hard code, if no permission groups prompt user to confirm ALL
-            await axios.post(url, {otherUserId: userId, permissionGroupName: "ALL"})
+            await axios.post(url, {otherUserId: userId, permissionGroupName: permissionGroup})
             await Promise.all([this.loadConnections(), this.loadRequests()])
             toast.success('Connection confirmed')
         } catch(e) {

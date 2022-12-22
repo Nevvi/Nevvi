@@ -8,6 +8,7 @@ import {
     Typography
 } from "@mui/material";
 import UserCard from "./UserCard";
+import PermissionGroupModal from "./PermissionGroupModal";
 
 class UserTable extends Component {
     componentWillUnmount() {
@@ -63,6 +64,8 @@ class UserTable extends Component {
                         </Grid>
                     })}
                 </Grid>
+
+                <PermissionGroupModal handler={(userId, group) => usersStore.requestConnection(userId, group)}/>
             </Grid>
         );
     }

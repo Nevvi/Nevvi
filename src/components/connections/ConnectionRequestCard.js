@@ -13,11 +13,11 @@ class ConnectionRequestCard extends Component {
     }
 
     async acceptRequest() {
-        const {request, connectionsStore} = this.props;
+        const {request, permissionGroupModalStore} = this.props;
 
         this.setState({accepting: true})
         try {
-            await connectionsStore.confirmRequest(request.requestingUserId)
+            await permissionGroupModalStore.initialize(request.requestingUserId)
         } finally {
             this.setState({accepting: false})
         }
@@ -79,4 +79,4 @@ class ConnectionRequestCard extends Component {
     }
 }
 
-export default inject("connectionsStore")(observer(ConnectionRequestCard));
+export default inject("connectionsStore", "permissionGroupModalStore")(observer(ConnectionRequestCard));

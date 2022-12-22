@@ -12,11 +12,11 @@ class UserCard extends Component {
     }
 
     async requestConnection() {
-        const {user, usersStore} = this.props;
+        const {user, permissionGroupModalStore} = this.props;
 
         this.setState({loading: true})
         try {
-            await usersStore.requestConnection(user.id)
+            await permissionGroupModalStore.initialize(user.id)
         } finally {
             this.setState({loading: false})
         }
@@ -56,4 +56,4 @@ class UserCard extends Component {
     }
 }
 
-export default inject("connectionsStore", "usersStore")(observer(UserCard));
+export default inject("connectionsStore", "permissionGroupModalStore", "usersStore")(observer(UserCard));

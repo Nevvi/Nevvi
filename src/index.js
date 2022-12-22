@@ -23,6 +23,7 @@ import UsersStore from "./stores/UsersStore";
 import ConnectionsStore from "./stores/ConnectionsStore";
 import CreatePermissionGroupStore from "./stores/CreatePermissionGroupStore";
 import {ProSidebarProvider} from "react-pro-sidebar";
+import PermissionGroupModalStore from "./stores/PermissionGroupModalStore";
 
 const authStore = new AuthStore();
 const accountStore = new AccountStore(authStore);
@@ -33,6 +34,7 @@ const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore
 const createPermissionGroupStore = new CreatePermissionGroupStore(authStore, accountStore);
 const connectionsStore = new ConnectionsStore(authStore);
 const usersStore = new UsersStore(authStore);
+const permissionGroupModalStore = new PermissionGroupModalStore(authStore);
 
 const stores = {
     authStore: authStore,
@@ -43,7 +45,8 @@ const stores = {
     confirmAttributeStore: confirmAttributeStore,
     usersStore: usersStore,
     connectionsStore: connectionsStore,
-    createPermissionGroupStore: createPermissionGroupStore
+    createPermissionGroupStore: createPermissionGroupStore,
+    permissionGroupModalStore: permissionGroupModalStore
 }
 
 ReactDOM.render(

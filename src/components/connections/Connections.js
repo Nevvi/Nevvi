@@ -15,6 +15,7 @@ import UserCard from "./UserCard";
 import ConnectionRequestCard from "./ConnectionRequestCard";
 import {TabPanel} from "../../util/utils";
 import {Add} from "@mui/icons-material";
+import PermissionGroupModal from "./PermissionGroupModal";
 
 class Connections extends Component {
     constructor(props) {
@@ -82,6 +83,8 @@ class Connections extends Component {
                         <Add/>
                     </Fab>
                 </Link>
+
+                <PermissionGroupModal handler={(userId, group) => connectionsStore.confirmRequest(userId, group)} />
             </Grid>
         );
     }
