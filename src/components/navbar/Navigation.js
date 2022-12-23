@@ -52,18 +52,20 @@ const StyledSubMenu = styled(SubMenu)(({theme}) => ({
 }))
 
 function Navigation(props) {
-    async function logoutAccount(event) {
-        event.preventDefault()
-        await props.authStore.logout()
-        router.push("/")
-    }
-
     const theme = useTheme()
     const {authStore} = props
     const {collapsed, collapseSidebar, broken} = useProSidebar();
     const [mobileToggled, setMobileToggled] = React.useState(false)
 
     const sidebarLeft = mobileToggled || !broken ? '0' : '-250px'
+
+    async function logoutAccount(event) {
+        event.preventDefault()
+        await props.authStore.logout()
+        router.push("/")
+        setMobileToggled(false)
+        collapseSidebar(false)
+    }
 
     function handleRoute(route) {
         router.push(route)

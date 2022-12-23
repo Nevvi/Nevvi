@@ -27,9 +27,9 @@ class UserCard extends Component {
         const isConnected = connectionsStore.isConnected(user.id);
 
         return <Card sx={{width: "100%"}}>
-            <CardContent sx={{pb: "0.5rem"}}>
+            <CardContent sx={{p: "8px !important"}}>
                 <Stack direction="row" spacing={2} alignItems="center">
-                    <Avatar sx={{width: "4.5rem", height: "4.5rem"}} src={user.profileImage}/>
+                    <Avatar sx={{width: "4rem", height: "4rem"}} src={user.profileImage}/>
                     <Stack>
                         <Typography variant="p" component="span">
                             {user.firstName} {user.lastName}

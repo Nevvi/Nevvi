@@ -47,17 +47,6 @@ class UserTable extends Component {
                         Enter a name filter to search for users
                     </Typography>}
 
-                    {usersStore.nameFilter && usersStore.nameFilter.length > 3 && rows.length === 0 && <Typography
-                        style={{
-                            paddingTop: "1rem",
-                            textAlign: "center",
-                            fontStyle: "italic"
-                        }}
-                        component={"span"}
-                    >
-                        No users found
-                    </Typography>}
-
                     {rows.map((row, index) => {
                         return <Grid item md={2} xs={12} key={`searched-user-card-${index}`} sx={{minWidth: "300px", p: "0.5rem"}}>
                             <UserCard user={row}/>

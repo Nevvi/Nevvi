@@ -5,10 +5,10 @@ import {
     Box,
     CircularProgress,
     Fab,
-    Grid,
+    Grid, InputAdornment,
     Pagination, styled,
     Tab,
-    Tabs,
+    Tabs, TextField,
     Typography
 } from "@mui/material";
 import {Link} from "react-router-dom";
@@ -16,9 +16,8 @@ import {router} from "../../router";
 import UserCard from "./UserCard";
 import ConnectionRequestCard from "./ConnectionRequestCard";
 import {TabPanel} from "../../util/utils";
-import {Add} from "@mui/icons-material";
+import {Add, Search} from "@mui/icons-material";
 import PermissionGroupModal from "./PermissionGroupModal";
-import ConnectionFilterMenu from "./ConnectionFilterMenu";
 
 const StyledFab = styled(Fab)(({theme}) => ({
     [theme.breakpoints.up('sm')]: {
@@ -60,12 +59,12 @@ class Connections extends Component {
         const {connectionsStore} = this.props;
         const {selectedTab} = this.state
         return (
-            <Grid container sx={{mt: 2}}>
+            <Grid container>
                 <Backdrop sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
                           open={connectionsStore.connectionsLoading || connectionsStore.requestsLoading}>
                     <CircularProgress color="inherit"/>
                 </Backdrop>
-                <Grid container item xs={12} rowSpacing={2}>
+                <Grid container item xs={12} rowSpacing={1}>
                     <Box style={{width: "100%"}}>
                         <Tabs
                             orientation={"horizontal"}
@@ -76,6 +75,19 @@ class Connections extends Component {
                             <Tab label={`Requests (${connectionsStore.requests.length})`} key={'vertical-tab-1'}/>
                         </Tabs>
                         <TabPanel value={selectedTab} index={0}>
+                            <TextField
+                                id="connection-name-search"
+                                variant="outlined"
+                                placeholder="Enter at least 3 characters"
+                                fullWidth
+                                autoFocus={true}
+                                style={{marginBottom: "1rem"}}
+                                value={connectionsStore.nameFilter}
+                                onChange={(e) => connectionsStore.setNameFilter(e.target.value)}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start"><Search/></InputAdornment>,
+                                }}
+                            />
                             {connectionsStore.nameFilter && connectionsStore.nameFilter.length >= 3 && connectionsStore.connections.length === 0 && <Typography
                                 style={{
                                     paddingTop: "1rem",
@@ -91,7 +103,7 @@ class Connections extends Component {
                                 {connectionsStore.connections.map((connection, index) => {
                                     return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`}
                                                  className={'connection'}
-                                                 sx={{p: "0.5rem", minWidth: "300px"}} onClick={() => {
+                                                 sx={{pt: "8px !important", minWidth: "300px"}} onClick={() => {
                                         router.push(`/account/${connection.id}`)
                                     }}>
                                         <UserCard user={connection}/>
@@ -123,7 +135,6 @@ class Connections extends Component {
                     </Box>
                 </Grid>
 
-                <ConnectionFilterMenu/>
                 <Link to="/connections/new">
                     <StyledFab color="primary">
                         <Add/>
