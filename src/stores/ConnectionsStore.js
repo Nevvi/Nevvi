@@ -10,7 +10,7 @@ class UsersStore {
 
     connections = []
     totalConnections = 0
-    connectionsPerPage = 1
+    connectionsPerPage = 10
     page = 1
 
     requests = []

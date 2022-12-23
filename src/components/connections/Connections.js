@@ -6,7 +6,7 @@ import {
     CircularProgress,
     Fab,
     Grid,
-    Pagination,
+    Pagination, styled,
     Tab,
     Tabs,
     Typography
@@ -19,6 +19,25 @@ import {TabPanel} from "../../util/utils";
 import {Add} from "@mui/icons-material";
 import PermissionGroupModal from "./PermissionGroupModal";
 import ConnectionFilterMenu from "./ConnectionFilterMenu";
+
+const StyledFab = styled(Fab)(({theme}) => ({
+    [theme.breakpoints.up('sm')]: {
+        width: "4rem",
+        height: "4rem"
+    },
+    [theme.breakpoints.down('sm')]: {
+        width: "3rem",
+        height: "3rem"
+    },
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    position: 'fixed',
+    bottom: 16,
+    right: 16,
+    "&:hover": {
+        backgroundColor: theme.palette.primary.dark
+    }
+}));
 
 class Connections extends Component {
     constructor(props) {
@@ -106,9 +125,9 @@ class Connections extends Component {
 
                 <ConnectionFilterMenu/>
                 <Link to="/connections/new">
-                    <Fab sx={{position: 'fixed', bottom: 16, right: 16}} color="primary">
+                    <StyledFab color="primary">
                         <Add/>
-                    </Fab>
+                    </StyledFab>
                 </Link>
 
                 <PermissionGroupModal handler={(userId, group) => connectionsStore.confirmRequest(userId, group)} />

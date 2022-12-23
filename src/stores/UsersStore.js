@@ -8,7 +8,7 @@ class UsersStore {
     requesting = false
     users = []
     totalUsers = 0
-    usersPerPage = 1
+    usersPerPage = 20
     page = 1
     nameFilter = ""
 
