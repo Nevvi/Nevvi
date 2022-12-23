@@ -35,12 +35,12 @@ class ConfirmAccountStore {
 
             this.setEmail('')
             this.setConfirmationCodePrompt(DEFAULT_PROMPT)
-            this.setLoading(false)
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
             toast.error(`Failed to confirm account because ${message}`)
         } finally {
             this.setConfirmationCode('')
+            this.setLoading(false)
         }
     }
 
