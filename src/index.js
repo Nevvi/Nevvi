@@ -24,6 +24,7 @@ import ConnectionsStore from "./stores/ConnectionsStore";
 import CreatePermissionGroupStore from "./stores/CreatePermissionGroupStore";
 import {ProSidebarProvider} from "react-pro-sidebar";
 import PermissionGroupModalStore from "./stores/PermissionGroupModalStore";
+import {createTheme, ThemeProvider} from "@mui/material";
 
 const authStore = new AuthStore();
 const accountStore = new AccountStore(authStore);
@@ -49,15 +50,45 @@ const stores = {
     permissionGroupModalStore: permissionGroupModalStore
 }
 
+export const theme = createTheme({
+    palette: {
+        type: 'light',
+        primary: {
+            main: '#2779A7',
+            light: '#5293B8',
+            dark: '#1B5474',
+            contrastText: '#fff'
+        },
+        secondary: {
+            main: '#49C5B6',
+            light: '#6DD0C4',
+            dark: '#33897F',
+            contrastText: 'rgba(0, 0, 0, 0.87)'
+        },
+        background: {
+            default: '#f7f9fb',
+            paper: '#fff'
+        },
+        error: {
+            main: '#DF6C4F',
+            light: '#E58972',
+            dark: '#9C4B37',
+            contrastText: '#fff'
+        },
+    },
+});
+
 ReactDOM.render(
     <React.StrictMode>
         <Provider {...stores}>
-            <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}/>
-            <ProSidebarProvider>
-                <Router history={router.history}>
-                    <App authStore={authStore}/>
-                </Router>
-            </ProSidebarProvider>
+            <ThemeProvider theme={theme}>
+                <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}/>
+                <ProSidebarProvider>
+                    <Router history={router.history}>
+                        <App authStore={authStore}/>
+                    </Router>
+                </ProSidebarProvider>
+            </ThemeProvider>
         </Provider>
     </React.StrictMode>,
     document.getElementById('root')
