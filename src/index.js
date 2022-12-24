@@ -12,6 +12,9 @@ import {router} from "./router";
 import {Router} from "react-router-dom";
 import {Provider} from "mobx-react";
 
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 // Stores
 import AuthStore from "./stores/AuthStore";
 import AccountStore from "./stores/AccountStore";
@@ -81,14 +84,16 @@ export const theme = createTheme({
 ReactDOM.render(
     <React.StrictMode>
         <Provider {...stores}>
-            <ThemeProvider theme={theme}>
-                <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}/>
-                <ProSidebarProvider>
-                    <Router history={router.history}>
-                        <App authStore={authStore}/>
-                    </Router>
-                </ProSidebarProvider>
-            </ThemeProvider>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <ThemeProvider theme={theme}>
+                    <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}/>
+                    <ProSidebarProvider>
+                        <Router history={router.history}>
+                            <App authStore={authStore}/>
+                        </Router>
+                    </ProSidebarProvider>
+                </ThemeProvider>
+            </LocalizationProvider>
         </Provider>
     </React.StrictMode>,
     document.getElementById('root')

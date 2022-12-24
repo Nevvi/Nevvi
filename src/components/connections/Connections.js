@@ -70,6 +70,7 @@ class Connections extends Component {
                             orientation={"horizontal"}
                             value={selectedTab}
                             onChange={(e, v) => this.setState({selectedTab: v})}
+                            centered
                         >
                             <Tab label={`My Connections`} key={'vertical-tab-0'}/>
                             <Tab label={`Requests (${connectionsStore.requests.length})`} key={'vertical-tab-1'}/>

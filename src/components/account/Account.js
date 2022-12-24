@@ -10,14 +10,15 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, Fab,
     Grid,
-    InputAdornment,
+    InputAdornment, styled,
     TextField
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
 import {Check} from "@mui/icons-material";
-
+import {DesktopDatePicker, MobileDatePicker} from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 class Account extends Component {
     constructor(props) {
@@ -100,7 +101,7 @@ class Account extends Component {
                             }}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item md={6} xs={12} sx={{pr: ["0", "1rem"]}}>
                         <TextField
                             fullWidth
                             variant="standard"
@@ -125,7 +126,17 @@ class Account extends Component {
                             }}
                         />
                     </Grid>
-                    <Grid item md={6} xs={12} style={{paddingRight: "1rem"}}>
+                    <Grid item md={6} xs={12}>
+                        <MobileDatePicker
+                            label="Birthday"
+                            inputFormat="MM/DD/YYYY"
+                            views={["year", "month", "day"]}
+                            value={(user.birthday && dayjs(user.birthday)) || null}
+                            onChange={(birthday) => accountStore.updateUser("birthday", birthday.format("YYYY-MM-DD"))}
+                            renderInput={(params) => <TextField variant="standard" {...params} sx={{width: "100%"}}/>}
+                        />
+                    </Grid>
+                    <Grid item md={6} xs={12} sx={{pr: ["0", "1rem"]}}>
                         <TextField
                             fullWidth
                             variant="standard"
@@ -161,7 +172,7 @@ class Account extends Component {
                             onChange={(e) => accountStore.updateAddress("street", e.target.value)}
                         />
                     </Grid>
-                    <Grid item md={4} xs={12} style={{paddingRight: "1rem"}}>
+                    <Grid item md={4} xs={12} sx={{pr: ["0", "1rem"]}}>
                         <TextField
                             fullWidth
                             variant="standard"
@@ -173,7 +184,7 @@ class Account extends Component {
                             onChange={(e) => accountStore.updateAddress("city", e.target.value)}
                         />
                     </Grid>
-                    <Grid item md={4} xs={6} style={{paddingRight: "1rem"}}>
+                    <Grid item md={4} xs={6} sx={{pr: ["1rem"]}}>
                         <TextField
                             fullWidth
                             variant="standard"
