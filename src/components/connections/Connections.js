@@ -81,7 +81,6 @@ class Connections extends Component {
                                 variant="outlined"
                                 placeholder="Enter at least 3 characters"
                                 fullWidth
-                                autoFocus={true}
                                 style={{marginBottom: "1rem"}}
                                 value={connectionsStore.nameFilter}
                                 onChange={(e) => connectionsStore.setNameFilter(e.target.value)}

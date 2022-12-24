@@ -130,6 +130,7 @@ class Account extends Component {
                         <MobileDatePicker
                             label="Birthday"
                             inputFormat="MM/DD/YYYY"
+                            disabled={!isMe}
                             views={["year", "month", "day"]}
                             value={(user.birthday && dayjs(user.birthday)) || null}
                             onChange={(birthday) => accountStore.updateUser("birthday", birthday.format("YYYY-MM-DD"))}
