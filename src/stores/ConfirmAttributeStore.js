@@ -37,12 +37,8 @@ class ConfirmAttributeStore {
             await axios.post(`/api/authentication/v1/users/${this.userStore.user.id}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
             this.setConfirmationCodePrompt(DEFAULT_PROMPT)
 
-            // We "could" make an API to get the latest info or just manually set it for now on successful response
-            const user = this.userStore.user
-            user["phoneNumberVerified"] = true
-            this.userStore.setUser(user)
-            this.userStore.setUpdatedUser(user)
-
+            // Reload the latest user data
+            await this.userStore.getUser(this.userStore.user.id)
             this.setWaitingConfirmationCode(false)
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e

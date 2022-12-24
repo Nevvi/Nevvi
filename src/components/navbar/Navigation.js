@@ -13,7 +13,7 @@ const MenuContainer = styled('div')(({theme}) => ({
     },
     [theme.breakpoints.down('sm')]: {
         display: "flex",
-        height: "3rem",
+        height: "3.5rem",
         width: "100%",
         position: "relative",
         justifyContent: "space-between"
@@ -25,7 +25,9 @@ const MobileMenuTitle = styled(Button)(({theme}) => ({
     [theme.breakpoints.up('sm')]: {
         display: "none",
     },
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
+    fontSize: "1.1rem",
+    fontWeight: "bold"
 }));
 
 const MobileMenuButton = styled(IconButton)(({theme}) => ({
