@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
 import {Check} from "@mui/icons-material";
-import {DesktopDatePicker, MobileDatePicker} from "@mui/x-date-pickers";
+import {MobileDatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 
 class Account extends Component {
