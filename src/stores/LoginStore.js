@@ -1,6 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
 import {router} from '../router'
+import {getUser} from "../components/utils/httpUtils";
 
 class LoginStore {
     username = ''
@@ -16,7 +17,10 @@ class LoginStore {
         try {
             this.setLoading(true)
             await this.authStore.login(this.username, this.password)
-            router.push('/')
+
+            const user = await getUser(this.authStore.userId)
+
+            router.push(user.onboardingCompleted ? '/' : '/onboarding')
         } catch (e) {
             toast.error(`Login failed because ${e.message}`)
         } finally {
