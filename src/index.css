@@ -23,7 +23,6 @@ code {
 }
 
 .profile-image, .my-profile-image {
-    margin-bottom: 1rem;
     width: 100% !important;
     aspect-ratio: 1 !important;
     height: inherit !important;

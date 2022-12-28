@@ -2,43 +2,23 @@ import React, {Component} from 'react';
 import Loading from "../loading/Loading";
 import {inject, observer} from "mobx-react";
 import {
+    Box,
     Button, Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle, Fab, FormControlLabel, FormGroup,
-    Grid,
+    DialogTitle, FormControlLabel, FormGroup,
+    Grid, Paper,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     TextField
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
-import {Add} from "@mui/icons-material";
-import {router} from "../../router";
 
 
 class PermissionGroups extends Component {
     constructor(props) {
         super(props);
         this.updateAccount = this.updateAccount.bind(this);
-    }
-
-    componentDidMount() {
-        const {accountStore} = this.props;
-        const userId = this.props.computedMatch.params.userId;
-        accountStore.getUser(userId)
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const {accountStore} = this.props;
-        const userId = this.props.computedMatch.params.userId;
-        if (userId && accountStore.user && accountStore.user.id !== userId) {
-            accountStore.getUser(userId)
-        }
-    }
-
-    componentWillUnmount() {
-        const {accountStore} = this.props;
-        accountStore.reset()
     }
 
     async updateAccount(event) {
@@ -60,20 +40,15 @@ class PermissionGroups extends Component {
     render() {
         // Initial page load
         const {accountStore, createPermissionGroupStore} = this.props;
-        const user = accountStore.updatedUser;
+        const user = accountStore.user;
         if (!user) {
             return <Loading component={<div/>} loading={accountStore.loading}/>
         }
 
-        const isMe = accountStore.isMe
-        if (!isMe) {
-            router.push("/")
-        }
-
         // Subsequent page load
         return (
-            <Grid container item md={5} xs={12} rowSpacing={2} columnSpacing={2}>
-                <TableContainer>
+            <Grid container item ml={0} mt={0} xs={12} rowSpacing={2} columnSpacing={2}>
+                <TableContainer component={Paper}>
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -86,7 +61,7 @@ class PermissionGroups extends Component {
                             {user.permissionGroups.map((group) => (
                                 <TableRow
                                     key={group.name}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                 >
                                     <TableCell component="th" scope="row">{group.name}</TableCell>
                                     <TableCell align="right">{group.fields.join(", ")}</TableCell>
@@ -97,9 +72,18 @@ class PermissionGroups extends Component {
                     </Table>
                 </TableContainer>
 
-                <Fab sx={{position: 'fixed', bottom: 16, right: 16}} color="primary" onClick={() => createPermissionGroupStore.setPermissionGroupPromptOpen(true)}>
-                    <Add/>
-                </Fab>
+                <Grid container justifyContent={"center"}>
+                    <Box mt={2} mb={2}>
+                        <Button
+                            size={"small"}
+                            variant="contained"
+                            color="primary"
+                            onClick={() => createPermissionGroupStore.setPermissionGroupPromptOpen(true)}
+                        >
+                            New Group
+                        </Button>
+                    </Box>
+                </Grid>
 
                 <Dialog
                     open={createPermissionGroupStore.permissionGroupPromptOpen}
@@ -121,17 +105,24 @@ class PermissionGroups extends Component {
                             onChange={(e) => createPermissionGroupStore.setGroupName(e.target.value)}
                         />
                         <FormGroup>
-                            <FormControlLabel disabled checked control={<Checkbox/>} label="First Name" />
-                            <FormControlLabel disabled checked control={<Checkbox/>} label="Last Name" />
-                            <FormControlLabel disabled checked control={<Checkbox/>} label="Profile Picture" />
-                            <FormControlLabel onChange={(e) => this.handleCheckboxUpdate(e, "email")}  control={<Checkbox/>} label="Email" />
-                            <FormControlLabel onChange={(e) => this.handleCheckboxUpdate(e, "phoneNumber")} control={<Checkbox />} label="Phone Number" />
-                            <FormControlLabel onChange={(e) => this.handleCheckboxUpdate(e, "address")} control={<Checkbox />} label="Address" />
+                            <FormControlLabel disabled checked control={<Checkbox/>} label="First Name"/>
+                            <FormControlLabel disabled checked control={<Checkbox/>} label="Last Name"/>
+                            <FormControlLabel disabled checked control={<Checkbox/>} label="Profile Picture"/>
+                            <FormControlLabel onChange={(e) => this.handleCheckboxUpdate(e, "email")}
+                                              control={<Checkbox/>} label="Email"/>
+                            <FormControlLabel onChange={(e) => this.handleCheckboxUpdate(e, "phoneNumber")}
+                                              control={<Checkbox/>} label="Phone Number"/>
+                            <FormControlLabel onChange={(e) => this.handleCheckboxUpdate(e, "address")}
+                                              control={<Checkbox/>} label="Address"/>
+                            <FormControlLabel onChange={(e) => this.handleCheckboxUpdate(e, "birthday")}
+                                              control={<Checkbox/>} label="Birthday"/>
                         </FormGroup>
                     </DialogContent>
                     <DialogActions>
-                        <Button variant="text" color="primary" onClick={() => createPermissionGroupStore.setPermissionGroupPromptOpen(false)}>Cancel</Button>
-                        <LoadingButton variant="contained" color="primary" loading={createPermissionGroupStore.loading} onClick={() => createPermissionGroupStore.saveGroup()}>Create</LoadingButton>
+                        <Button variant="text" color="primary"
+                                onClick={() => createPermissionGroupStore.setPermissionGroupPromptOpen(false)}>Cancel</Button>
+                        <LoadingButton variant="contained" color="primary" loading={createPermissionGroupStore.loading}
+                                       onClick={() => createPermissionGroupStore.saveGroup()}>Create</LoadingButton>
                     </DialogActions>
                 </Dialog>
             </Grid>

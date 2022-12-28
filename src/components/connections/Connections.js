@@ -104,7 +104,7 @@ class Connections extends Component {
                                     return <Grid item md={2} xs={12} key={`requesting-user-card-${index}`}
                                                  className={'connection'}
                                                  sx={{pt: "8px !important", minWidth: "300px"}} onClick={() => {
-                                        router.push(`/account/${connection.id}`)
+                                        router.push(`/connections/${connection.id}`)
                                     }}>
                                         <UserCard user={connection}/>
                                     </Grid>

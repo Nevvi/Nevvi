@@ -1,9 +1,9 @@
 import React from 'react';
-import {Menu, MenuItem, Sidebar, SubMenu, useProSidebar} from "react-pro-sidebar";
+import {Menu, MenuItem, Sidebar, useProSidebar} from "react-pro-sidebar";
 import {inject, observer} from "mobx-react";
 import {router} from "../../router";
 import {Button, Divider, IconButton, styled, useTheme} from "@mui/material";
-import {AccountCircle, Group, Home, Login, Logout, Menu as MenuIcon, Person} from "@mui/icons-material";
+import {AccountCircle, Home, Login, Logout, Menu as MenuIcon} from "@mui/icons-material";
 
 const MenuContainer = styled('div')(({theme}) => ({
     [theme.breakpoints.up('sm')]: {
@@ -41,16 +41,6 @@ const StyledMenuItem = styled(MenuItem)(({theme}) => ({
     "a:hover": {
         backgroundColor: theme.palette.primary.light
     },
-}))
-
-const StyledSubMenu = styled(SubMenu)(({theme}) => ({
-    backgroundColor: theme.palette.primary.main,
-    "a:hover": {
-        backgroundColor: theme.palette.primary.light
-    },
-    ".ps-submenu-content": {
-        backgroundColor: theme.palette.primary.main
-    }
 }))
 
 function Navigation(props) {
@@ -105,25 +95,8 @@ function Navigation(props) {
                 <Divider/>
 
                 {authStore.isLoggedIn &&
-                    <StyledSubMenu label="Account" icon={<AccountCircle/>} defaultOpen={true}>
-                        <Divider/>
-
-                        <StyledMenuItem
-                            onClick={() => handleRoute(`/account/${authStore.userId}`)}
-                            icon={<Person/>}
-                        >
-                            Personal Info
-                        </StyledMenuItem>
-
-                        <Divider/>
-
-                        <StyledMenuItem
-                            onClick={() => handleRoute(`/account/${authStore.userId}/permission-groups`)}
-                            icon={<Group/>}
-                        >
-                            Permission Groups
-                        </StyledMenuItem>
-                    </StyledSubMenu>
+                    <StyledMenuItem onClick={() => handleRoute("/account")}
+                                    icon={<AccountCircle/>}>Account</StyledMenuItem>
                 }
 
                 <Divider/>

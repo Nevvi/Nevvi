@@ -3,49 +3,44 @@ import Loading from "../loading/Loading";
 import {inject, observer} from "mobx-react";
 import {
     Avatar,
-    Box,
-    Button,
-    CircularProgress,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Grid,
-    InputAdornment, Tab, Tabs,
+    Grid, Tab, Tabs,
     TextField
 } from "@mui/material";
-import {LoadingButton} from "@mui/lab";
-import {Check} from "@mui/icons-material";
 import {MobileDatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import {TabPanel} from "../../util/utils";
-import PermissionGroups from "./PermissionGroups";
 
-class Account extends Component {
+class Connection extends Component {
     constructor(props) {
         super(props);
-        this.updateAccount = this.updateAccount.bind(this);
         this.state = {selectedTab: 0}
     }
 
-    async updateAccount(event) {
-        event.preventDefault()
-        const {accountStore} = this.props;
-        await accountStore.saveUser()
+    componentDidMount() {
+        const {connectionStore} = this.props;
+        const userId = this.props.computedMatch.params.userId;
+        connectionStore.getUser(userId)
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {connectionStore} = this.props;
+        const userId = this.props.computedMatch.params.userId;
+        if (userId && connectionStore.user && connectionStore.user.id !== userId) {
+            connectionStore.getUser(userId)
+        }
     }
 
     render() {
         // Initial page load
-        const {accountStore, confirmAttributeStore} = this.props;
-        const user = accountStore.updatedUser;
+        const {connectionStore} = this.props;
+        const user = connectionStore.user;
         if (!user) {
-            return <Loading component={<div/>} loading={accountStore.loading}/>
+            return <Loading component={<div/>} loading={connectionStore.loading}/>
         }
 
         // Subsequent page load
         return (
-            <Grid container item xs={12}>
+            <Grid container item xs={12} rowSpacing={2} columnSpacing={2}>
                 <Grid container item md={4} sm={6} xs={12} rowSpacing={2} pr={"16px"}>
                     <Grid item xs={3}/>
                     <Grid container item xs={6} justifyContent={"center"}>
@@ -54,13 +49,10 @@ class Account extends Component {
                             style={{display: 'none'}}
                             id="profile-image-button"
                             type="file"
-                            onChange={(e) => accountStore.saveUserImage(e.target.files[0])}
+                            disabled
                         />
                         <label htmlFor="profile-image-button">
-                            {accountStore.imageLoading ?
-                                <Avatar className="profile-image"><CircularProgress/></Avatar> :
-                                <Avatar className={'my-profile-image'} src={user.profileImage}/>
-                            }
+                            <Avatar className={'profile-image'} src={user.profileImage}/>
                         </label>
                     </Grid>
 
@@ -71,12 +63,11 @@ class Account extends Component {
                             onChange={(e, v) => this.setState({selectedTab: v})}
                             sx={{marginBottom: "1rem"}}
                             variant="scrollable"
-                            scrollButtons={"auto"}
+                            scrollButtons="auto"
                             allowScrollButtonsMobile
                         >
                             <Tab label="Personal Info"/>
-                            <Tab label="Permission Groups"/>
-                            <Tab label="Blocked Users"/>
+                            <Tab label="Connection Settings"/>
                         </Tabs>
                         <TabPanel value={this.state.selectedTab} index={0}>
                             <Grid container mt={0} rowSpacing={2} columnSpacing={2}>
@@ -89,11 +80,6 @@ class Account extends Component {
                                         type="text"
                                         value={user.email}
                                         disabled
-                                        InputProps={{
-                                            endAdornment: <InputAdornment position="end">
-                                                {user.emailConfirmed ? <Check/> : ''}
-                                            </InputAdornment>
-                                        }}
                                     />
                                 </Grid>
                                 <Grid item md={6} xs={12} sx={{pr: ["0", "1rem"]}}>
@@ -103,31 +89,19 @@ class Account extends Component {
                                         id="phone-input"
                                         label="Phone Number"
                                         type="text"
-                                        disabled={user.phoneNumberConfirmed}
+                                        disabled
                                         value={user.phoneNumber || ""}
-                                        onChange={(e) => accountStore.updateUser("phoneNumber", e.target.value)}
-                                        InputProps={{
-                                            endAdornment: user.phoneNumber ? <InputAdornment position="end">
-                                                {!user.phoneNumberConfirmed ?
-                                                    <LoadingButton
-                                                        loading={confirmAttributeStore.loading}
-                                                        onClick={() => confirmAttributeStore.sendPhoneConfirmCode()}
-                                                    >
-                                                        Verify
-                                                    </LoadingButton> :
-                                                    <Check/>
-                                                }
-                                            </InputAdornment> : ''
-                                        }}
                                     />
                                 </Grid>
                                 <Grid item md={6} xs={12}>
                                     <MobileDatePicker
                                         label="Birthday"
                                         inputFormat="MM/DD/YYYY"
+                                        disabled
                                         views={["year", "month", "day"]}
                                         value={(user.birthday && dayjs(user.birthday)) || null}
-                                        onChange={(birthday) => accountStore.updateUser("birthday", birthday.format("YYYY-MM-DD"))}
+                                        onChange={(date) => {
+                                        }}
                                         renderInput={(params) => <TextField variant="standard" {...params}
                                                                             sx={{width: "100%"}}/>}
                                     />
@@ -138,9 +112,9 @@ class Account extends Component {
                                         variant="standard"
                                         id="first-name-input"
                                         label="First Name"
+                                        disabled
                                         type="text"
                                         value={user.firstName || ""}
-                                        onChange={(e) => accountStore.updateUser("firstName", e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item md={6} xs={12}>
@@ -149,9 +123,9 @@ class Account extends Component {
                                         variant="standard"
                                         id="last-name-input"
                                         label="Last Name"
+                                        disabled
                                         type="text"
                                         value={user.lastName || ""}
-                                        onChange={(e) => accountStore.updateUser("lastName", e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -160,9 +134,9 @@ class Account extends Component {
                                         variant="standard"
                                         id="street-address-input"
                                         label="Street Address"
+                                        disabled
                                         type="text"
                                         value={(user.address && user.address.street) || ""}
-                                        onChange={(e) => accountStore.updateAddress("street", e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item md={4} xs={12} sx={{pr: ["0", "1rem"]}}>
@@ -171,9 +145,9 @@ class Account extends Component {
                                         variant="standard"
                                         id="city-input"
                                         label="City"
+                                        disabled
                                         type="text"
                                         value={(user.address && user.address.city) || ""}
-                                        onChange={(e) => accountStore.updateAddress("city", e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item md={4} xs={6} sx={{pr: ["1rem"]}}>
@@ -182,9 +156,9 @@ class Account extends Component {
                                         variant="standard"
                                         id="state-input"
                                         label="State"
+                                        disabled
                                         type="text"
                                         value={(user.address && user.address.state) || ""}
-                                        onChange={(e) => accountStore.updateAddress("state", e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item md={4} xs={6}>
@@ -193,58 +167,23 @@ class Account extends Component {
                                         variant="standard"
                                         id="zipCode-input"
                                         label="Zip Code"
+                                        disabled
                                         type="text"
                                         inputProps={{maxLength: 5}}
                                         value={(user.address && user.address.zipCode) || ""}
-                                        onChange={(e) => accountStore.updateAddress("zipCode", e.target.value)}
                                     />
                                 </Grid>
                             </Grid>
-                            <Box mt={2} mb={2}>
-                                <LoadingButton
-                                    size={"small"}
-                                    variant="contained"
-                                    color="primary"
-                                    loading={accountStore.loading}
-                                    disabled={!accountStore.hasUserChanged}
-                                    onClick={this.updateAccount}>
-                                    Update
-                                </LoadingButton>
-                            </Box>
                         </TabPanel>
                         <TabPanel value={this.state.selectedTab} index={1}>
-                            <PermissionGroups/>
-                        </TabPanel>
-                        <TabPanel value={this.state.selectedTab} index={2}>
-                            Blocked Users
+                            Connection Settings
                         </TabPanel>
                     </Grid>
-                </Grid>
 
-                <Dialog open={confirmAttributeStore.waitingConfirmationCode}>
-                    <DialogTitle>Confirm Phone Number</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>{confirmAttributeStore.confirmationCodePrompt}</DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            label="Confirmation Code"
-                            fullWidth
-                            variant="standard"
-                            value={confirmAttributeStore.confirmationCode}
-                            onChange={(e) => confirmAttributeStore.setConfirmationCode(e.target.value)}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button variant="text" color="primary"
-                                onClick={() => confirmAttributeStore.cancelConfirm()}>Cancel</Button>
-                        <LoadingButton variant="contained" color="primary" loading={confirmAttributeStore.loading}
-                                       onClick={() => confirmAttributeStore.confirmPhone()}>Confirm</LoadingButton>
-                    </DialogActions>
-                </Dialog>
+                </Grid>
             </Grid>
         )
     }
 }
 
-export default inject("authStore", "accountStore", "confirmAttributeStore")(observer(Account));
+export default inject("authStore", "connectionStore")(observer(Connection));

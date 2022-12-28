@@ -28,9 +28,11 @@ import CreatePermissionGroupStore from "./stores/CreatePermissionGroupStore";
 import {ProSidebarProvider} from "react-pro-sidebar";
 import PermissionGroupModalStore from "./stores/PermissionGroupModalStore";
 import {createTheme, ThemeProvider} from "@mui/material";
+import ConnectionStore from "./stores/ConnectionStore";
 
-const authStore = new AuthStore();
-const accountStore = new AccountStore(authStore);
+const accountStore = new AccountStore();
+const authStore = new AuthStore(accountStore);
+const connectionStore = new ConnectionStore(authStore);
 const confirmAttributeStore = new ConfirmAttributeStore(accountStore);
 const loginStore = new LoginStore(authStore);
 const confirmAccountStore = new ConfirmAccountStore();
@@ -43,6 +45,7 @@ const permissionGroupModalStore = new PermissionGroupModalStore(authStore);
 const stores = {
     authStore: authStore,
     accountStore: accountStore,
+    connectionStore: connectionStore,
     loginStore: loginStore,
     createAccountStore: createAccountStore,
     confirmAccountStore: confirmAccountStore,

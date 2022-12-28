@@ -1,4 +1,4 @@
-import {makeAutoObservable} from "mobx";
+import {makeAutoObservable, reaction} from "mobx";
 import axios from "axios";
 
 class AuthStore {
@@ -6,8 +6,15 @@ class AuthStore {
     accessToken = null
     userId = null
 
-    constructor() {
+    constructor(accountStore) {
         makeAutoObservable(this)
+
+        this.accountStore = accountStore
+
+        reaction(() => this.userId, (userId) => {
+            this.accountStore.setUserId(userId)
+        })
+
         this.reload()
     }
 

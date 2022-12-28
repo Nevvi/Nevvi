@@ -10,16 +10,16 @@ class ConfirmAttributeStore {
     confirmationCode = ''
     loading = false
 
-    constructor(userStore) {
+    constructor(accountStore) {
         makeAutoObservable(this)
-        this.userStore = userStore
+        this.accountStore = accountStore
     }
 
     async sendPhoneConfirmCode() {
         try {
             this.setLoading(true)
             // Create the unconfirmed account
-            const sendCodeResponse = await axios.post(`/api/authentication/v1/users/${this.userStore.user.id}/sendCode?attribute=phone_number`)
+            const sendCodeResponse = await axios.post(`/api/authentication/v1/users/${this.accountStore.user.id}/sendCode?attribute=phone_number`)
             const deliveryDetails = sendCodeResponse.data
             this.setConfirmationCodePrompt(`We have sent a text with a confirmation code to ${deliveryDetails.CodeDeliveryDetails.Destination}. Enter that code to confirm your phone number`)
             this.setWaitingConfirmationCode(true)
@@ -34,11 +34,11 @@ class ConfirmAttributeStore {
     async confirmPhone() {
         try {
             this.setLoading(true)
-            await axios.post(`/api/authentication/v1/users/${this.userStore.user.id}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
+            await axios.post(`/api/authentication/v1/users/${this.accountStore.user.id}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
             this.setConfirmationCodePrompt(DEFAULT_PROMPT)
 
             // Reload the latest user data
-            await this.userStore.getUser(this.userStore.user.id)
+            await this.accountStore.getUser(this.accountStore.user.id)
             this.setWaitingConfirmationCode(false)
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e

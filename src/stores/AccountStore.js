@@ -1,4 +1,4 @@
-import {makeAutoObservable} from "mobx";
+import {makeAutoObservable, reaction} from "mobx";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import {router} from "../router";
@@ -7,28 +7,30 @@ import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber'
 const PNU = PhoneNumberUtil.getInstance();
 
 class AccountStore {
+    userId = null
     user = null
     updatedUser = null
     loading = false
     imageLoading = false
     newImage = null
 
-    constructor(authStore) {
+    constructor() {
         makeAutoObservable(this)
-        this.authStore = authStore
+        reaction(() => this.userId, (userId) => {
+            this.getUser()
+        })
     }
 
-    async getUser(userId) {
+    async getUser() {
         this.setLoading(true)
         this.setUpdatedUser(null)
         this.setUser(null)
-        try {
-            // If we are requesting ourselves then call the profile endpoint
-            // If we are loading someone else call the connections endpoint to restrict who can view data
-            const res = userId === this.authStore.userId ?
-                await axios.get(`/api/user/v1/users/${userId}`) :
-                await axios.get(`/api/user/v1/users/${this.authStore.userId}/connections/${userId}`)
+        if (!this.userId) {
+            return
+        }
 
+        try {
+            const res = await axios.get(`/api/user/v1/users/${this.userId}`)
             this.setUser(res.data)
             this.setUpdatedUser(JSON.parse(JSON.stringify(res.data)))
         } catch (e) {
@@ -126,6 +128,10 @@ class AccountStore {
         this.updatedUser.permissionGroups.push({name: name.trim(), fields})
     }
 
+    setUserId(userId) {
+        this.userId = userId
+    }
+
     setUser(user) {
         this.user = user
     }
@@ -140,10 +146,6 @@ class AccountStore {
 
     setImageLoading(imageLoading) {
         this.imageLoading = imageLoading
-    }
-
-    get isMe() {
-        return this.user && this.user.id === this.authStore.userId
     }
 
     reset() {
