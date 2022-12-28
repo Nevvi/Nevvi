@@ -74,7 +74,6 @@ class Account extends Component {
                             sx={{marginBottom: "1rem"}}
                             variant="scrollable"
                             scrollButtons={"auto"}
-                            allowScrollButtonsMobile
                         >
                             <Tab label="Personal Info"/>
                             <Tab label="Permission Groups"/>

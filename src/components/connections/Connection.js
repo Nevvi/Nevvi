@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import Loading from "../loading/Loading";
 import {inject, observer} from "mobx-react";
 import {
-    Avatar,
-    Grid, Tab, Tabs,
+    Avatar, FormControl,
+    Grid, InputLabel, MenuItem, Select, Tab, Tabs,
     TextField
 } from "@mui/material";
 import {MobileDatePicker} from "@mui/x-date-pickers";
@@ -19,22 +19,23 @@ class Connection extends Component {
     componentDidMount() {
         const {connectionStore} = this.props;
         const userId = this.props.computedMatch.params.userId;
-        connectionStore.getUser(userId)
+        connectionStore.getConnection(userId)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const {connectionStore} = this.props;
         const userId = this.props.computedMatch.params.userId;
-        if (userId && connectionStore.user && connectionStore.user.id !== userId) {
-            connectionStore.getUser(userId)
+        if (userId && connectionStore.connection && connectionStore.connection.id !== userId) {
+            connectionStore.getConnection(userId)
         }
     }
 
     render() {
         // Initial page load
-        const {connectionStore} = this.props;
-        const user = connectionStore.user;
-        if (!user) {
+        const {accountStore, connectionStore} = this.props;
+        const account = accountStore.user || {};
+        const connection = connectionStore.connection;
+        if (!connection) {
             return <Loading component={<div/>} loading={connectionStore.loading}/>
         }
 
@@ -52,7 +53,7 @@ class Connection extends Component {
                             disabled
                         />
                         <label htmlFor="profile-image-button">
-                            <Avatar className={'profile-image'} src={user.profileImage}/>
+                            <Avatar className={'profile-image'} src={connection.profileImage}/>
                         </label>
                     </Grid>
 
@@ -64,7 +65,6 @@ class Connection extends Component {
                             sx={{marginBottom: "1rem"}}
                             variant="scrollable"
                             scrollButtons="auto"
-                            allowScrollButtonsMobile
                         >
                             <Tab label="Personal Info"/>
                             <Tab label="Connection Settings"/>
@@ -78,7 +78,7 @@ class Connection extends Component {
                                         id="email-input"
                                         label="Email"
                                         type="text"
-                                        value={user.email}
+                                        value={connection.email}
                                         disabled
                                     />
                                 </Grid>
@@ -90,7 +90,7 @@ class Connection extends Component {
                                         label="Phone Number"
                                         type="text"
                                         disabled
-                                        value={user.phoneNumber || ""}
+                                        value={connection.phoneNumber || ""}
                                     />
                                 </Grid>
                                 <Grid item md={6} xs={12}>
@@ -99,7 +99,7 @@ class Connection extends Component {
                                         inputFormat="MM/DD/YYYY"
                                         disabled
                                         views={["year", "month", "day"]}
-                                        value={(user.birthday && dayjs(user.birthday)) || null}
+                                        value={(connection.birthday && dayjs(connection.birthday)) || null}
                                         onChange={(date) => {
                                         }}
                                         renderInput={(params) => <TextField variant="standard" {...params}
@@ -114,7 +114,7 @@ class Connection extends Component {
                                         label="First Name"
                                         disabled
                                         type="text"
-                                        value={user.firstName || ""}
+                                        value={connection.firstName || ""}
                                     />
                                 </Grid>
                                 <Grid item md={6} xs={12}>
@@ -125,7 +125,7 @@ class Connection extends Component {
                                         label="Last Name"
                                         disabled
                                         type="text"
-                                        value={user.lastName || ""}
+                                        value={connection.lastName || ""}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -136,7 +136,7 @@ class Connection extends Component {
                                         label="Street Address"
                                         disabled
                                         type="text"
-                                        value={(user.address && user.address.street) || ""}
+                                        value={(connection.address && connection.address.street) || ""}
                                     />
                                 </Grid>
                                 <Grid item md={4} xs={12} sx={{pr: ["0", "1rem"]}}>
@@ -147,7 +147,7 @@ class Connection extends Component {
                                         label="City"
                                         disabled
                                         type="text"
-                                        value={(user.address && user.address.city) || ""}
+                                        value={(connection.address && connection.address.city) || ""}
                                     />
                                 </Grid>
                                 <Grid item md={4} xs={6} sx={{pr: ["1rem"]}}>
@@ -158,7 +158,7 @@ class Connection extends Component {
                                         label="State"
                                         disabled
                                         type="text"
-                                        value={(user.address && user.address.state) || ""}
+                                        value={(connection.address && connection.address.state) || ""}
                                     />
                                 </Grid>
                                 <Grid item md={4} xs={6}>
@@ -170,13 +170,30 @@ class Connection extends Component {
                                         disabled
                                         type="text"
                                         inputProps={{maxLength: 5}}
-                                        value={(user.address && user.address.zipCode) || ""}
+                                        value={(connection.address && connection.address.zipCode) || ""}
                                     />
                                 </Grid>
                             </Grid>
                         </TabPanel>
                         <TabPanel value={this.state.selectedTab} index={1}>
-                            Connection Settings
+                            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                <InputLabel id="connection-permission-group-label">Permission Group</InputLabel>
+                                <Select
+                                    labelId="connection-permission-group-label"
+                                    id="connection-permission-group-select"
+                                    value={connectionStore.permissionGroup}
+                                    onChange={(e) => {
+                                        connectionStore.setPermissionGroup(e.target.value)
+                                        connectionStore.saveConnection()
+                                    }}
+                                    disabled={connectionStore.saving}
+                                    label="Permission Group"
+                                >
+                                    {(account.permissionGroups || []).map(pg => {
+                                        return <MenuItem key={pg.name} value={pg.name}>{pg.name}</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
                         </TabPanel>
                     </Grid>
 
@@ -186,4 +203,4 @@ class Connection extends Component {
     }
 }
 
-export default inject("authStore", "connectionStore")(observer(Connection));
+export default inject("authStore", "accountStore", "connectionStore")(observer(Connection));

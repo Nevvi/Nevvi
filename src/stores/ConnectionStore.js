@@ -4,20 +4,24 @@ import { toast } from 'react-toastify';
 import {router} from "../router";
 
 class ConnectionStore {
-    user = null
+    connection = null
     loading = false
+    saving = false
+
+    permissionGroup = null
 
     constructor(authStore) {
         makeAutoObservable(this)
         this.authStore = authStore
     }
 
-    async getUser(userId) {
+    async getConnection(connectionId) {
         this.setLoading(true)
-        this.setUser(null)
+        this.setConnection(null)
         try {
-            const res = await axios.get(`/api/user/v1/users/${this.authStore.userId}/connections/${userId}`)
-            this.setUser(res.data)
+            const res = await axios.get(`/api/user/v1/users/${this.authStore.userId}/connections/${connectionId}`)
+            this.setConnection(res.data)
+            this.setPermissionGroup(res.data.permissionGroup)
         } catch (e) {
             toast.error(`Failed to load connection because ${e.response.data}`)
             router.push("/")
@@ -26,16 +30,40 @@ class ConnectionStore {
         }
     }
 
-    setUser(user) {
-        this.user = user
+    async saveConnection() {
+        this.setSaving(true)
+        try {
+            const updateRequest = {
+                permissionGroupName: this.permissionGroup
+            }
+            const res = await axios.patch(`/api/user/v1/users/${this.authStore.userId}/connections/${this.connection.id}`, updateRequest)
+            this.setConnection(res.data)
+            this.setPermissionGroup(res.data.permissionGroup)
+        } catch (e) {
+            toast.error(`Failed to update connection because ${e.response.data}`)
+        } finally {
+            this.setSaving(false)
+        }
+    }
+
+    setPermissionGroup(permissionGroup) {
+        this.permissionGroup = permissionGroup
+    }
+
+    setConnection(connection) {
+        this.connection = connection
     }
 
     setLoading(loading) {
         this.loading = loading
     }
 
+    setSaving(saving) {
+        this.saving = saving
+    }
+
     reset() {
-        this.user = null
+        this.connection = null
         this.loading = false
     }
 }
