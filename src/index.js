@@ -32,13 +32,13 @@ import ConnectionStore from "./stores/ConnectionStore";
 
 const accountStore = new AccountStore();
 const authStore = new AuthStore(accountStore);
-const connectionStore = new ConnectionStore(authStore);
+const connectionStore = new ConnectionStore(authStore, accountStore);
 const confirmAttributeStore = new ConfirmAttributeStore(accountStore);
 const loginStore = new LoginStore(authStore);
 const confirmAccountStore = new ConfirmAccountStore();
 const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore);
 const createPermissionGroupStore = new CreatePermissionGroupStore(authStore, accountStore);
-const connectionsStore = new ConnectionsStore(authStore);
+const connectionsStore = new ConnectionsStore(authStore, accountStore);
 const usersStore = new UsersStore(authStore);
 const permissionGroupModalStore = new PermissionGroupModalStore(authStore);
 

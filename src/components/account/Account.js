@@ -39,7 +39,7 @@ class Account extends Component {
 
     render() {
         // Initial page load
-        const {accountStore, confirmAttributeStore, connectionsStore} = this.props;
+        const {accountStore, confirmAttributeStore, usersStore} = this.props;
         const user = accountStore.updatedUser;
         if (!user) {
             return <Loading component={<div/>} loading={accountStore.loading}/>
@@ -226,7 +226,7 @@ class Account extends Component {
                                 })}
                             </Grid>
                             <PermissionGroupModal handler={(userId, group) => {
-                                connectionsStore.confirmRequest(userId, group).then(() => {
+                                usersStore.requestConnection(userId, group).then(() => {
                                     accountStore.getRejectedUsers()
                                 })
                             }} />
@@ -260,4 +260,4 @@ class Account extends Component {
     }
 }
 
-export default inject("authStore", "accountStore", "confirmAttributeStore", "connectionsStore")(observer(Account));
+export default inject("authStore", "accountStore", "confirmAttributeStore", "usersStore")(observer(Account));

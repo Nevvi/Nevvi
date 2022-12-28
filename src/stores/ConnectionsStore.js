@@ -16,9 +16,10 @@ class UsersStore {
     requests = []
     nameFilter = ""
 
-    constructor(authStore) {
+    constructor(authStore, accountStore) {
         makeAutoObservable(this)
         this.authStore = authStore
+        this.accountStore = accountStore
 
         reaction(() => authStore.userId, (userId) => {
             if (userId) {
@@ -88,7 +89,12 @@ class UsersStore {
         try {
             let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests/deny`
             await axios.post(url, {otherUserId: userId})
-            await this.loadRequests()
+
+            // load the latest data
+            await Promise.all([
+                this.loadRequests(),
+                this.accountStore.getRejectedUsers()
+            ])
             toast.success('Connection denied')
         } catch(e) {
             toast.error(`Failed to confirm request due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)

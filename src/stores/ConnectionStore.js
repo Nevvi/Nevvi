@@ -7,12 +7,15 @@ class ConnectionStore {
     connection = null
     loading = false
     saving = false
+    deleting = false
+    deletePromptOpen = false
 
     permissionGroup = null
 
-    constructor(authStore) {
+    constructor(authStore, accountStore) {
         makeAutoObservable(this)
         this.authStore = authStore
+        this.accountStore = accountStore
     }
 
     async getConnection(connectionId) {
@@ -46,6 +49,20 @@ class ConnectionStore {
         }
     }
 
+    async deleteConnection() {
+        this.setDeleting(true)
+        try {
+            await axios.delete(`/api/user/v1/users/${this.authStore.userId}/connections/${this.connection.id}`)
+            await this.accountStore.getRejectedUsers()
+            toast.success("Successfully deleted connection")
+            router.push("/")
+        } catch (e) {
+            toast.error(`Failed to update connection because ${e.response.data}`)
+        } finally {
+            this.setDeleting(false)
+        }
+    }
+
     setPermissionGroup(permissionGroup) {
         this.permissionGroup = permissionGroup
     }
@@ -62,9 +79,20 @@ class ConnectionStore {
         this.saving = saving
     }
 
+    setDeleting(deleting) {
+        this.deleting = deleting;
+    }
+
+    setDeletePromptOpen(deletePromptOpen) {
+        this.deletePromptOpen = deletePromptOpen;
+    }
+
     reset() {
         this.connection = null
         this.loading = false
+        this.saving = false
+        this.deleting = false
+        this.deletePromptOpen = false
     }
 }
 

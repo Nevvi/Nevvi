@@ -2,13 +2,22 @@ import React, {Component} from 'react';
 import Loading from "../loading/Loading";
 import {inject, observer} from "mobx-react";
 import {
-    Avatar, FormControl,
-    Grid, InputLabel, MenuItem, Select, Tab, Tabs,
-    TextField
+    Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl,
+    Grid, InputLabel, MenuItem, Select, styled, Tab, Tabs,
+    TextField, Typography
 } from "@mui/material";
 import {MobileDatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import {TabPanel} from "../../util/utils";
+import {LoadingButton} from "@mui/lab";
+
+const DeleteConnectionButton = styled(Button)(({theme}) => ({
+    backgroundColor: theme.palette.error.main,
+    color: theme.palette.error.contrastText,
+    "&:hover": {
+        backgroundColor: theme.palette.error.dark
+    }
+}));
 
 class Connection extends Component {
     constructor(props) {
@@ -194,6 +203,38 @@ class Connection extends Component {
                                     })}
                                 </Select>
                             </FormControl>
+
+                            <Box mt={2} ml={"8px"}>
+                                <DeleteConnectionButton
+                                    size={"small"}
+                                    variant="contained"
+                                    onClick={() => connectionStore.setDeletePromptOpen(true)}
+                                >
+                                    Delete
+                                </DeleteConnectionButton>
+                            </Box>
+
+                            <Dialog
+                                open={connectionStore.deletePromptOpen}
+                                fullWidth={true}
+                                onClose={() => connectionStore.setDeletePromptOpen(false)}
+                            >
+                                <DialogTitle>Are you sure you want to delete this connection?</DialogTitle>
+                                <DialogContent>
+                                    <FormControl>
+                                        <Typography component="p">
+                                            Deleting a connection blocks that user from you showing up in their
+                                            searches and they will not be able to request you as a connection
+                                            unless you connect with them from the "Blocked Users" section in
+                                            your account.
+                                        </Typography>
+                                    </FormControl>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button variant="text" color="primary" onClick={() => connectionStore.setDeletePromptOpen(false)}>Cancel</Button>
+                                    <LoadingButton variant="contained" color="primary" loading={connectionStore.deleting} onClick={() => connectionStore.deleteConnection()}>Confirm</LoadingButton>
+                                </DialogActions>
+                            </Dialog>
                         </TabPanel>
                     </Grid>
 

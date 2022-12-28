@@ -48,6 +48,9 @@ class AccountStore {
     async getRejectedUsers() {
         this.setLoadingRejectedUseres(true)
         this.setRejectedUsers([])
+        if (!this.userId) {
+            return
+        }
 
         try {
             const res = await axios.get(`/api/user/v1/users/${this.userId}/connections/rejected`)
