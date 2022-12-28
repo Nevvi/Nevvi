@@ -21,6 +21,8 @@ import {MobileDatePicker} from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import {TabPanel} from "../../util/utils";
 import PermissionGroups from "./PermissionGroups";
+import UserCard from "../connections/UserCard";
+import PermissionGroupModal from "../connections/PermissionGroupModal";
 
 class Account extends Component {
     constructor(props) {
@@ -37,7 +39,7 @@ class Account extends Component {
 
     render() {
         // Initial page load
-        const {accountStore, confirmAttributeStore} = this.props;
+        const {accountStore, confirmAttributeStore, connectionsStore} = this.props;
         const user = accountStore.updatedUser;
         if (!user) {
             return <Loading component={<div/>} loading={accountStore.loading}/>
@@ -216,7 +218,19 @@ class Account extends Component {
                             <PermissionGroups/>
                         </TabPanel>
                         <TabPanel value={this.state.selectedTab} index={2}>
-                            Blocked Users
+                            <Grid container columnSpacing={2} rowSpacing={2}>
+                                {accountStore.rejectedUsers.map((row, index) => {
+                                    return <Grid item md={2} xs={12} key={`rejected-user-card-${index}`}
+                                                 sx={{minWidth: "300px", p: "0.5rem"}}>
+                                        <UserCard user={row}/>
+                                    </Grid>
+                                })}
+                            </Grid>
+                            <PermissionGroupModal handler={(userId, group) => {
+                                connectionsStore.confirmRequest(userId, group).then(() => {
+                                    accountStore.getRejectedUsers()
+                                })
+                            }} />
                         </TabPanel>
                     </Grid>
                 </Grid>
@@ -247,4 +261,4 @@ class Account extends Component {
     }
 }
 
-export default inject("authStore", "accountStore", "confirmAttributeStore")(observer(Account));
+export default inject("authStore", "accountStore", "confirmAttributeStore", "connectionsStore")(observer(Account));

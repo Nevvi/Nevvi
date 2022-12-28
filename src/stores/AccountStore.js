@@ -14,10 +14,14 @@ class AccountStore {
     imageLoading = false
     newImage = null
 
+    rejectedUsers = []
+    loadingRejectedUsers = false
+
     constructor() {
         makeAutoObservable(this)
         reaction(() => this.userId, (userId) => {
             this.getUser()
+            this.getRejectedUsers()
         })
     }
 
@@ -38,6 +42,20 @@ class AccountStore {
             router.push("/")
         } finally {
             this.setLoading(false)
+        }
+    }
+
+    async getRejectedUsers() {
+        this.setLoadingRejectedUseres(true)
+        this.setRejectedUsers([])
+
+        try {
+            const res = await axios.get(`/api/user/v1/users/${this.userId}/connections/rejected`)
+            this.setRejectedUsers(res.data)
+        } catch (e) {
+            toast.error(`Failed to load users because ${e.response.data}`)
+        } finally {
+            this.setLoadingRejectedUseres(false)
         }
     }
 
@@ -140,8 +158,16 @@ class AccountStore {
         this.updatedUser = updatedUser
     }
 
+    setRejectedUsers(users) {
+        this.rejectedUsers = users
+    }
+
     setLoading(loading) {
         this.loading = loading
+    }
+
+    setLoadingRejectedUseres(loading) {
+        this.loadingRejectedUsers = loading
     }
 
     setImageLoading(imageLoading) {
