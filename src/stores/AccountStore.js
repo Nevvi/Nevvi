@@ -100,7 +100,9 @@ class AccountStore {
                 } else if (key === "address") {
                     // If updating address make sure we aren't sending over a partial one
                     Object.keys(this.updatedUser[key]).forEach(addressKey => {
-                        if (addressKey !== "unit" && !this.updatedUser[key][addressKey]) {
+                        if (addressKey === "unit" && !this.updatedUser[key][addressKey]) {
+                            this.updatedUser[key][addressKey] = ""
+                        } else if (!this.updatedUser[key][addressKey]) {
                             throw new SyntaxError(`All address fields are required for updating`)
                         }
                     })
