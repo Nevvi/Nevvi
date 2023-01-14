@@ -155,7 +155,7 @@ class Account extends Component {
                                         onChange={(e) => accountStore.updateUser("lastName", e.target.value)}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid item xs={8}>
                                     <TextField
                                         fullWidth
                                         variant="standard"
@@ -164,6 +164,17 @@ class Account extends Component {
                                         type="text"
                                         value={(user.address && user.address.street) || ""}
                                         onChange={(e) => accountStore.updateAddress("street", e.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <TextField
+                                        fullWidth
+                                        variant="standard"
+                                        id="unit-input"
+                                        label="Unit"
+                                        type="text"
+                                        value={(user.address && user.address.unit) || ""}
+                                        onChange={(e) => accountStore.updateAddress("unit", e.target.value)}
                                     />
                                 </Grid>
                                 <Grid item md={4} xs={12} sx={{pr: ["0", "1rem"]}}>

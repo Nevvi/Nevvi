@@ -1,10 +1,16 @@
 import {makeAutoObservable, reaction} from "mobx";
 import axios from "axios";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import {router} from "../router";
 
 import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber'
+
 const PNU = PhoneNumberUtil.getInstance();
+
+
+function isPopulated(val) {
+    return val !== null && val !== undefined && val !== ""
+}
 
 class AccountStore {
     userId = null
@@ -98,14 +104,24 @@ class AccountStore {
                     }
                     userUpdates[key] = PNU.format(number, PhoneNumberFormat.E164);
                 } else if (key === "address") {
-                    // If updating address make sure we aren't sending over a partial one
-                    Object.keys(this.updatedUser[key]).forEach(addressKey => {
-                        if (addressKey === "unit" && !this.updatedUser[key][addressKey]) {
-                            this.updatedUser[key][addressKey] = ""
-                        } else if (!this.updatedUser[key][addressKey]) {
-                            throw new SyntaxError(`All address fields are required for updating`)
-                        }
-                    })
+                    const addressKeys = Object.keys(this.updatedUser[key])
+
+                    // If any address field is entered we need all fields
+                    if (addressKeys.find(addressKey => isPopulated(this.updatedUser[key][addressKey]))) {
+                        // If updating address make sure we aren't sending over a partial one
+                        Object.keys(this.updatedUser[key]).forEach(addressKey => {
+                            if (addressKey === "unit" && !this.updatedUser[key][addressKey]) {
+                                this.updatedUser[key][addressKey] = null
+                            } else if (!this.updatedUser[key][addressKey]) {
+                                throw new SyntaxError(`All address fields are required for updating`)
+                            }
+                        })
+                    } else {
+                        Object.keys(this.updatedUser[key]).forEach(addressKey => {
+                            this.updatedUser[key][addressKey] = null
+                        })
+                    }
+
                     userUpdates[key] = this.updatedUser[key];
                 } else {
                     userUpdates[key] = this.updatedUser[key];
@@ -135,7 +151,7 @@ class AccountStore {
     }
 
     updateAddress(field, value) {
-        if(field === "zipCode") {
+        if (field === "zipCode") {
             if (isNaN(value)) return
             value = parseInt(value)
         }
