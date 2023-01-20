@@ -2,11 +2,27 @@ import {makeAutoObservable, reaction} from "mobx";
 import axios from "axios";
 import {toast} from 'react-toastify';
 import {router} from "../router";
+import Resizer from "react-image-file-resizer";
 
 import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber'
 
 const PNU = PhoneNumberUtil.getInstance();
 
+const resizeFile = (file, fileType, maxWidth = 512, maxHeight = 512) =>
+    new Promise((resolve) => {
+        Resizer.imageFileResizer(
+            file,
+            maxWidth,
+            maxHeight,
+            fileType,
+            100,
+            0,
+            (uri) => {
+                resolve(uri);
+            },
+            "file"
+        );
+    });
 
 function isPopulated(val) {
     return val !== null && val !== undefined && val !== ""
@@ -52,7 +68,7 @@ class AccountStore {
     }
 
     async getRejectedUsers() {
-        this.setLoadingRejectedUseres(true)
+        this.setLoadingRejectedUsers(true)
         this.setRejectedUsers([])
         if (!this.userId) {
             return
@@ -64,16 +80,22 @@ class AccountStore {
         } catch (e) {
             toast.error(`Failed to load users because ${e.response.data}`)
         } finally {
-            this.setLoadingRejectedUseres(false)
+            this.setLoadingRejectedUsers(false)
         }
     }
 
     async saveUserImage(image) {
         this.setImageLoading(true)
+        let imageToUpload = image
         try {
+            const fileType = image.type === "image/jpeg" ? "JPEG" : "PNG"
+            if (image.size > 500000) {
+                imageToUpload = await resizeFile(image, fileType)
+            }
+
             const url = `/api/user/v1/users/${this.user.id}/image`;
             const formData = new FormData();
-            formData.append('file', image)
+            formData.append('file', imageToUpload)
             const config = {
                 headers: {
                     'content-type': 'multipart/form-data'
@@ -187,7 +209,7 @@ class AccountStore {
         this.loading = loading
     }
 
-    setLoadingRejectedUseres(loading) {
+    setLoadingRejectedUsers(loading) {
         this.loadingRejectedUsers = loading
     }
 
