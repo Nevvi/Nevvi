@@ -11,6 +11,7 @@ import {inject, observer} from "mobx-react";
 
 // UIs
 import Account from './components/account/Account.js';
+import Help from './components/admin/Help.js';
 
 // Auth
 import CreateAccount from './components/authentication/CreateAccount.js';
@@ -61,6 +62,7 @@ class App extends Component {
                         <InsecureRoute path="/createAccount" component={CreateAccount}/>
                         <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
                         <InsecureRoute path="/login" component={Login}/>
+                        <InsecureRoute path="/help" component={Help}/>
                     </Switch>
                 </Grid>
             </Stack>
