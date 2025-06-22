@@ -4,8 +4,10 @@ import axios from "axios";
 import {router} from '../router'
 
 class CreateAccountStore {
-    email = ''
+    username = ''
     password = ''
+    showPassword = false
+    errors = {}
     loading = false
 
     constructor(authStore, confirmAccountStore) {
@@ -20,13 +22,13 @@ class CreateAccountStore {
             // Create the unconfirmed account
             const registerResponse = await axios.post(
                 `/api/authentication/v1/register`,
-                {email: this.email, password: this.password}
+                {username: this.username, password: this.password}
             )
 
-            const {email, password} = this
-            this.confirmAccountStore.setEmail(email)
+            const {username, password} = this
+            this.confirmAccountStore.setUsername(username)
             this.confirmAccountStore.setCallback(async () => {
-                await this.authStore.login(email, password)
+                await this.authStore.login(username, password)
                 router.push('/')
             })
             this.confirmAccountStore.setConfirmationCodePrompt(`You're account has been created! We have sent a 
@@ -34,7 +36,7 @@ class CreateAccountStore {
                 setting up your account.`)
             router.push('/confirmAccount')
 
-            this.setEmail('')
+            this.setUsername('')
             this.setPassword('')
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
@@ -44,12 +46,16 @@ class CreateAccountStore {
         }
     }
 
-    setEmail(email) {
-        this.email = email
+    setUsername(username) {
+        this.username = username
     }
 
     setPassword(password) {
         this.password = password
+    }
+
+    toggleShowPassword() {
+        this.showPassword = !this.showPassword
     }
 
     setLoading(loading) {

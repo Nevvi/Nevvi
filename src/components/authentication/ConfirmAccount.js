@@ -1,50 +1,114 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
-import {TextField, Grid, Box, Typography} from "@mui/material";
+import {
+    TextField,
+    Box,
+    Typography,
+    Container,
+    Card,
+    CardContent,
+} from "@mui/material";
 import {LoadingButton} from "@mui/lab";
+import Logo from "../utils/Logo";
 
 class ConfirmAccount extends Component {
     render() {
-        const {confirmAccountStore} = this.props
-        const isDisabled = confirmAccountStore.email === '' || confirmAccountStore.confirmationCode === ''
-
+        const {confirmAccountStore} = this.props;
+        const isDisabled = confirmAccountStore.username === '' || confirmAccountStore.confirmationCode === ''
         return (
-            <Grid container rowSpacing={1}>
-                <Typography variant={"h6"}>{confirmAccountStore.confirmationCodePrompt}</Typography>
-                <Grid item xs={12}>
-                    <TextField
-                        margin="dense"
-                        label="Email"
-                        fullWidth
-                        variant="standard"
-                        value={confirmAccountStore.email}
-                        onChange={(e) => confirmAccountStore.setEmail(e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Confirmation Code"
-                        fullWidth
-                        variant="standard"
-                        value={confirmAccountStore.confirmationCode}
-                        onChange={(e) => confirmAccountStore.setConfirmationCode(e.target.value)}
-                    />
-                </Grid>
-                <Box mt={2}>
-                    <LoadingButton
-                        size={"small"}
-                        variant="contained"
-                        color="primary"
-                        loading={confirmAccountStore.loading}
-                        disabled={isDisabled}
-                        onClick={async () => await confirmAccountStore.confirmAccount()}
+            <Container component="main" maxWidth="sm">
+                <Box
+                    sx={{
+                        minHeight: '80vh',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        py: 3
+                    }}
+                >
+                    <Card
+                        sx={{
+                            width: '100%',
+                            maxWidth: 450,
+                            boxShadow: 1,
+                            borderRadius: 2
+                        }}
                     >
-                        Confirm Account
-                    </LoadingButton>
+                        <CardContent sx={{ p: 3 }}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    mb: 3
+                                }}
+                            >
+                                <Logo />
+
+                                <Typography
+                                    component="h1"
+                                    variant={'h4'}
+                                    fontWeight="bold"
+                                    color="text.primary"
+                                >
+                                    Confirm
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    textAlign="center"
+                                    sx={{ mt: 1 }}
+                                >
+                                    {confirmAccountStore.confirmationCodePrompt}
+                                </Typography>
+                            </Box>
+
+                            <Box textAlign={"center"}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="username"
+                                    label="Phone Number"
+                                    name="username"
+                                    autoComplete="username"
+                                    autoFocus
+                                    value={confirmAccountStore.username}
+                                    onChange={(e) => confirmAccountStore.setUsername(e.target.value)}
+                                    error={!!confirmAccountStore.errors.username}
+                                    helperText={confirmAccountStore.errors.username}
+                                    sx={{ mb: 2 }}
+                                />
+
+                                <TextField
+                                    required
+                                    fullWidth
+                                    name="confirmation"
+                                    label="Confirmation Code"
+                                    type="text"
+                                    id="confirmation"
+                                    autoComplete="confirmation-code"
+                                    value={confirmAccountStore.confirmationCode}
+                                    onChange={(e) => confirmAccountStore.setConfirmationCode(e.target.value)}
+                                    error={!!confirmAccountStore.errors.confirmationCode}
+                                    helperText={confirmAccountStore.errors.confirmationCode}
+                                    sx={{ mb: 2 }}
+                                />
+
+                                <LoadingButton
+                                    size={"medium"}
+                                    variant="contained"
+                                    color="primary"
+                                    loading={confirmAccountStore.loading}
+                                    disabled={isDisabled}
+                                    onClick={async () => await confirmAccountStore.confirmAccount()}>
+                                    Submit
+                                </LoadingButton>
+                            </Box>
+                        </CardContent>
+                    </Card>
                 </Box>
-            </Grid>
+            </Container>
         );
     }
 }

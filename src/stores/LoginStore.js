@@ -6,6 +6,8 @@ import {getUser} from "../components/utils/httpUtils";
 class LoginStore {
     username = ''
     password = ''
+    showPassword = false
+    errors = {}
     loading = false
 
     constructor(authStore) {
@@ -36,6 +38,10 @@ class LoginStore {
 
     setPassword(password) {
         this.password = password
+    }
+
+    toggleShowPassword() {
+        this.showPassword = !this.showPassword
     }
 
     setLoading(loading) {

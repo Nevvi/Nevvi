@@ -3,12 +3,13 @@ import {toast} from "react-toastify";
 import axios from "axios";
 import {router} from '../router'
 
-const DEFAULT_PROMPT = 'Enter the confirmation code that we previously sent to your email'
+const DEFAULT_PROMPT = 'Enter the confirmation code that we previously sent to your phone number'
 
 class ConfirmAccountStore {
-    email = ''
+    username = ''
     confirmationCodePrompt = DEFAULT_PROMPT
     confirmationCode = ''
+    errors = {}
     callback = null
     loading = false
 
@@ -19,10 +20,10 @@ class ConfirmAccountStore {
     async confirmAccount() {
         try {
             this.setLoading(true)
-            // Confirm the account using email as the username
+            // Confirm the account using username as the username
             await axios.post(
                 `/api/authentication/v1/confirm`,
-                {username: this.email, confirmationCode: this.confirmationCode}
+                {username: this.username, confirmationCode: this.confirmationCode}
             )
 
             if (this.callback) {
@@ -30,7 +31,7 @@ class ConfirmAccountStore {
                 toast.success("Successfully verified account")
             } else {
                 router.push('/login')
-                toast.success("Successfully verified account. You can now use that email to log in.")
+                toast.success("Successfully verified account. You can now use that username to log in.")
             }
 
             this.setEmail('')
@@ -44,8 +45,8 @@ class ConfirmAccountStore {
         }
     }
 
-    setEmail(email) {
-        this.email = email
+    setUsername(username) {
+        this.username = username
     }
 
     setConfirmationCodePrompt(confirmationCodePrompt) {

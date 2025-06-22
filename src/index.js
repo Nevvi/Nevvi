@@ -29,12 +29,14 @@ import {ProSidebarProvider} from "react-pro-sidebar";
 import PermissionGroupModalStore from "./stores/PermissionGroupModalStore";
 import {createTheme, ThemeProvider} from "@mui/material";
 import ConnectionStore from "./stores/ConnectionStore";
+import InviteFormStore from "./stores/InviteFormStore";
 
 const accountStore = new AccountStore();
 const authStore = new AuthStore(accountStore);
 const connectionStore = new ConnectionStore(authStore, accountStore);
 const confirmAttributeStore = new ConfirmAttributeStore(accountStore);
 const loginStore = new LoginStore(authStore);
+const inviteFormStore = new InviteFormStore(loginStore);
 const confirmAccountStore = new ConfirmAccountStore();
 const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore);
 const createPermissionGroupStore = new CreatePermissionGroupStore(authStore, accountStore);
@@ -45,6 +47,7 @@ const permissionGroupModalStore = new PermissionGroupModalStore(authStore);
 const stores = {
     authStore: authStore,
     accountStore: accountStore,
+    inviteFormStore: inviteFormStore,
     connectionStore: connectionStore,
     loginStore: loginStore,
     createAccountStore: createAccountStore,
@@ -60,16 +63,10 @@ export const theme = createTheme({
     palette: {
         type: 'light',
         primary: {
-            main: '#2779A7',
-            light: '#5293B8',
-            dark: '#1B5474',
+            main: '#0098ff',
+            light: '#0098ff',
+            dark: '#162d50',
             contrastText: '#fff'
-        },
-        secondary: {
-            main: '#49C5B6',
-            light: '#6DD0C4',
-            dark: '#33897F',
-            contrastText: 'rgba(0, 0, 0, 0.87)'
         },
         background: {
             default: '#f7f9fb',

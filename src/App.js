@@ -23,6 +23,7 @@ import Navigation from "./components/navbar/Navigation";
 import {Grid, Stack} from "@mui/material";
 import Onboarding from "./components/onboarding/Onboarding";
 import Connection from "./components/connections/Connection";
+import InviteForm from "./components/account/InviteForm";
 
 
 const InsecureRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
@@ -59,6 +60,7 @@ class App extends Component {
                         <SecureRoute path="/connections" exact={true} component={Connections}/>
                         <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
                         <SecureRoute path="/connections/:userId" exact={true} component={Connection}/>
+                        <InsecureRoute path="/invite/:inviteId" exact={true} component={InviteForm}/>
                         <InsecureRoute path="/createAccount" component={CreateAccount}/>
                         <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
                         <InsecureRoute path="/login" component={Login}/>
