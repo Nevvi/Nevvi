@@ -1,3 +1,8 @@
+// Device detection utilities
+const isIOSDevice = () => {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+};
+
 export const AppStoreButton = ({
                                    url,
                                    theme = 'light',
@@ -5,7 +10,11 @@ export const AppStoreButton = ({
                                    height = 60,
                                    style = {}
                                }) => {
-    // TODO - only show on ios
+    // Only render on iOS mobile devices
+    if (!isIOSDevice() && window.location.hostname !== "localhost") {
+        return null;
+    }
+
     const isDark = theme === 'dark';
 
     const buttonStyle = {
