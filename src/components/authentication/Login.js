@@ -14,6 +14,7 @@ import {LoadingButton} from "@mui/lab";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import Logo from "../utils/Logo";
 import {router} from "../../router";
+import {AppStoreButton} from "./AppStoreButton";
 
 class Login extends Component {
     constructor(props) {
@@ -149,6 +150,8 @@ class Login extends Component {
                             </Box>
                         </CardContent>
                     </Card>
+
+                    <AppStoreButton url="https://apps.apple.com/us/app/nevvi/id1669915435" style={{marginTop: "2rem"}}/>
                 </Box>
             </Container>
         );

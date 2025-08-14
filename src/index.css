@@ -59,4 +59,12 @@ code {
         bottom: 16px !important;
         left: 16px !important;
     }
+
+    .hide-on-desktop {
+        display: block !important;
+    }
+}
+
+.hide-on-desktop {
+    display: none;
 }

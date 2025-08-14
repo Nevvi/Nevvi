@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
 import Logo from "../utils/Logo";
+import {AppStoreButton} from "./AppStoreButton";
 
 class ConfirmAccount extends Component {
     render() {
@@ -107,6 +108,8 @@ class ConfirmAccount extends Component {
                             </Box>
                         </CardContent>
                     </Card>
+
+                    <AppStoreButton url="https://apps.apple.com/us/app/nevvi/id1669915435" style={{marginTop: "2rem"}}/>
                 </Box>
             </Container>
         );
