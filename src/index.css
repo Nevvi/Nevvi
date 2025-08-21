@@ -4,11 +4,12 @@ html {
 
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #fafafa;
 }
 
 code {
@@ -16,21 +17,18 @@ code {
     monospace;
 }
 
-.app-container {
-    padding: 1rem !important;
-    display: block !important;
-    min-height: 100vh;
-}
-
+/* Remove old app-container styles since we're using proper layout components now */
 .profile-image, .my-profile-image {
     width: 100% !important;
     aspect-ratio: 1 !important;
     height: inherit !important;
+    border-radius: 12px;
 }
 
 .my-profile-image:hover {
     cursor: pointer;
-    opacity: 0.7;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
 }
 
 .connection:hover {
@@ -41,15 +39,13 @@ code {
     position: fixed !important;
     top: 16px;
     right: 16px;
+    z-index: 1000;
 }
 
-@media screen and (min-width: 0px) and (max-width: 576px) {
+/* Mobile adjustments */
+@media screen and (max-width: 899px) {
     html {
         font-size: 14px !important;
-    }
-
-    .app-container {
-        min-height: calc(85vh - 2rem) !important;
     }
 
     .connection-filter-button {
@@ -63,8 +59,48 @@ code {
     .hide-on-desktop {
         display: block !important;
     }
+
+    /* Add padding for mobile app bar */
+    body {
+        padding-top: 64px;
+    }
 }
 
 .hide-on-desktop {
     display: none;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #0098ff;
+    border-radius: 10px;
+    opacity: 0.7;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0078cc;
+}
+
+/* Smooth transitions */
+* {
+    box-sizing: border-box;
+}
+
+a {
+    color: #0098ff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0078cc;
+    text-decoration: underline;
 }

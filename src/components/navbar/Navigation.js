@@ -1,113 +1,308 @@
 import React from 'react';
-import {Menu, MenuItem, Sidebar, useProSidebar} from "react-pro-sidebar";
-import {inject, observer} from "mobx-react";
-import {router} from "../../router";
-import {Button, Divider, IconButton, styled, useTheme} from "@mui/material";
-import {AccountCircle, Home, Login, Logout, Menu as MenuIcon} from "@mui/icons-material";
+import { inject, observer } from 'mobx-react';
+import {
+    Drawer,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Box,
+    Typography,
+    Divider,
+    Avatar,
+    useTheme,
+    useMediaQuery,
+    IconButton,
+    AppBar,
+    Toolbar,
+} from '@mui/material';
+import {
+    People,
+    PersonAdd,
+    AccountCircle,
+    Help,
+    Logout,
+    Menu as MenuIcon,
+} from '@mui/icons-material';
+import { router } from '../../router';
+import Logo from '../utils/Logo';
 
-const MenuContainer = styled('div')(({theme}) => ({
-    [theme.breakpoints.up('sm')]: {
-        display: "flex",
-        height: "100vh",
-        position: "relative"
-    },
-    [theme.breakpoints.down('sm')]: {
-        display: "flex",
-        height: "3.5rem",
-        width: "100%",
-        position: "relative",
-        justifyContent: "space-between"
-    },
-    backgroundColor: theme.palette.primary.main,
-}));
+const Navigation = inject('authStore', 'accountStore')(observer(({ authStore, accountStore }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const [mobileOpen, setMobileOpen] = React.useState(false);
 
-const MobileMenuTitle = styled(Button)(({theme}) => ({
-    [theme.breakpoints.up('sm')]: {
-        display: "none",
-    },
-    color: theme.palette.primary.contrastText,
-    fontSize: "1.1rem",
-    fontWeight: "bold"
-}));
-
-const MobileMenuButton = styled(IconButton)(({theme}) => ({
-    [theme.breakpoints.up('sm')]: {
-        display: "none",
-    },
-    color: theme.palette.primary.contrastText
-}));
-
-const StyledMenuItem = styled(MenuItem)(({theme}) => ({
-    "a:hover": {
-        backgroundColor: theme.palette.primary.light
-    },
-}))
-
-function Navigation(props) {
-    const theme = useTheme()
-    const {authStore} = props
-    const {collapsed, collapseSidebar, broken} = useProSidebar();
-    const [mobileToggled, setMobileToggled] = React.useState(false)
-
-    const sidebarLeft = mobileToggled || !broken ? '0' : '-250px'
-
-    async function logoutAccount(event) {
-        event.preventDefault()
-        await props.authStore.logout()
-        router.push("/")
-        setMobileToggled(false)
-        collapseSidebar(false)
+    if (!authStore.isLoggedIn) {
+        return null; // Don't show navigation for unauthenticated users
     }
 
-    function handleRoute(route) {
-        router.push(route)
-        setMobileToggled(false)
-    }
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
-    return <MenuContainer>
-        <MobileMenuTitle onClick={() => {handleRoute("/")}}>
-            Nevvi
-        </MobileMenuTitle>
-        <MobileMenuButton onClick={() => {
-            setMobileToggled(!mobileToggled)
-            collapseSidebar(false)
-        }}>
-            <MenuIcon/>
-        </MobileMenuButton>
+    const navigationItems = [
+        {
+            text: 'Connections',
+            icon: <People />,
+            path: '/connections',
+            onClick: () => router.push('/connections'),
+        },
+        {
+            text: 'Add Connection',
+            icon: <PersonAdd />,
+            path: '/connections/new',
+            onClick: () => router.push('/connections/new'),
+        },
+        {
+            text: 'My Account',
+            icon: <AccountCircle />,
+            path: '/account',
+            onClick: () => router.push('/account'),
+        },
+        {
+            text: 'Help',
+            icon: <Help />,
+            path: '/help',
+            onClick: () => router.push('/help'),
+        },
+    ];
 
-        <Sidebar
-            defaultCollapsed={false}
-            breakPoint={"sm"}
-            style={{
-                left: sidebarLeft,
-                color: theme.palette.primary.contrastText
+    const drawerWidth = 280;
+
+    const drawer = (
+        <Box
+            sx={{
+                height: '100%',
+                background: `linear-gradient(180deg, ${theme.palette.secondary.main} 0%, ${theme.palette.tertiary.main} 100%)`,
+                color: 'white',
+                display: 'flex',
+                flexDirection: 'column',
             }}
-            backgroundColor={theme.palette.primary.main}
         >
-            <Menu closeOnClick={true}>
-                {!broken && <div>
-                    <StyledMenuItem icon={<MenuIcon/>} onClick={() => collapseSidebar(!collapsed)}/>
-                    <Divider/>
-                </div>}
+            {/* Header */}
+            <Box
+                sx={{
+                    p: 3,
+                    textAlign: 'center',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                }}
+            >
+                <Logo color="white" size={40} />
+                <Typography
+                    variant="h6"
+                    sx={{
+                        mt: 1,
+                        fontWeight: 600,
+                        color: 'white',
+                    }}
+                >
+                    Nevvi
+                </Typography>
+            </Box>
 
-                <StyledMenuItem onClick={() => handleRoute("/")} icon={<Home/>}>Home</StyledMenuItem>
+            {/* User Profile Section */}
+            <Box
+                sx={{
+                    p: 3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                }}
+            >
+                <Avatar
+                    sx={{
+                        width: 48,
+                        height: 48,
+                        backgroundColor: theme.palette.primary.main,
+                        mr: 2,
+                    }}
+                >
+                    {accountStore.user?.firstName?.charAt(0) || 'U'}
+                </Avatar>
+                <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                    <Typography
+                        variant="subtitle1"
+                        sx={{
+                            fontWeight: 600,
+                            color: 'white',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {accountStore.user?.firstName && accountStore.user?.lastName
+                            ? `${accountStore.user.firstName} ${accountStore.user.lastName}`
+                            : 'Welcome'}
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {accountStore.user?.phoneNumber || 'User'}
+                    </Typography>
+                </Box>
+            </Box>
 
-                <Divider/>
+            {/* Navigation Items */}
+            <List sx={{ flexGrow: 1, py: 2 }}>
+                {navigationItems.map((item) => {
+                    const isActive = router.location.pathname === item.path ||
+                        (item.path === '/connections' && router.location.pathname === '/');
 
-                {authStore.isLoggedIn &&
-                    <StyledMenuItem onClick={() => handleRoute("/account")}
-                                    icon={<AccountCircle/>}>Account</StyledMenuItem>
-                }
+                    return (
+                        <ListItem
+                            button
+                            key={item.text}
+                            onClick={() => {
+                                item.onClick();
+                                if (isMobile) setMobileOpen(false);
+                            }}
+                            sx={{
+                                mx: 2,
+                                mb: 1,
+                                borderRadius: 2,
+                                backgroundColor: isActive ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                                },
+                                transition: 'all 0.2s ease',
+                            }}
+                        >
+                            <ListItemIcon
+                                sx={{
+                                    color: isActive ? theme.palette.primary.light : 'rgba(255, 255, 255, 0.7)',
+                                    minWidth: 40,
+                                }}
+                            >
+                                {item.icon}
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={item.text}
+                                sx={{
+                                    color: isActive ? 'white' : 'rgba(255, 255, 255, 0.9)',
+                                    '& .MuiListItemText-primary': {
+                                        fontWeight: isActive ? 600 : 400,
+                                    },
+                                }}
+                            />
+                        </ListItem>
+                    );
+                })}
+            </List>
 
-                <Divider/>
+            <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
 
-                {authStore.isLoggedIn ?
-                    <StyledMenuItem onClick={(e) => logoutAccount(e)} icon={<Logout/>}>Logout</StyledMenuItem> :
-                    <StyledMenuItem onClick={() => handleRoute('/login')} icon={<Login/>}> Login </StyledMenuItem>
-                }
-            </Menu>
-        </Sidebar>
-    </MenuContainer>;
-}
+            {/* Logout */}
+            <ListItem
+                button
+                onClick={() => {
+                    authStore.logout();
+                    if (isMobile) setMobileOpen(false);
+                }}
+                sx={{
+                    mx: 2,
+                    my: 2,
+                    borderRadius: 2,
+                    '&:hover': {
+                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                    },
+                }}
+            >
+                <ListItemIcon sx={{ color: 'rgba(255, 255, 255, 0.7)', minWidth: 40 }}>
+                    <Logout />
+                </ListItemIcon>
+                <ListItemText
+                    primary="Sign Out"
+                    sx={{
+                        color: 'rgba(255, 255, 255, 0.9)',
+                    }}
+                />
+            </ListItem>
+        </Box>
+    );
 
-export default inject("authStore")(observer(Navigation));
+    return (
+        <>
+            {/* Mobile App Bar */}
+            {isMobile && (
+                <AppBar
+                    position="fixed"
+                    sx={{
+                        width: '100%',
+                        background: `linear-gradient(90deg, ${theme.palette.secondary.main} 0%, ${theme.palette.tertiary.main} 100%)`,
+                        zIndex: theme.zIndex.drawer + 1,
+                    }}
+                >
+                    <Toolbar
+            sx={{
+              minHeight: '64px !important',
+              px: 2,
+              justifyContent: 'space-between',
+            }}
+          >
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{
+                p: 1.5,
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+
+            {/* Optional: You could add a profile avatar or action button here */}
+            <Box sx={{ width: 56 }} /> {/* Spacer to keep title centered */}
+          </Toolbar>
+        </AppBar>
+      )}
+
+      {/* Mobile Drawer */}
+      {isMobile && (
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              top: '64px', // Start below the app bar
+              height: 'calc(100% - 64px)', // Adjust height to account for app bar
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      )}
+
+            {/* Desktop Drawer */}
+            {!isMobile && (
+                <Drawer
+                    variant="permanent"
+                    sx={{
+                        width: drawerWidth,
+                        flexShrink: 0,
+                        '& .MuiDrawer-paper': {
+                            width: drawerWidth,
+                            boxSizing: 'border-box',
+                        },
+                    }}
+                >
+                    {drawer}
+                </Drawer>
+            )}
+        </>
+    );
+}));
+
+export default Navigation;

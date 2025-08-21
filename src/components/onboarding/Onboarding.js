@@ -1,170 +1,270 @@
 import React from 'react';
-import {inject, observer} from "mobx-react";
-import {Box, Button, Grid, TextField, useTheme} from "@mui/material";
-import Carousel from "react-material-ui-carousel";
-import {LoadingButton} from "@mui/lab";
+import { inject, observer } from "mobx-react";
+import {
+    Box,
+    Typography,
+    TextField,
+    Container,
+    Paper,
+    Stepper,
+    Step,
+    StepLabel,
+    Stack,
+    Card,
+    CardContent,
+    useTheme,
+    useMediaQuery,
+} from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { router } from '../../router';
 import axios from "axios";
-import {router} from "../../router";
+import Logo from "../utils/Logo";
+import {
+    PersonAdd,
+    Security,
+    ConnectWithoutContact,
+    CheckCircle,
+} from "@mui/icons-material";
 
 function Onboarding(props) {
-    const theme = useTheme()
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const [firstName, setFirstName] = React.useState("");
     const [lastName, setLastName] = React.useState("");
     const [loading, setLoading] = React.useState(false);
-    const [index, setIndex] = React.useState(0);
+    const [currentStep, setCurrentStep] = React.useState(0);
 
-    const {authStore} = props
+    const { authStore } = props;
+
+    const steps = [
+        { label: 'Welcome', icon: <CheckCircle /> },
+        { label: 'Your Info', icon: <PersonAdd /> },
+        { label: 'Get Started', icon: <ConnectWithoutContact /> }
+    ];
 
     async function updateUser() {
-        setLoading(true)
+        setLoading(true);
         try {
-            await axios.patch(`/api/user/v1/users/${authStore.userId}`, {firstName, lastName})
-            setIndex(2)
+            await axios.patch(`/api/user/v1/users/${authStore.userId}`, { firstName, lastName });
+            setCurrentStep(2);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
     async function completeOnboarding() {
-        setLoading(true)
+        setLoading(true);
         try {
-            await axios.patch(`/api/user/v1/users/${authStore.userId}`, {onboardingCompleted: true})
-            setLoading(false)
-            router.push("/")
+            await axios.patch(`/api/user/v1/users/${authStore.userId}`, { onboardingCompleted: true });
+            router.push("/");
         } catch {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
+    const WelcomeStep = () => (
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="h3" component="h1" gutterBottom color="primary">
+                Welcome to Nevvi!
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ mb: 4, maxWidth: '600px', mx: 'auto' }}>
+                Keep your connections updated automatically when life changes happen
+            </Typography>
+
+            <Stack spacing={3} sx={{ mt: 4, maxWidth: '500px', mx: 'auto' }}>
+                <Card elevation={2}>
+                    <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <PersonAdd color="primary" sx={{ fontSize: 40 }} />
+                        <Box sx={{ textAlign: 'left' }}>
+                            <Typography variant="h6" gutterBottom>
+                                Stay Connected
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                No more hunting down everyone's contact info when you move or change numbers
+                            </Typography>
+                        </Box>
+                    </CardContent>
+                </Card>
+
+                <Card elevation={2}>
+                    <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Security color="primary" sx={{ fontSize: 40 }} />
+                        <Box sx={{ textAlign: 'left' }}>
+                            <Typography variant="h6" gutterBottom>
+                                You're In Control
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Create permission groups to decide what each person can see
+                            </Typography>
+                        </Box>
+                    </CardContent>
+                </Card>
+
+                <Card elevation={2}>
+                    <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <ConnectWithoutContact color="primary" sx={{ fontSize: 40 }} />
+                        <Box sx={{ textAlign: 'left' }}>
+                            <Typography variant="h6" gutterBottom>
+                                Automatic Updates
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                When you update your info, your connections see the changes instantly
+                            </Typography>
+                        </Box>
+                    </CardContent>
+                </Card>
+            </Stack>
+
+            <LoadingButton
+                variant="contained"
+                size="large"
+                onClick={() => setCurrentStep(1)}
+                sx={{ mt: 4, px: 4, py: 1.5 }}
+            >
+                Get Started
+            </LoadingButton>
+        </Box>
+    );
+
+    const PersonalInfoStep = () => (
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="h4" component="h2" gutterBottom>
+                Tell Us About Yourself
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+                This helps your connections identify you when they search
+            </Typography>
+
+            <Stack spacing={3} sx={{ maxWidth: '400px', mx: 'auto' }}>
+                <TextField
+                    required
+                    fullWidth
+                    id="first-name-input"
+                    label="First Name"
+                    type="text"
+                    autoFocus
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                />
+
+                <TextField
+                    required
+                    fullWidth
+                    id="last-name-input"
+                    label="Last Name"
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                />
+
+                <LoadingButton
+                    fullWidth
+                    size="large"
+                    variant="contained"
+                    loading={loading}
+                    disabled={firstName === "" || lastName === ""}
+                    onClick={updateUser}
+                    sx={{ py: 1.5 }}
+                >
+                    {loading ? 'Saving...' : 'Continue'}
+                </LoadingButton>
+            </Stack>
+        </Box>
+    );
+
+    const CompletionStep = () => (
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+            <CheckCircle color="success" sx={{ fontSize: 80, mb: 2 }} />
+            <Typography variant="h4" component="h2" gutterBottom>
+                You're All Set!
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
+                Ready to start making connections
+            </Typography>
+
+            <Box sx={{ maxWidth: '500px', mx: 'auto', mb: 4 }}>
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                    <strong>Next steps:</strong>
+                </Typography>
+                <Stack spacing={2} sx={{ textAlign: 'left' }}>
+                    <Typography variant="body2">
+                        • Create permission groups to control what information you share
+                    </Typography>
+                    <Typography variant="body2">
+                        • Search for friends and family to connect with
+                    </Typography>
+                    <Typography variant="body2">
+                        • Update your profile with contact details and personal info
+                    </Typography>
+                </Stack>
+            </Box>
+
+            <LoadingButton
+                variant="contained"
+                size="large"
+                loading={loading}
+                onClick={completeOnboarding}
+                sx={{ px: 4, py: 1.5 }}
+            >
+                {loading ? 'Finishing...' : 'Enter Nevvi'}
+            </LoadingButton>
+        </Box>
+    );
+
+    const renderStep = () => {
+        switch (currentStep) {
+            case 0: return <WelcomeStep />;
+            case 1: return <PersonalInfoStep />;
+            case 2: return <CompletionStep />;
+            default: return <WelcomeStep />;
+        }
+    };
+
     return (
-        <Grid container justifyContent={"center"}>
-            <Grid container item xs={12} md={6}>
-                <Carousel
-                    autoPlay={false}
-                    animation={"slide"}
-                    sx={{width: "100%"}}
-                    height={"30rem"}
-                    duration={500}
-                    index={index}
-                    navButtonsAlwaysInvisible={true}
-                    indicatorIconButtonProps={{
-                        style: {
-                            margin: "0.3rem",
-                            backgroundColor: theme.palette.primary.light,
-                            color: theme.palette.primary.light,
-                        }
-                    }}
-                    activeIndicatorIconButtonProps={{
-                        style: {
-                            backgroundColor: theme.palette.primary.dark,
-                            color: theme.palette.primary.dark,
-                        }
-                    }}
-                    indicatorContainerProps={{
-                        style: {
-                            marginTop: theme.spacing(6),
-                            textAlign: "center"
-                        }
+        <Box
+            sx={{
+                minHeight: '100vh',
+                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                py: 4,
+            }}
+        >
+            <Container maxWidth="lg">
+                <Box sx={{ textAlign: 'center', mb: 4 }}>
+                    <Logo color="white" size={60} />
+                </Box>
+
+                <Paper
+                    elevation={24}
+                    sx={{
+                        borderRadius: 3,
+                        overflow: 'hidden',
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
                     }}
                 >
-                    <div>
-                        <h2 style={{marginBottom: theme.spacing(2)}}>Welcome to Nevvi!</h2>
-                        <p>
-                            Our goal is to keep those in your life updated when those inevitable life changes happen.
-                        </p>
-                        <p>
-                            How many times have you moved and had to let everyone in your life know your latest address
-                            to receive mail at? Have you ever gotten a new phone number and had to find a way to tell
-                            everyone what that new number is?
-                        </p>
-                        <p>
-                            With Nevvi, instead of you having to update everyone with your latest information... we do
-                            it
-                            for you. Of course, you are still in control of your information and what you choose to
-                            share
-                            with each person specifically. What we want to solve is making sure you stay connected with
-                            those in your life even when stuff changes like an address or a phone number.
-                        </p>
+                    <Box sx={{ p: 2 }}>
+                        <Stepper
+                            activeStep={currentStep}
+                            alternativeLabel={!isMobile}
+                            orientation={isMobile ? 'vertical' : 'horizontal'}
+                        >
+                            {steps.map((step, index) => (
+                                <Step key={step.label}>
+                                    <StepLabel>{step.label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                    </Box>
 
-                        <Grid container justifyContent={"center"}>
-                            <Button variant={"contained"} onClick={() => setIndex(1)}>Next</Button>
-                        </Grid>
-                    </div>
-                    <Grid container>
-                        <h2 style={{marginBottom: theme.spacing(2)}}>Getting Started</h2>
-                        <p style={{marginBottom: theme.spacing(2)}}>
-                            First things first let's get some more information about you so that others know who you
-                            are.
-                        </p>
-
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                variant="standard"
-                                id="first-name-input"
-                                label="First Name"
-                                type="text"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} sx={{mt: theme.spacing(1), mb: theme.spacing(2)}}>
-                            <TextField
-                                fullWidth
-                                variant="standard"
-                                id="last-name-input"
-                                label="Last Name"
-                                type="text"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                            />
-                        </Grid>
-
-                        <Box>
-                            <LoadingButton
-                                size={"small"}
-                                variant="contained"
-                                color="primary"
-                                loading={loading}
-                                disabled={firstName === "" || lastName === ""}
-                                onClick={() => updateUser()}>
-                                Update
-                            </LoadingButton>
-                        </Box>
-                    </Grid>
-
-                    <div>
-                        <h2 style={{marginBottom: theme.spacing(2)}}>Making Connections</h2>
-                        <p>
-                            The heart and soul of this application is the connections you make with others.
-                        </p>
-                        <p>
-                            Creating a connection creates a bi-directional link between 2 people where each person
-                            defines what they want the other person to have access to. Maybe they let you see everything,
-                            while you only want them to see your contact information and nothing else.
-                        </p>
-                        <p>
-                            To specify only a subset of information to expose you'll need to create a custom permission
-                            group and select only the fields you want people in that group to see. Once you do that,
-                            when you request a connection or accept a connection you can select what group you want that
-                            user to be in.
-                        </p>
-                        <Grid container justifyContent={"center"}>
-                            <LoadingButton
-                                variant="contained"
-                                color="primary"
-                                loading={loading}
-                                onClick={() => completeOnboarding()}>
-                                Finish Onboarding
-                            </LoadingButton>
-                        </Grid>
-                    </div>
-                </Carousel>
-            </Grid>
-        </Grid>
+                    <Box sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
+                        {renderStep()}
+                    </Box>
+                </Paper>
+            </Container>
+        </Box>
     );
 }
 
-export default inject("authStore")(observer(Onboarding));
+export default inject('authStore')(observer(Onboarding));
