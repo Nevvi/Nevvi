@@ -173,11 +173,6 @@ class AccountStore {
     }
 
     updateAddress(field, value) {
-        if (field === "zipCode") {
-            if (isNaN(value)) return
-            value = parseInt(value)
-        }
-
         if (value) {
             this.updatedUser.address[field] = value
         } else {

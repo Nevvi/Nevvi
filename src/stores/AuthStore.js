@@ -1,5 +1,6 @@
 import {makeAutoObservable, reaction} from "mobx";
 import axios from "axios";
+import { router } from "../router"; // Add this import
 
 class AuthStore {
     idToken = null
@@ -80,6 +81,9 @@ class AuthStore {
         this.setIdToken(null)
 
         this.clearTokenHeaders()
+
+        // Navigate to login page after successful logout
+        router.push('/login')
     }
 
     setIdToken(idToken) {

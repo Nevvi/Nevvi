@@ -77,6 +77,13 @@ const Navigation = inject('authStore', 'accountStore')(observer(({ authStore, ac
                 color: 'white',
                 display: 'flex',
                 flexDirection: 'column',
+                overflow: 'hidden', // Prevent any overflow
+                // Hide scrollbar completely
+                '&::-webkit-scrollbar': {
+                    display: 'none',
+                },
+                '-ms-overflow-style': 'none',
+                'scrollbar-width': 'none',
             }}
         >
             {/* Header */}
@@ -278,6 +285,14 @@ const Navigation = inject('authStore', 'accountStore')(observer(({ authStore, ac
               width: drawerWidth,
               top: '64px', // Start below the app bar
               height: 'calc(100% - 64px)', // Adjust height to account for app bar
+              overflowX: 'hidden', // Prevent horizontal scrolling
+              overflowY: 'auto', // Allow vertical scrolling
+              // Hide scrollbar but keep functionality
+              '&::-webkit-scrollbar': {
+                display: 'none',
+              },
+              '-ms-overflow-style': 'none',
+              'scrollbar-width': 'none',
             },
           }}
         >
@@ -295,6 +310,7 @@ const Navigation = inject('authStore', 'accountStore')(observer(({ authStore, ac
                         '& .MuiDrawer-paper': {
                             width: drawerWidth,
                             boxSizing: 'border-box',
+                            overflowX: 'hidden', // Prevent horizontal scrolling
                         },
                     }}
                 >

@@ -59,11 +59,6 @@ code {
     .hide-on-desktop {
         display: block !important;
     }
-
-    /* Add padding for mobile app bar */
-    body {
-        padding-top: 64px;
-    }
 }
 
 .hide-on-desktop {

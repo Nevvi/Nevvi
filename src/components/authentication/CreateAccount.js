@@ -84,7 +84,7 @@ class CreateAccount extends Component {
                         value={createAccountStore.password}
                         onChange={(e) => createAccountStore.setPassword(e.target.value)}
                         error={!!createAccountStore.errors.password}
-                        helperText={createAccountStore.errors.password || "Choose a strong password with at least 8 characters"}
+                        helperText={createAccountStore.errors.password || "Must contain: uppercase letter, lowercase letter, number, special character, and be at least 8 characters"}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -135,6 +135,17 @@ class CreateAccount extends Component {
                 </Stack>
 
                 <Box sx={{ mt: 4, textAlign: 'center' }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        By creating an account, you agree to our{' '}
+                        <a 
+                            href="https://app.termly.io/policy-viewer/policy.html?policyUUID=5dfc4b38-5260-4da5-9f7d-bcff246f6a4e" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            style={{ color: 'inherit', textDecoration: 'underline' }}
+                        >
+                            Privacy Policy
+                        </a>
+                    </Typography>
                     <AppStoreButton
                         url="https://apps.apple.com/us/app/nevvi/id1669915435"
                         style={{ margin: '0 auto' }}

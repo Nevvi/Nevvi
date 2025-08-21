@@ -14,6 +14,8 @@ import {inject, observer} from "mobx-react";
 
 // UIs
 import Account from './components/account/Account.js';
+import PermissionGroupsPage from './components/account/PermissionGroupsPage.js';
+import BlockedUsers from "./components/account/BlockedUsers";
 import Help from './components/admin/Help.js';
 
 // Auth
@@ -26,6 +28,14 @@ import Onboarding from "./components/onboarding/Onboarding";
 import Connection from "./components/connections/Connection";
 import AppLayout from "./components/layout/AppLayout";
 
+
+const SharedRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
+    <Route {...rest} render={(props) => {
+        return (authStore.isLoggedIn
+            ? <AppLayout><Component {...rest} /></AppLayout>
+            : <Component {...rest} />)
+    }}/>
+)))
 
 const InsecureRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
     <Route {...rest} render={(props) => {
@@ -65,13 +75,15 @@ class App extends Component {
                         <SecureRoute path="/" exact={true} component={Connections}/>
                         <SecureRoute path="/onboarding" exact={true} component={Onboarding}/>
                         <SecureRoute path="/account" exact={true} component={Account}/>
+                        <SecureRoute path="/account/permissions" exact={true} component={PermissionGroupsPage}/>
+                        <SecureRoute path="/account/blocked-users" exact={true} component={BlockedUsers}/>
                         <SecureRoute path="/connections" exact={true} component={Connections}/>
                         <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
                         <SecureRoute path="/connections/:userId" exact={true} component={Connection}/>
                         <InsecureRoute path="/createAccount" component={CreateAccount}/>
                         <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
                         <InsecureRoute path="/login" component={Login}/>
-                        <InsecureRoute path="/help" component={Help}/>
+                        <SharedRoute path="/help" component={Help}/>
                     </Switch>
                 </Box>
             </ThemeProvider>

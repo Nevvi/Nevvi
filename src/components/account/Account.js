@@ -17,16 +17,14 @@ import {
     Card,
     CardContent,
     Container,
-    Divider
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { Check } from '@mui/icons-material';
+import { Check, Group, Block, ChevronRight } from '@mui/icons-material';
 import { inject, observer } from 'mobx-react';
 import dayjs from 'dayjs';
 import Loading from '../loading/Loading';
-import PermissionGroups from './PermissionGroups';
-import BlockedUsers from './BlockedUsers';
+import { router } from '../../router';
 
 class Account extends Component {
     constructor(props) {
@@ -42,7 +40,7 @@ class Account extends Component {
 
     render() {
         // Initial page load
-        const {accountStore, confirmAttributeStore, usersStore} = this.props;
+        const {accountStore, confirmAttributeStore} = this.props;
         const user = accountStore.updatedUser;
         if (!user) {
             return <Loading component={<div/>} loading={accountStore.loading}/>
@@ -308,31 +306,70 @@ class Account extends Component {
                     </CardContent>
                 </Card>
 
-                {/* Permission Groups Section */}
-                <Card sx={{ mb: 3 }}>
-                    <CardContent sx={{ p: 3 }}>
-                        <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-                            Permission Groups
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                            Control what information different groups of connections can see about you
-                        </Typography>
-                        <PermissionGroups/>
-                    </CardContent>
-                </Card>
+                {/* Quick Access Navigation */}
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={6}>
+                        <Card 
+                            sx={{ 
+                                cursor: 'pointer',
+                                transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+                                '&:hover': {
+                                    transform: 'translateY(-2px)',
+                                    boxShadow: 4,
+                                }
+                            }}
+                            onClick={() => router.push('/account/permissions')}
+                        >
+                            <CardContent sx={{ p: 3 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Group sx={{ fontSize: 32, color: 'primary.main', mr: 2 }} />
+                                        <Box>
+                                            <Typography variant="h6" gutterBottom>
+                                                Permission Groups
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Control what information different groups can see
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                    <ChevronRight sx={{ color: 'text.secondary' }} />
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Grid>
 
-                {/* Blocked Users Section */}
-                <Card>
-                    <CardContent sx={{ p: 3 }}>
-                        <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-                            Blocked Users
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                            Manage users you have blocked from connecting with you
-                        </Typography>
-                        <BlockedUsers accountStore={accountStore} usersStore={usersStore} />
-                    </CardContent>
-                </Card>
+                    <Grid item xs={12} md={6}>
+                        <Card 
+                            sx={{ 
+                                cursor: 'pointer',
+                                transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+                                '&:hover': {
+                                    transform: 'translateY(-2px)',
+                                    boxShadow: 4,
+                                }
+                            }}
+                            onClick={() => router.push('/account/blocked-users')}
+                        >
+                            <CardContent sx={{ p: 3 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Block sx={{ fontSize: 32, color: 'error.main', mr: 2 }} />
+                                        <Box>
+                                            <Typography variant="h6" gutterBottom>
+                                                Blocked Users
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Manage users you have blocked
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                    <ChevronRight sx={{ color: 'text.secondary' }} />
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
 
                 {/* Phone Confirmation Dialog */}
                 <Dialog
@@ -386,4 +423,4 @@ class Account extends Component {
     }
 }
 
-export default inject('accountStore', 'confirmAttributeStore', 'usersStore')(observer(Account));
+export default inject('accountStore', 'confirmAttributeStore')(observer(Account));

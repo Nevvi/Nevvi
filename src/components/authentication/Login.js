@@ -159,9 +159,6 @@ class Login extends Component {
                 </form>
 
                 <Box sx={{ mt: 4, textAlign: 'center' }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                        By signing in, you agree to our Terms of Service and Privacy Policy
-                    </Typography>
                     <AppStoreButton
                         url="https://apps.apple.com/us/app/nevvi/id1669915435"
                         style={{ margin: '0 auto' }}

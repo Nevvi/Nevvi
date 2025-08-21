@@ -1,7 +1,5 @@
-
 import React, { Component } from 'react';
 import {
-    Grid,
     Table,
     TableBody,
     TableCell,
@@ -25,7 +23,7 @@ import {
     IconButton,
     Tooltip,
     Card,
-    CardContent
+    CardContent,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Add, Group, Edit, Delete, Security, Lock } from '@mui/icons-material';
@@ -62,16 +60,82 @@ class PermissionGroups extends Component {
         // Initial page load
         const {accountStore, createPermissionGroupStore} = this.props;
         const user = accountStore.user;
+        
         if (!user) {
             return <Loading component={<div/>} loading={accountStore.loading}/>
         }
 
         const hasGroups = user.permissionGroups && user.permissionGroups.length > 0;
 
+        // Mobile card component
+        const MobileGroupCard = ({ group, isSystem }) => (
+            <Card 
+                sx={{ 
+                    mb: 2, 
+                    border: '1px solid rgba(0, 0, 0, 0.05)',
+                    '&:hover': { 
+                        boxShadow: 2,
+                        borderColor: 'primary.main'
+                    }
+                }}
+            >
+                <CardContent sx={{ pb: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <Group fontSize="small" color="primary" />
+                            <Typography variant="h6" fontWeight={600}>
+                                {group.name}
+                            </Typography>
+                            {isSystem && (
+                                <Tooltip title="System group - cannot be modified">
+                                    <Lock fontSize="small" sx={{ color: 'text.secondary' }} />
+                                </Tooltip>
+                            )}
+                        </Stack>
+                        
+                        {!isSystem && (
+                            <Stack direction="row" spacing={0.5}>
+                                <Tooltip title="Edit Group">
+                                    <IconButton size="small" color="primary">
+                                        <Edit fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Delete Group">
+                                    <IconButton size="small" color="error">
+                                        <Delete fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                            </Stack>
+                        )}
+                    </Box>
+                    
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        Shared Information:
+                    </Typography>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {group.fields.map((field, fieldIndex) => (
+                            <Chip
+                                key={fieldIndex}
+                                label={field}
+                                size="small"
+                                variant="outlined"
+                                sx={{
+                                    borderColor: isSystem ? 'grey.400' : 'primary.main',
+                                    color: isSystem ? 'text.secondary' : 'primary.main',
+                                    backgroundColor: isSystem ? 'rgba(0, 0, 0, 0.04)' : 'rgba(0, 152, 255, 0.08)',
+                                    fontWeight: 500,
+                                }}
+                            />
+                        ))}
+                    </Box>
+                </CardContent>
+            </Card>
+        );
+
         return (
             <Box>
                 {!hasGroups ? (
-                    // Empty State
+                    // Empty State (unchanged)
                     <Card sx={{ textAlign: 'center', py: 6 }}>
                         <CardContent>
                             <Security sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
@@ -92,7 +156,6 @@ class PermissionGroups extends Component {
                         </CardContent>
                     </Card>
                 ) : (
-                    // Table with Groups
                     <>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                             <Box>
@@ -104,15 +167,41 @@ class PermissionGroups extends Component {
                                 variant="contained"
                                 startIcon={<Add />}
                                 onClick={() => createPermissionGroupStore.setPermissionGroupPromptOpen(true)}
+                                sx={{
+                                    // Responsive button text
+                                    '& .MuiButton-startIcon': {
+                                        mr: { xs: 0, sm: 1 }
+                                    },
+                                    '& .button-text': {
+                                        display: { xs: 'none', sm: 'inline' }
+                                    }
+                                }}
                             >
-                                New Group
+                                <span className="button-text">New Group</span>
+                                <Box sx={{ display: { xs: 'inline', sm: 'none' } }}>New</Box>
                             </Button>
                         </Box>
 
+                        {/* Mobile Card Layout - visible only on mobile */}
+                        <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+                            {user.permissionGroups.map((group, index) => {
+                                const isSystem = this.isSystemGroup(group.name);
+                                return (
+                                    <MobileGroupCard 
+                                        key={group.name} 
+                                        group={group} 
+                                        isSystem={isSystem} 
+                                    />
+                                );
+                            })}
+                        </Box>
+
+                        {/* Desktop Table Layout - visible only on desktop */}
                         <TableContainer
                             component={Paper}
                             elevation={0}
                             sx={{
+                                display: { xs: 'none', md: 'block' },
                                 border: '1px solid rgba(0, 0, 0, 0.05)',
                                 borderRadius: 2,
                                 overflow: 'hidden'
@@ -221,7 +310,7 @@ class PermissionGroups extends Component {
                     </>
                 )}
 
-                {/* Create New Group Dialog */}
+                {/* Create New Group Dialog - unchanged */}
                 <Dialog
                     open={createPermissionGroupStore.permissionGroupPromptOpen}
                     onClose={() => createPermissionGroupStore.setPermissionGroupPromptOpen(false)}

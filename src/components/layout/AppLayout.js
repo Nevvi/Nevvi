@@ -1,10 +1,12 @@
 
 import React from 'react';
-import { Box, useTheme } from '@mui/material';
+import { Box, useTheme, useMediaQuery } from '@mui/material';
+import { inject, observer } from 'mobx-react';
 import Navigation from '../navbar/Navigation';
 
-const AppLayout = ({ children }) => {
+const AppLayout = inject('authStore')(observer(({ children, authStore }) => {
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
         <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -17,6 +19,8 @@ const AppLayout = ({ children }) => {
                     minHeight: '100vh',
                     display: 'flex',
                     flexDirection: 'column',
+                    // Only add padding if user is logged in AND on mobile
+                    paddingTop: (isMobile && authStore.isLoggedIn) ? '64px' : 0,
                 }}
             >
                 <Box
@@ -33,6 +37,6 @@ const AppLayout = ({ children }) => {
             </Box>
         </Box>
     );
-};
+}));
 
 export default AppLayout;
