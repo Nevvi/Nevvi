@@ -1,25 +1,21 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
 import {
+    Alert,
     Avatar,
+    Box,
     Card,
     CardContent,
-    Stack,
-    Typography,
-    Box,
-    Alert,
+    Collapse,
     FormControl,
     InputLabel,
-    Select,
     MenuItem,
-    Collapse,
+    Select,
+    Stack,
+    Typography,
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
-import {
-    CheckCircle,
-    Cancel,
-    Person,
-} from "@mui/icons-material";
+import {Cancel, CheckCircle,} from "@mui/icons-material";
 
 class ConnectionRequestCard extends Component {
     constructor(props) {
@@ -77,12 +73,12 @@ class ConnectionRequestCard extends Component {
     // Add this helper method to ConnectionRequestCard as well
     getPermissionGroupDescription = (group) => {
         // Special case for "All Info" or similar
-        if (group.name?.toLowerCase().includes('all') || 
-            group.name?.toLowerCase() === 'everything' || 
+        if (group.name?.toLowerCase().includes('all') ||
+            group.name?.toLowerCase() === 'everything' ||
             group.name?.toLowerCase() === 'full access') {
             return 'Everything accessible';
         }
-        
+
         return `${group.fields?.length || 0} field${(group.fields?.length || 0) !== 1 ? 's' : ''} accessible`;
     };
 
@@ -101,21 +97,21 @@ class ConnectionRequestCard extends Component {
                     borderColor: 'warning.light',
                     backgroundColor: 'warning.50',
                     '&:hover': {
-                        transform: { xs: 'none', sm: 'translateY(-2px)' },
+                        transform: {xs: 'none', sm: 'translateY(-2px)'},
                         boxShadow: 4,
                         borderColor: 'warning.main',
                     },
                 }}
             >
-                <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
+                <CardContent sx={{p: {xs: 2, sm: 2.5}}}>
                     {/* User Info */}
-                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                    <Stack direction="row" spacing={2} alignItems="center" sx={{mb: 2}}>
                         <Avatar
                             src={request.requesterImage}
                             sx={{
-                                width: { xs: 56, sm: 64 },
-                                height: { xs: 56, sm: 64 },
-                                fontSize: { xs: '1.2rem', sm: '1.4rem' },
+                                width: {xs: 56, sm: 64},
+                                height: {xs: 56, sm: 64},
+                                fontSize: {xs: '1.2rem', sm: '1.4rem'},
                                 fontWeight: 600,
                                 backgroundColor: 'primary.main',
                                 border: '3px solid',
@@ -127,13 +123,13 @@ class ConnectionRequestCard extends Component {
                             {request.requesterFirstName?.charAt(0)}{request.requesterLastName?.charAt(0)}
                         </Avatar>
 
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Box sx={{flex: 1, minWidth: 0}}>
                             <Typography
                                 variant="h6"
                                 component="h3"
                                 sx={{
                                     fontWeight: 600,
-                                    fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                                    fontSize: {xs: '1.1rem', sm: '1.25rem'},
                                     color: 'text.primary',
                                     lineHeight: 1.2,
                                     mb: 0.5,
@@ -144,7 +140,7 @@ class ConnectionRequestCard extends Component {
                             <Typography
                                 variant="body2"
                                 color="text.secondary"
-                                sx={{ fontSize: { xs: '0.875rem', sm: '0.9rem' } }}
+                                sx={{fontSize: {xs: '0.875rem', sm: '0.9rem'}}}
                             >
                                 Wants to connect with you
                             </Typography>
@@ -153,8 +149,8 @@ class ConnectionRequestCard extends Component {
 
                     {/* Permission Group Selector (Collapsible) */}
                     <Collapse in={showPermissionSelect}>
-                        <Box sx={{ mb: 2 }}>
-                            <Alert severity="info" sx={{ mb: 2, fontSize: '0.875rem' }}>
+                        <Box sx={{mb: 2}}>
+                            <Alert severity="info" sx={{mb: 2, fontSize: '0.875rem'}}>
                                 Choose what information they can see about you
                             </Alert>
                             <FormControl fullWidth size="small">
@@ -183,9 +179,9 @@ class ConnectionRequestCard extends Component {
 
                     {/* Action Buttons */}
                     <Stack
-                        direction={{ xs: 'column', sm: showPermissionSelect ? 'column' : 'row' }}
+                        direction={{xs: 'column', sm: showPermissionSelect ? 'column' : 'row'}}
                         spacing={1.5}
-                        sx={{ mb: showPermissionSelect ? 0 : 2 }}
+                        sx={{mb: showPermissionSelect ? 0 : 2}}
                     >
                         {!showPermissionSelect ? (
                             <>
@@ -197,11 +193,11 @@ class ConnectionRequestCard extends Component {
                                     loading={accepting}
                                     disabled={isProcessing}
                                     onClick={this.handleAcceptClick}
-                                    startIcon={!accepting && <CheckCircle />}
+                                    startIcon={!accepting && <CheckCircle/>}
                                     sx={{
                                         fontWeight: 600,
-                                        fontSize: { xs: '0.875rem', sm: '0.9rem' },
-                                        py: { xs: 1, sm: 1.25 },
+                                        fontSize: {xs: '0.875rem', sm: '0.9rem'},
+                                        py: {xs: 1, sm: 1.25},
                                     }}
                                 >
                                     {accepting ? 'Accepting...' : 'Accept'}
@@ -215,11 +211,11 @@ class ConnectionRequestCard extends Component {
                                     loading={denying}
                                     disabled={isProcessing}
                                     onClick={() => this.denyRequest()}
-                                    startIcon={!denying && <Cancel />}
+                                    startIcon={!denying && <Cancel/>}
                                     sx={{
                                         fontWeight: 600,
-                                        fontSize: { xs: '0.875rem', sm: '0.9rem' },
-                                        py: { xs: 1, sm: 1.25 },
+                                        fontSize: {xs: '0.875rem', sm: '0.9rem'},
+                                        py: {xs: 1, sm: 1.25},
                                     }}
                                 >
                                     {denying ? 'Denying...' : 'Deny'}
@@ -235,8 +231,8 @@ class ConnectionRequestCard extends Component {
                                     loading={accepting}
                                     disabled={isProcessing || !selectedPermissionGroup}
                                     onClick={() => this.acceptRequest()}
-                                    startIcon={!accepting && <CheckCircle />}
-                                    sx={{ fontWeight: 600, py: 1.25 }}
+                                    startIcon={!accepting && <CheckCircle/>}
+                                    sx={{fontWeight: 600, py: 1.25}}
                                 >
                                     {accepting ? 'Confirming Connection...' : 'Confirm Connection'}
                                 </LoadingButton>
@@ -248,7 +244,7 @@ class ConnectionRequestCard extends Component {
                                         showPermissionSelect: false,
                                         selectedPermissionGroup: '',
                                     })}
-                                    sx={{ fontWeight: 600 }}
+                                    sx={{fontWeight: 600}}
                                 >
                                     Cancel
                                 </LoadingButton>
@@ -262,7 +258,7 @@ class ConnectionRequestCard extends Component {
                             severity="info"
                             sx={{
                                 fontSize: '0.8rem',
-                                '& .MuiAlert-message': { py: 0.5 }
+                                '& .MuiAlert-message': {py: 0.5}
                             }}
                         >
                             You'll choose their permission group when accepting the request.
