@@ -22,11 +22,13 @@ import Help from './components/admin/Help.js';
 import CreateAccount from './components/authentication/CreateAccount.js';
 import ConfirmAccount from "./components/authentication/ConfirmAccount";
 import Login from './components/authentication/Login.js';
+import ForgotPassword from './components/authentication/ForgotPassword.js';
 import UserTable from "./components/connections/UserTable";
 import Connections from "./components/connections/Connections";
 import Onboarding from "./components/onboarding/Onboarding";
 import Connection from "./components/connections/Connection";
 import ConnectionGroups from "./components/connections/ConnectionGroups";
+import ConnectionGroup from "./components/connections/ConnectionGroup";
 import AppLayout from "./components/layout/AppLayout";
 
 
@@ -81,10 +83,12 @@ class App extends Component {
                         <SecureRoute path="/connections" exact={true} component={Connections}/>
                         <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
                         <SecureRoute path="/connections/groups" exact={true} component={ConnectionGroups}/>
+                        <SecureRoute path="/connections/groups/:groupId" exact={true} component={ConnectionGroup}/>
                         <SecureRoute path="/connections/:userId" exact={true} component={Connection}/>
                         <InsecureRoute path="/createAccount" component={CreateAccount}/>
                         <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>
                         <InsecureRoute path="/login" component={Login}/>
+                        <InsecureRoute path="/forgotPassword" component={ForgotPassword}/>
                         <SharedRoute path="/help" component={Help}/>
                     </Switch>
                 </Box>

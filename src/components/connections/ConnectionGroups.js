@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { inject, observer } from 'mobx-react';
+import React, {useEffect, useState} from 'react';
+import {inject, observer} from 'mobx-react';
 import {
     Box,
-    Button, Chip,
+    Button,
+    Chip,
     Dialog,
     DialogActions,
     DialogContent,
@@ -11,8 +12,7 @@ import {
     Fab,
     IconButton,
     List,
-    ListItem,
-    ListItemSecondaryAction,
+    ListItemButton,
     ListItemText,
     Paper,
     TextField,
@@ -20,17 +20,14 @@ import {
     useMediaQuery,
     useTheme,
 } from '@mui/material';
-import {
-    Delete,
-    Add,
-    Group,
-} from '@mui/icons-material';
+import {Add, ChevronRight, Delete, Group,} from '@mui/icons-material';
+import {router} from '../../router';
 import Loading from "../loading/Loading";
 
-const ConnectionGroups = inject('connectionGroupsStore')(observer(({ connectionGroupsStore }) => {
+const ConnectionGroups = inject('connectionGroupsStore')(observer(({connectionGroupsStore}) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
+
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [groupName, setGroupName] = useState('');
@@ -57,9 +54,15 @@ const ConnectionGroups = inject('connectionGroupsStore')(observer(({ connectionG
         }
     };
 
-    const openDeleteDialog = (group) => {
+    const openDeleteDialog = (group, event) => {
+        // Prevent navigation when clicking delete button
+        event.stopPropagation();
         setSelectedGroup(group);
         setDeleteDialogOpen(true);
+    };
+
+    const handleGroupClick = (group) => {
+        router.push(`/connections/groups/${group.id}`, {state: {groupName: group.name}});
     };
 
     const getConnectionCount = (connections) => {
@@ -76,21 +79,21 @@ const ConnectionGroups = inject('connectionGroupsStore')(observer(({ connectionG
                     minHeight: '200px',
                 }}
             >
-                <Loading />
+                <Loading/>
             </Box>
         );
     }
 
     return (
-        <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
-            <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
+        <Box sx={{p: 3, maxWidth: 800, mx: 'auto'}}>
+            <Box sx={{mb: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                <Typography variant="h4" component="h1" sx={{fontWeight: 'bold'}}>
                     Connection Groups
                 </Typography>
                 {!isMobile && (
                     <Button
                         variant="contained"
-                        startIcon={<Add />}
+                        startIcon={<Add/>}
                         onClick={() => setCreateDialogOpen(true)}
                         sx={{
                             borderRadius: 2,
@@ -103,15 +106,15 @@ const ConnectionGroups = inject('connectionGroupsStore')(observer(({ connectionG
                 )}
             </Box>
 
-            <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
+            <Typography variant="body1" color="textSecondary" sx={{mb: 3}}>
                 Organize your connections into groups for better management and organization.
             </Typography>
 
-            <Paper elevation={2} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+            <Paper elevation={2} sx={{borderRadius: 2, overflow: 'hidden'}}>
                 {connectionGroupsStore.connectionGroups.length === 0 ? (
-                    <Box sx={{ p: 4, textAlign: 'center' }}>
-                        <Group sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
-                        <Typography variant="h6" color="textSecondary" sx={{ mb: 1 }}>
+                    <Box sx={{p: 4, textAlign: 'center'}}>
+                        <Group sx={{fontSize: 60, color: 'text.secondary', mb: 2}}/>
+                        <Typography variant="h6" color="textSecondary" sx={{mb: 1}}>
                             No connection groups yet
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
@@ -122,10 +125,11 @@ const ConnectionGroups = inject('connectionGroupsStore')(observer(({ connectionG
                     <List>
                         {connectionGroupsStore.connectionGroups.map((group, index) => {
                             const connectionCount = getConnectionCount(group.connections);
-                            
+
                             return (
                                 <React.Fragment key={group.id}>
-                                    <ListItem
+                                    <ListItemButton
+                                        onClick={() => handleGroupClick(group)}
                                         sx={{
                                             py: 2,
                                             px: 3,
@@ -136,8 +140,8 @@ const ConnectionGroups = inject('connectionGroupsStore')(observer(({ connectionG
                                     >
                                         <ListItemText
                                             primary={
-                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                    <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                                                <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
+                                                    <Typography variant="h6" sx={{fontWeight: 500}}>
                                                         {group.name}
                                                     </Typography>
                                                     <Chip
@@ -154,11 +158,11 @@ const ConnectionGroups = inject('connectionGroupsStore')(observer(({ connectionG
                                                 </Box>
                                             }
                                         />
-                                        <ListItemSecondaryAction>
+                                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                                             <IconButton
                                                 edge="end"
                                                 aria-label="delete"
-                                                onClick={() => openDeleteDialog(group)}
+                                                onClick={(event) => openDeleteDialog(group, event)}
                                                 sx={{
                                                     color: theme.palette.error.main,
                                                     '&:hover': {
@@ -166,12 +170,13 @@ const ConnectionGroups = inject('connectionGroupsStore')(observer(({ connectionG
                                                     },
                                                 }}
                                             >
-                                                <Delete />
+                                                <Delete/>
                                             </IconButton>
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
+                                            <ChevronRight sx={{color: 'text.secondary'}}/>
+                                        </Box>
+                                    </ListItemButton>
                                     {index < connectionGroupsStore.connectionGroups.length - 1 && (
-                                        <Box sx={{ borderBottom: 1, borderColor: 'divider', mx: 3 }} />
+                                        <Box sx={{borderBottom: 1, borderColor: 'divider', mx: 3}}/>
                                     )}
                                 </React.Fragment>
                             );
@@ -192,7 +197,7 @@ const ConnectionGroups = inject('connectionGroupsStore')(observer(({ connectionG
                         right: 16,
                     }}
                 >
-                    <Add />
+                    <Add/>
                 </Fab>
             )}
 

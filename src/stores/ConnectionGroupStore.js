@@ -1,74 +1,83 @@
 import {makeAutoObservable} from "mobx";
 import axios from "axios";
 import { toast } from 'react-toastify';
-import {router} from "../router";
 
-class ConnectionStore {
-    connection = null
+class ConnectionGroupStore {
+    group = null
     loading = false
     saving = false
     deleting = false
-    deletePromptOpen = false
+    exporting = false
 
-    permissionGroup = null
-
-    constructor(authStore, accountStore) {
+    constructor(authStore) {
         makeAutoObservable(this)
         this.authStore = authStore
-        this.accountStore = accountStore
     }
 
-    async getConnection(connectionId) {
+    async getGroup(groupId, groupName) {
         this.setLoading(true)
-        this.setConnection(null)
+        this.setGroup(null)
         try {
-            const res = await axios.get(`/api/user/v1/users/${this.authStore.userId}/connections/${connectionId}`)
-            this.setConnection(res.data)
-            this.setPermissionGroup(res.data.permissionGroup)
+            const allGroups = await axios.get(`/api/user/v1/users/${this.authStore.userId}/connection-groups`)
+            const groupMeta = allGroups.data.find(g => g.id === groupId)
+
+            const groupConnections = await axios.get(`/api/user/v1/users/${this.authStore.userId}/connection-groups/${groupId}/connections`)
+            this.setGroup({
+                id: groupId,
+                name: groupMeta?.name,
+                connections: groupConnections.data.users
+            })
         } catch (e) {
-            toast.error(`Failed to load connection because ${e.response.data}`)
-            router.push("/")
+            toast.error(`Failed to load connection group ${e.response.data}`)
         } finally {
             this.setLoading(false)
         }
     }
 
-    async saveConnection() {
+    async addToGroup(connectionId) {
         this.setSaving(true)
         try {
-            const updateRequest = {
-                permissionGroupName: this.permissionGroup
-            }
-            const res = await axios.patch(`/api/user/v1/users/${this.authStore.userId}/connections/${this.connection.id}`, updateRequest)
-            this.setConnection(res.data)
-            this.setPermissionGroup(res.data.permissionGroup)
+            await axios.post(
+                `/api/user/v1/users/${this.authStore.userId}/connection-groups/${this.group.id}/connections`,
+                {userId: connectionId}
+            )
+            await this.getGroup(this.group.id, this.group.name)
         } catch (e) {
-            toast.error(`Failed to update connection because ${e.response.data}`)
+            toast.error(`Failed to add connection to group ${e.response.data}`)
         } finally {
             this.setSaving(false)
         }
     }
 
-    async deleteConnection() {
-        this.setDeleting(true)
+    async removeFromGroup(connectionId) {
+        this.setSaving(true)
         try {
-            await axios.delete(`/api/user/v1/users/${this.authStore.userId}/connections/${this.connection.id}`)
-            await this.accountStore.getRejectedUsers()
-            toast.success("Successfully deleted connection")
-            router.push("/")
+            await axios.delete(
+                `/api/user/v1/users/${this.authStore.userId}/connection-groups/${this.group.id}/connections`,
+                {data: {userId: connectionId}}
+            )
+            await this.getGroup(this.group.id, this.group.name)
         } catch (e) {
-            toast.error(`Failed to update connection because ${e.response.data}`)
+            toast.error(`Failed to remove connection from group ${e.response.data}`)
         } finally {
-            this.setDeleting(false)
+            this.setSaving(false)
         }
     }
 
-    setPermissionGroup(permissionGroup) {
-        this.permissionGroup = permissionGroup
+    async exportGroup() {
+        this.setExporting(true)
+        try {
+            await axios.post(`/api/user/v1/users/${this.authStore.userId}/connection-groups/${this.group.id}/export`)
+            toast.success("Successfully exported group")
+        } catch (e) {
+            toast.error(`Failed to export group ${e.response.data}`)
+        } finally {
+            this.setExporting(false)
+        }
     }
 
-    setConnection(connection) {
-        this.connection = connection
+    setGroup(group) {
+        this.group = group
     }
 
     setLoading(loading) {
@@ -80,20 +89,20 @@ class ConnectionStore {
     }
 
     setDeleting(deleting) {
-        this.deleting = deleting;
+        this.deleting = deleting
     }
 
-    setDeletePromptOpen(deletePromptOpen) {
-        this.deletePromptOpen = deletePromptOpen;
+    setExporting(exporting) {
+        this.exporting = exporting
     }
 
     reset() {
-        this.connection = null
+        this.group = null
         this.loading = false
         this.saving = false
         this.deleting = false
-        this.deletePromptOpen = false
+        this.exporting = false
     }
 }
 
-export default ConnectionStore;
+export default ConnectionGroupStore;

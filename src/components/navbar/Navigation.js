@@ -89,8 +89,8 @@ const Navigation = inject('authStore', 'accountStore')(observer(({ authStore, ac
                 '&::-webkit-scrollbar': {
                     display: 'none',
                 },
-                '-ms-overflow-style': 'none',
-                'scrollbar-width': 'none',
+                'msOverflowStyle': 'none',
+                'scrollbarWidth': 'none',
             }}
         >
             {/* Header */}
@@ -298,8 +298,8 @@ const Navigation = inject('authStore', 'accountStore')(observer(({ authStore, ac
               '&::-webkit-scrollbar': {
                 display: 'none',
               },
-              '-ms-overflow-style': 'none',
-              'scrollbar-width': 'none',
+              'msOverflowStyle': 'none',
+              'scrollbarWidth': 'none',
             },
           }}
         >

@@ -30,6 +30,8 @@ import {ProSidebarProvider} from "react-pro-sidebar";
 import PermissionGroupModalStore from "./stores/PermissionGroupModalStore";
 import ConnectionStore from "./stores/ConnectionStore";
 import ConnectionGroupsStore from "./stores/ConnectionGroupsStore";
+import ConnectionGroupStore from "./stores/ConnectionGroupStore";
+import ForgotPasswordStore from "./stores/ForgotPasswordStore";
 
 const accountStore = new AccountStore();
 const authStore = new AuthStore(accountStore);
@@ -37,12 +39,14 @@ const connectionStore = new ConnectionStore(authStore, accountStore);
 const confirmAttributeStore = new ConfirmAttributeStore(accountStore);
 const loginStore = new LoginStore(authStore);
 const confirmAccountStore = new ConfirmAccountStore();
+const forgotPasswordStore = new ForgotPasswordStore();
 const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore);
 const createPermissionGroupStore = new CreatePermissionGroupStore(authStore, accountStore);
 const connectionsStore = new ConnectionsStore(authStore, accountStore);
 const usersStore = new UsersStore(authStore);
 const permissionGroupModalStore = new PermissionGroupModalStore(authStore);
 const connectionGroupsStore = new ConnectionGroupsStore(authStore);
+const connectionGroupStore = new ConnectionGroupStore(authStore);
 
 const stores = {
     authStore: authStore,
@@ -51,12 +55,14 @@ const stores = {
     loginStore: loginStore,
     createAccountStore: createAccountStore,
     confirmAccountStore: confirmAccountStore,
+    forgotPasswordStore: forgotPasswordStore,
     confirmAttributeStore: confirmAttributeStore,
     usersStore: usersStore,
     connectionsStore: connectionsStore,
     createPermissionGroupStore: createPermissionGroupStore,
     permissionGroupModalStore: permissionGroupModalStore,
-    connectionGroupsStore: connectionGroupsStore
+    connectionGroupsStore: connectionGroupsStore,
+    connectionGroupStore: connectionGroupStore
 }
 
 ReactDOM.render(

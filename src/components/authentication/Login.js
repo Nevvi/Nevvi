@@ -113,8 +113,7 @@ class Login extends Component {
                                 type="button"
                                 variant="body2"
                                 onClick={() => {
-                                    // TODO: Implement forgot password
-                                    console.log('Forgot password clicked');
+                                    router.push('/forgotPassword');
                                 }}
                                 sx={{
                                     color: 'primary.main',
