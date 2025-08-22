@@ -48,13 +48,17 @@ const InsecureRoute = inject("authStore")(observer(({authStore, component: Compo
     }}/>
 )))
 
-const SecureRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
+const SecureRoute = inject("authStore", "accountStore")(observer(({authStore, accountStore, component: Component, ...rest}) => (
     <Route {...rest} render={(props) => {
         // Special case for onboarding - it has its own layout
         if (rest.path === '/onboarding') {
             return (authStore.isLoggedIn
                 ? <Component {...rest} />
                 : <Redirect to='/createAccount'/>)
+        }
+
+        if (accountStore.user && !accountStore.user.onboardingCompleted) {
+            return <Redirect to='/onboarding'/>
         }
 
         return (authStore.isLoggedIn

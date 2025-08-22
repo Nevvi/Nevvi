@@ -17,7 +17,6 @@ import {
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { router } from '../../router';
-import axios from "axios";
 import Logo from "../utils/Logo";
 import {
     PersonAdd,
@@ -35,7 +34,22 @@ function Onboarding(props) {
     const [loading, setLoading] = React.useState(false);
     const [currentStep, setCurrentStep] = React.useState(0);
 
-    const { authStore } = props;
+    // Refs to maintain focus
+    const firstNameRef = React.useRef(null);
+    const lastNameRef = React.useRef(null);
+
+    const { accountStore } = props;
+
+    // Redirect if onboarding already completed
+    React.useEffect(() => {
+        try {
+            if (accountStore.user && accountStore.user.onboardingCompleted) {
+                router.push("/");
+            }
+        } catch (error) {
+            console.error("Error checking onboarding status:", error);
+        }
+    }, [accountStore.user]);
 
     const steps = [
         { label: 'Welcome', icon: <CheckCircle /> },
@@ -43,25 +57,37 @@ function Onboarding(props) {
         { label: 'Get Started', icon: <ConnectWithoutContact /> }
     ];
 
-    async function updateUser() {
+    const updateUser = React.useCallback(async () => {
         setLoading(true);
         try {
-            await axios.patch(`/api/user/v1/users/${authStore.userId}`, { firstName, lastName });
+            accountStore.updateUser("firstName", firstName);
+            accountStore.updateUser("lastName", lastName);
+            await accountStore.saveUser();
             setCurrentStep(2);
         } finally {
             setLoading(false);
         }
-    }
+    }, [firstName, lastName, accountStore]);
 
     async function completeOnboarding() {
         setLoading(true);
         try {
-            await axios.patch(`/api/user/v1/users/${authStore.userId}`, { onboardingCompleted: true });
+            accountStore.updateUser("onboardingCompleted", true);
+            await accountStore.saveUser();
             router.push("/");
         } catch {
             setLoading(false);
         }
     }
+
+    // Memoized handlers to prevent re-renders
+    const handleFirstNameChange = React.useCallback((e) => {
+        setFirstName(e.target.value);
+    }, []);
+
+    const handleLastNameChange = React.useCallback((e) => {
+        setLastName(e.target.value);
+    }, []);
 
     const WelcomeStep = () => (
         <Box sx={{ textAlign: 'center', py: 4 }}>
@@ -127,7 +153,7 @@ function Onboarding(props) {
         </Box>
     );
 
-    const PersonalInfoStep = () => (
+    const PersonalInfoStep = React.useMemo(() => (
         <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="h4" component="h2" gutterBottom>
                 Tell Us About Yourself
@@ -138,6 +164,7 @@ function Onboarding(props) {
 
             <Stack spacing={3} sx={{ maxWidth: '400px', mx: 'auto' }}>
                 <TextField
+                    ref={firstNameRef}
                     required
                     fullWidth
                     id="first-name-input"
@@ -145,17 +172,20 @@ function Onboarding(props) {
                     type="text"
                     autoFocus
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={handleFirstNameChange}
+                    autoComplete="given-name"
                 />
 
                 <TextField
+                    ref={lastNameRef}
                     required
                     fullWidth
                     id="last-name-input"
                     label="Last Name"
                     type="text"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={handleLastNameChange}
+                    autoComplete="family-name"
                 />
 
                 <LoadingButton
@@ -171,7 +201,7 @@ function Onboarding(props) {
                 </LoadingButton>
             </Stack>
         </Box>
-    );
+    ), [firstName, lastName, loading, handleFirstNameChange, handleLastNameChange, updateUser]);
 
     const CompletionStep = () => (
         <Box sx={{ textAlign: 'center', py: 4 }}>
@@ -215,7 +245,7 @@ function Onboarding(props) {
     const renderStep = () => {
         switch (currentStep) {
             case 0: return <WelcomeStep />;
-            case 1: return <PersonalInfoStep />;
+            case 1: return PersonalInfoStep;
             case 2: return <CompletionStep />;
             default: return <WelcomeStep />;
         }
@@ -244,19 +274,20 @@ function Onboarding(props) {
                         border: '1px solid rgba(255, 255, 255, 0.2)',
                     }}
                 >
-                    <Box sx={{ p: 2 }}>
-                        <Stepper
-                            activeStep={currentStep}
-                            alternativeLabel={!isMobile}
-                            orientation={isMobile ? 'vertical' : 'horizontal'}
-                        >
-                            {steps.map((step, index) => (
-                                <Step key={step.label}>
-                                    <StepLabel>{step.label}</StepLabel>
-                                </Step>
-                            ))}
-                        </Stepper>
-                    </Box>
+                    {!isMobile && (
+                        <Box sx={{ p: 2 }}>
+                            <Stepper
+                                activeStep={currentStep}
+                                alternativeLabel
+                            >
+                                {steps.map((step, index) => (
+                                    <Step key={step.label}>
+                                        <StepLabel>{step.label}</StepLabel>
+                                    </Step>
+                                ))}
+                            </Stepper>
+                        </Box>
+                    )}
 
                     <Box sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
                         {renderStep()}
@@ -267,4 +298,4 @@ function Onboarding(props) {
     );
 }
 
-export default inject('authStore')(observer(Onboarding));
+export default inject('accountStore')(observer(Onboarding));
