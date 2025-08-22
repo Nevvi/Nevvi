@@ -1,3 +1,4 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -27,72 +28,64 @@ import ConnectionsStore from "./stores/ConnectionsStore";
 import CreatePermissionGroupStore from "./stores/CreatePermissionGroupStore";
 import {ProSidebarProvider} from "react-pro-sidebar";
 import PermissionGroupModalStore from "./stores/PermissionGroupModalStore";
-import {createTheme, ThemeProvider} from "@mui/material";
 import ConnectionStore from "./stores/ConnectionStore";
-import InviteFormStore from "./stores/InviteFormStore";
+import ConnectionGroupsStore from "./stores/ConnectionGroupsStore";
+import ConnectionGroupStore from "./stores/ConnectionGroupStore";
+import ForgotPasswordStore from "./stores/ForgotPasswordStore";
 
 const accountStore = new AccountStore();
 const authStore = new AuthStore(accountStore);
 const connectionStore = new ConnectionStore(authStore, accountStore);
 const confirmAttributeStore = new ConfirmAttributeStore(accountStore);
 const loginStore = new LoginStore(authStore);
-const inviteFormStore = new InviteFormStore(loginStore);
 const confirmAccountStore = new ConfirmAccountStore();
+const forgotPasswordStore = new ForgotPasswordStore();
 const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore);
 const createPermissionGroupStore = new CreatePermissionGroupStore(authStore, accountStore);
 const connectionsStore = new ConnectionsStore(authStore, accountStore);
 const usersStore = new UsersStore(authStore);
 const permissionGroupModalStore = new PermissionGroupModalStore(authStore);
+const connectionGroupsStore = new ConnectionGroupsStore(authStore);
+const connectionGroupStore = new ConnectionGroupStore(authStore);
 
 const stores = {
     authStore: authStore,
     accountStore: accountStore,
-    inviteFormStore: inviteFormStore,
     connectionStore: connectionStore,
     loginStore: loginStore,
     createAccountStore: createAccountStore,
     confirmAccountStore: confirmAccountStore,
+    forgotPasswordStore: forgotPasswordStore,
     confirmAttributeStore: confirmAttributeStore,
     usersStore: usersStore,
     connectionsStore: connectionsStore,
     createPermissionGroupStore: createPermissionGroupStore,
-    permissionGroupModalStore: permissionGroupModalStore
+    permissionGroupModalStore: permissionGroupModalStore,
+    connectionGroupsStore: connectionGroupsStore,
+    connectionGroupStore: connectionGroupStore
 }
-
-export const theme = createTheme({
-    palette: {
-        type: 'light',
-        primary: {
-            main: '#0098ff',
-            light: '#0098ff',
-            dark: '#162d50',
-            contrastText: '#fff'
-        },
-        background: {
-            default: '#f7f9fb',
-            paper: '#fff'
-        },
-        error: {
-            main: '#DF6C4F',
-            light: '#E58972',
-            dark: '#9C4B37',
-            contrastText: '#fff'
-        },
-    },
-});
 
 ReactDOM.render(
     <React.StrictMode>
         <Provider {...stores}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <ThemeProvider theme={theme}>
-                    <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false}/>
-                    <ProSidebarProvider>
-                        <Router history={router.history}>
-                            <App authStore={authStore}/>
-                        </Router>
-                    </ProSidebarProvider>
-                </ThemeProvider>
+                <ToastContainer
+                    position="bottom-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                />
+                <ProSidebarProvider>
+                    <Router history={router.history}>
+                        <App authStore={authStore}/>
+                    </Router>
+                </ProSidebarProvider>
             </LocalizationProvider>
         </Provider>
     </React.StrictMode>,

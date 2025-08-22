@@ -4,18 +4,18 @@ import {
     Button,
     TextField,
     Box,
-    Container,
-    Card,
-    CardContent,
     Typography,
     InputAdornment,
-    IconButton
+    IconButton,
+    Stack,
+    Divider,
+    Alert,
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
 import {router} from '../../router'
-import Logo from "../utils/Logo";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {Visibility, VisibilityOff, Phone, Lock} from "@mui/icons-material";
 import {AppStoreButton} from "./AppStoreButton";
+import AuthLayout from "./AuthLayout";
 
 class CreateAccount extends Component {
     constructor(props) {
@@ -32,129 +32,126 @@ class CreateAccount extends Component {
     render() {
         const {createAccountStore} = this.props;
         const isDisabled = createAccountStore.username === '' || createAccountStore.password === ''
+
         return (
-            <Container component="main" maxWidth="sm">
-                <Box
-                    sx={{
-                        minHeight: '80vh',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        py: 3
-                    }}
-                >
-                    <Card
-                        sx={{
-                            width: '100%',
-                            maxWidth: 450,
-                            boxShadow: 1,
-                            borderRadius: 2
-                        }}
-                    >
-                        <CardContent sx={{ p: 3 }}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    mb: 3
-                                }}
-                            >
-                                <Logo />
-
-                                <Typography
-                                    component="h1"
-                                    variant={'h4'}
-                                    fontWeight="bold"
-                                    color="text.primary"
-                                >
-                                    Sign Up
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    textAlign="center"
-                                    sx={{ mt: 1 }}
-                                >
-                                    Enter your phone number to create your free account
-                                </Typography>
-                            </Box>
-
-                            <Box textAlign={"center"}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="username"
-                                    label="Phone Number"
-                                    name="username"
-                                    autoComplete="username"
-                                    autoFocus
-                                    value={createAccountStore.username}
-                                    onChange={(e) => createAccountStore.setUsername(e.target.value)}
-                                    error={!!createAccountStore.errors.username}
-                                    helperText={createAccountStore.errors.username}
-                                    sx={{ mb: 2 }}
-                                />
-
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Password"
-                                    type={createAccountStore.showPassword ? 'text' : 'password'}
-                                    id="password"
-                                    autoComplete="current-password"
-                                    value={createAccountStore.password}
-                                    onChange={(e) => createAccountStore.setPassword(e.target.value)}
-                                    error={!!createAccountStore.errors.password}
-                                    helperText={createAccountStore.errors.password}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={(e) => createAccountStore.toggleShowPassword()}
-                                                    edge="end"
-                                                >
-                                                    {createAccountStore.showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                    sx={{ mb: 2 }}
-                                />
-
-                                <LoadingButton
-                                    size={"medium"}
-                                    variant="contained"
-                                    color="primary"
-                                    loading={createAccountStore.loading}
-                                    disabled={isDisabled}
-                                    onClick={this.createAccount}>
-                                    Create Account
-                                </LoadingButton>
-
-                                <Box sx={{ textAlign: 'center', mt: 3, mb: 1 }}>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Already have an account?{' '}
-                                        <Button
-                                            variant="text"
-                                            size="small"
-                                            sx={{ textTransform: 'none', p: 0, minWidth: 'auto' }}
-                                            onClick={() => router.push("/login")}
-                                        >
-                                            Login
-                                        </Button>
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </CardContent>
-                    </Card>
-
-                    <AppStoreButton url="https://apps.apple.com/us/app/nevvi/id1669915435" style={{marginTop: "2rem"}}/>
+            <AuthLayout>
+                <Box sx={{ textAlign: 'center', mb: 4 }}>
+                    <Typography variant="h3" component="h1" gutterBottom>
+                        Create Your Account
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                        Join Nevvi to stay connected with the people that matter most
+                    </Typography>
                 </Box>
-            </Container>
+
+                {Object.keys(createAccountStore.errors).length > 0 && (
+                    <Alert severity="error" sx={{ mb: 3 }}>
+                        Please check the form for errors
+                    </Alert>
+                )}
+
+                <Stack spacing={3}>
+                    <TextField
+                        required
+                        fullWidth
+                        id="username"
+                        label="Phone Number"
+                        name="username"
+                        autoComplete="tel"
+                        autoFocus
+                        placeholder="+1 (555) 123-4567"
+                        value={createAccountStore.username}
+                        onChange={(e) => createAccountStore.setUsername(e.target.value)}
+                        error={!!createAccountStore.errors.username}
+                        helperText={createAccountStore.errors.username || "We'll send a confirmation code to this number"}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Phone color="action" />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+
+                    <TextField
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type={createAccountStore.showPassword ? 'text' : 'password'}
+                        id="password"
+                        autoComplete="new-password"
+                        value={createAccountStore.password}
+                        onChange={(e) => createAccountStore.setPassword(e.target.value)}
+                        error={!!createAccountStore.errors.password}
+                        helperText={createAccountStore.errors.password || "Must contain: uppercase letter, lowercase letter, number, special character, and be at least 8 characters"}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <Lock color="action" />
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={(e) => createAccountStore.toggleShowPassword()}
+                                        edge="end"
+                                    >
+                                        {createAccountStore.showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+
+                    <LoadingButton
+                        fullWidth
+                        size="large"
+                        variant="contained"
+                        loading={createAccountStore.loading}
+                        disabled={isDisabled}
+                        onClick={this.createAccount}
+                        sx={{ py: 1.5, fontSize: '1.1rem' }}
+                    >
+                        {createAccountStore.loading ? 'Creating Account...' : 'Create Account'}
+                    </LoadingButton>
+
+                    <Divider sx={{ my: 2 }}>
+                        <Typography variant="body2" color="text.secondary">
+                            Already have an account?
+                        </Typography>
+                    </Divider>
+
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        size="large"
+                        onClick={() => router.push("/login")}
+                        sx={{ py: 1.5, fontSize: '1.1rem' }}
+                    >
+                        Sign In Instead
+                    </Button>
+                </Stack>
+
+                <Box sx={{ mt: 4, textAlign: 'center' }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        By creating an account, you agree to our{' '}
+                        <a 
+                            href="https://app.termly.io/policy-viewer/policy.html?policyUUID=5dfc4b38-5260-4da5-9f7d-bcff246f6a4e" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            style={{ color: 'inherit', textDecoration: 'underline' }}
+                        >
+                            Privacy Policy
+                        </a>
+                    </Typography>
+                    <AppStoreButton
+                        url="https://apps.apple.com/us/app/nevvi/id1669915435"
+                        style={{ margin: '0 auto' }}
+                    />
+                </Box>
+            </AuthLayout>
         );
     }
 }

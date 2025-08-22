@@ -1,159 +1,169 @@
 import React, {Component} from 'react';
-import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Container,
-    IconButton, InputAdornment,
-    TextField,
-    Typography,
-} from "@mui/material";
 import {inject, observer} from "mobx-react";
+import {
+    Button,
+    TextField,
+    Box,
+    Typography,
+    InputAdornment,
+    IconButton,
+    Stack,
+    Divider,
+    Alert,
+    Link,
+} from "@mui/material";
 import {LoadingButton} from "@mui/lab";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
-import Logo from "../utils/Logo";
-import {router} from "../../router";
+import {router} from '../../router'
+import {Visibility, VisibilityOff, Phone, Lock} from "@mui/icons-material";
 import {AppStoreButton} from "./AppStoreButton";
+import AuthLayout from "./AuthLayout";
 
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.loginAccount = this.loginAccount.bind(this);
+        this.handleLogin = this.handleLogin.bind(this);
     }
 
-    async loginAccount(event) {
-        event.preventDefault()
+    async handleLogin(event) {
+        event.preventDefault();
         const {loginStore} = this.props;
-        await loginStore.login()
+        await loginStore.login();
     }
 
     render() {
         const {loginStore} = this.props;
-        const isDisabled = loginStore.username === '' || loginStore.password === ''
+        const isDisabled = loginStore.username === '' || loginStore.password === '';
+
         return (
-            <Container component="main" maxWidth="sm">
-                <Box
-                    sx={{
-                        minHeight: '80vh',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        py: 3
-                    }}
-                >
-                    <Card
-                        sx={{
-                            width: '100%',
-                            maxWidth: 450,
-                            boxShadow: 1,
-                            borderRadius: 2
-                        }}
-                    >
-                        <CardContent sx={{ p: 3 }}>
-                            <Box
+            <AuthLayout>
+                <Box sx={{ textAlign: 'center', mb: 4 }}>
+                    <Typography variant="h3" component="h1" gutterBottom>
+                        Welcome Back
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                        Sign in to your Nevvi account to manage your connections
+                    </Typography>
+                </Box>
+
+                {loginStore.errorMessage && (
+                    <Alert severity="error" sx={{ mb: 3 }}>
+                        {loginStore.errorMessage}
+                    </Alert>
+                )}
+
+                <form onSubmit={this.handleLogin}>
+                    <Stack spacing={3}>
+                        <TextField
+                            required
+                            fullWidth
+                            id="username"
+                            label="Phone Number"
+                            name="username"
+                            autoComplete="tel"
+                            autoFocus
+                            placeholder="+1 (555) 123-4567"
+                            value={loginStore.username}
+                            onChange={(e) => loginStore.setUsername(e.target.value)}
+                            error={!!loginStore.errors?.username}
+                            helperText={loginStore.errors?.username}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Phone color="action" />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+
+                        <TextField
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type={loginStore.showPassword ? 'text' : 'password'}
+                            id="password"
+                            autoComplete="current-password"
+                            value={loginStore.password}
+                            onChange={(e) => loginStore.setPassword(e.target.value)}
+                            error={!!loginStore.errors?.password}
+                            helperText={loginStore.errors?.password}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Lock color="action" />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => loginStore.toggleShowPassword()}
+                                            edge="end"
+                                        >
+                                            {loginStore.showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+
+                        <Box sx={{ textAlign: 'right' }}>
+                            <Link
+                                component="button"
+                                type="button"
+                                variant="body2"
+                                onClick={() => {
+                                    router.push('/forgotPassword');
+                                }}
                                 sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    mb: 3
+                                    color: 'primary.main',
+                                    textDecoration: 'none',
+                                    '&:hover': {
+                                        textDecoration: 'underline',
+                                    },
                                 }}
                             >
-                                <Logo />
+                                Forgot your password?
+                            </Link>
+                        </Box>
 
-                                <Typography
-                                    component="h1"
-                                    variant={'h4'}
-                                    fontWeight="bold"
-                                    color="text.primary"
-                                >
-                                    Sign In
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    textAlign="center"
-                                    sx={{ mt: 1 }}
-                                >
-                                    Enter your credentials to access your account
-                                </Typography>
-                            </Box>
+                        <LoadingButton
+                            type="submit"
+                            fullWidth
+                            size="large"
+                            variant="contained"
+                            loading={loginStore.loading}
+                            disabled={isDisabled}
+                            sx={{ py: 1.5, fontSize: '1.1rem' }}
+                        >
+                            {loginStore.loading ? 'Signing In...' : 'Sign In'}
+                        </LoadingButton>
 
-                            <Box textAlign={"center"}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="username"
-                                    label="Phone Number"
-                                    name="username"
-                                    autoComplete="username"
-                                    autoFocus
-                                    value={loginStore.username}
-                                    onChange={(e) => loginStore.setUsername(e.target.value)}
-                                    error={!!loginStore.errors.username}
-                                    helperText={loginStore.errors.username}
-                                    sx={{ mb: 2 }}
-                                />
+                        <Divider sx={{ my: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
+                                New to Nevvi?
+                            </Typography>
+                        </Divider>
 
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Password"
-                                    type={loginStore.showPassword ? 'text' : 'password'}
-                                    id="password"
-                                    autoComplete="current-password"
-                                    value={loginStore.password}
-                                    onChange={(e) => loginStore.setPassword(e.target.value)}
-                                    error={!!loginStore.errors.password}
-                                    helperText={loginStore.errors.password}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={(e) => loginStore.toggleShowPassword()}
-                                                    edge="end"
-                                                >
-                                                    {loginStore.showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                    sx={{ mb: 2 }}
-                                />
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            size="large"
+                            onClick={() => router.push("/createAccount")}
+                            sx={{ py: 1.5, fontSize: '1.1rem' }}
+                        >
+                            Create Free Account
+                        </Button>
+                    </Stack>
+                </form>
 
-                                <LoadingButton
-                                    size={"medium"}
-                                    variant="contained"
-                                    color="primary"
-                                    loading={loginStore.loading}
-                                    disabled={isDisabled}
-                                    onClick={this.loginAccount}>
-                                    Login
-                                </LoadingButton>
-
-                                <Box sx={{ textAlign: 'center', mt: 3 }}>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Need to confirm an account?{' '}
-                                        <Button
-                                            variant="text"
-                                            size="small"
-                                            sx={{ textTransform: 'none', p: 0, minWidth: 'auto' }}
-                                            onClick={() => router.push("/confirmAccount")}
-                                        >
-                                            Confirm
-                                        </Button>
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </CardContent>
-                    </Card>
-
-                    <AppStoreButton url="https://apps.apple.com/us/app/nevvi/id1669915435" style={{marginTop: "2rem"}}/>
+                <Box sx={{ mt: 4, textAlign: 'center' }}>
+                    <AppStoreButton
+                        url="https://apps.apple.com/us/app/nevvi/id1669915435"
+                        style={{ margin: '0 auto' }}
+                    />
                 </Box>
-            </Container>
+            </AuthLayout>
         );
     }
 }
