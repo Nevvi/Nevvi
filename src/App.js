@@ -26,6 +26,7 @@ import UserTable from "./components/connections/UserTable";
 import Connections from "./components/connections/Connections";
 import Onboarding from "./components/onboarding/Onboarding";
 import Connection from "./components/connections/Connection";
+import ConnectionGroups from "./components/connections/ConnectionGroups";
 import AppLayout from "./components/layout/AppLayout";
 
 
@@ -79,6 +80,7 @@ class App extends Component {
                         <SecureRoute path="/account/blocked-users" exact={true} component={BlockedUsers}/>
                         <SecureRoute path="/connections" exact={true} component={Connections}/>
                         <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
+                        <SecureRoute path="/connections/groups" exact={true} component={ConnectionGroups}/>
                         <SecureRoute path="/connections/:userId" exact={true} component={Connection}/>
                         <InsecureRoute path="/createAccount" component={CreateAccount}/>
                         <InsecureRoute path="/confirmAccount" component={ConfirmAccount}/>

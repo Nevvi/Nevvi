@@ -23,6 +23,7 @@ import {
     Help,
     Logout,
     Menu as MenuIcon,
+    Group,
 } from '@mui/icons-material';
 import { router } from '../../router';
 import Logo from '../utils/Logo';
@@ -52,6 +53,12 @@ const Navigation = inject('authStore', 'accountStore')(observer(({ authStore, ac
             icon: <PersonAdd />,
             path: '/connections/new',
             onClick: () => router.push('/connections/new'),
+        },
+        {
+            text: 'Connection Groups',
+            icon: <Group />,
+            path: '/connections/groups',
+            onClick: () => router.push('/connections/groups'),
         },
         {
             text: 'My Account',
