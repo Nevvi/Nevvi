@@ -270,7 +270,7 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
                                                     height: 48,
                                                     fontSize: '1.2rem',
                                                     fontWeight: 600,
-                                                    backgroundColor: 'primary.main',
+                                                    backgroundColor: 'secondary.main',
                                                 }}
                                             >
                                                 {connection.firstName?.charAt(0)}{connection.lastName?.charAt(0)}
@@ -331,7 +331,7 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
                                                     mb: 1,
                                                     fontSize: '1.5rem',
                                                     fontWeight: 600,
-                                                    backgroundColor: 'primary.main',
+                                                    backgroundColor: 'secondary.main',
                                                 }}
                                             >
                                                 {connection.firstName?.charAt(0)}{connection.lastName?.charAt(0)}

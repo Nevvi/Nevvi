@@ -3,14 +3,14 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 import {debounce} from "@mui/material";
 
-class UsersStore {
+class ConnectionsStore {
     connectionsLoading = false
     requestsLoading = false
     confirmationLoading = false
 
     connections = []
     totalConnections = 0
-    connectionsPerPage = 10
+    connectionsPerPage = 8
     page = 1
 
     requests = []
@@ -147,4 +147,4 @@ class UsersStore {
     }
 }
 
-export default UsersStore;
+export default ConnectionsStore;
