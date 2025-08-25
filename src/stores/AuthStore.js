@@ -5,6 +5,7 @@ import { router } from "../router"; // Add this import
 class AuthStore {
     idToken = null
     accessToken = null
+    refreshToken = null
     userId = null
 
     constructor(accountStore) {
@@ -29,6 +30,7 @@ class AuthStore {
 
             this.setIdToken(authentication.idToken)
             this.setAccessToken(authentication.accessToken)
+            this.setRefreshToken(authentication.refreshToken)
             this.setUserId(userId)
         }
     }
@@ -54,10 +56,42 @@ class AuthStore {
 
             this.setIdToken(response.data.idToken)
             this.setAccessToken(response.data.accessToken)
+            this.setRefreshToken(response.data.refreshToken)
             this.setUserId(response.data.id)
         } catch (e) {
             throw new Error(e.response.data)
         }
+    }
+
+    async refreshLogin() {
+        console.log("Refreshing login!")
+        try {
+            if (!this.refreshToken) {
+                console.log("No refresh token found")
+                return false
+            }
+
+            const response = await axios.post(
+                `/api/authentication/v1/refreshLogin`,
+                null,
+                {
+                    headers: {
+                        'RefreshToken': this.refreshToken,
+                    }
+                }
+            )
+
+            // Refresh the global auth info
+            localStorage.setItem('Authentication', JSON.stringify(response.data))
+            this.setTokenHeaders(response.data.idToken, response.data.accessToken)
+            this.setIdToken(response.data.idToken)
+            this.setAccessToken(response.data.accessToken)
+            this.setRefreshToken(null)
+        } catch (e) {
+            throw new Error(e.response.data)
+        }
+
+        return true
     }
 
     async logout() {
@@ -78,6 +112,7 @@ class AuthStore {
 
         this.setUserId(null)
         this.setAccessToken(null)
+        this.setRefreshToken(null)
         this.setIdToken(null)
 
         this.clearTokenHeaders()
@@ -94,6 +129,10 @@ class AuthStore {
         this.accessToken = accessToken
     }
 
+    setRefreshToken(refreshToken) {
+        this.refreshToken = refreshToken
+    }
+
     setUserId(userId) {
         this.userId = userId
     }
@@ -101,7 +140,7 @@ class AuthStore {
     setTokenHeaders(idToken, accessToken) {
         axios.defaults.headers.common = {
             "Authorization": idToken,
-            "AccessToken": accessToken
+            "AccessToken": accessToken,
         };
     }
 

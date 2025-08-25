@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -13,8 +12,8 @@ import {router} from "./router";
 import {Router} from "react-router-dom";
 import {Provider} from "mobx-react";
 
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 
 // Stores
 import AuthStore from "./stores/AuthStore";
@@ -25,28 +24,31 @@ import ConfirmAccountStore from "./stores/ConfirmAccountStore";
 import ConfirmAttributeStore from "./stores/ConfirmAttributeStore";
 import UsersStore from "./stores/UsersStore";
 import ConnectionsStore from "./stores/ConnectionsStore";
-import CreatePermissionGroupStore from "./stores/CreatePermissionGroupStore";
+import PermissionGroupStore from "./stores/CreatePermissionGroupStore";
 import {ProSidebarProvider} from "react-pro-sidebar";
 import PermissionGroupModalStore from "./stores/PermissionGroupModalStore";
 import ConnectionStore from "./stores/ConnectionStore";
 import ConnectionGroupsStore from "./stores/ConnectionGroupsStore";
 import ConnectionGroupStore from "./stores/ConnectionGroupStore";
 import ForgotPasswordStore from "./stores/ForgotPasswordStore";
+import {createApiClient} from "./stores/BaseStore";
 
 const accountStore = new AccountStore();
 const authStore = new AuthStore(accountStore);
-const connectionStore = new ConnectionStore(authStore, accountStore);
-const confirmAttributeStore = new ConfirmAttributeStore(accountStore);
-const loginStore = new LoginStore(authStore);
-const confirmAccountStore = new ConfirmAccountStore();
-const forgotPasswordStore = new ForgotPasswordStore();
-const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore);
-const createPermissionGroupStore = new CreatePermissionGroupStore(authStore, accountStore);
-const connectionsStore = new ConnectionsStore(authStore, accountStore);
-const usersStore = new UsersStore(authStore);
-const permissionGroupModalStore = new PermissionGroupModalStore(authStore);
-const connectionGroupsStore = new ConnectionGroupsStore(authStore);
-const connectionGroupStore = new ConnectionGroupStore(authStore);
+const apiClient = createApiClient(authStore);
+
+const connectionStore = new ConnectionStore(authStore, accountStore, apiClient);
+const confirmAttributeStore = new ConfirmAttributeStore(accountStore, apiClient);
+const loginStore = new LoginStore(authStore, apiClient);
+const confirmAccountStore = new ConfirmAccountStore(apiClient);
+const forgotPasswordStore = new ForgotPasswordStore(apiClient);
+const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore, apiClient);
+const permissionGroupStore = new PermissionGroupStore(accountStore, apiClient);
+const connectionsStore = new ConnectionsStore(authStore, accountStore, apiClient);
+const usersStore = new UsersStore(authStore, apiClient);
+const permissionGroupModalStore = new PermissionGroupModalStore(authStore, apiClient);
+const connectionGroupsStore = new ConnectionGroupsStore(authStore, apiClient);
+const connectionGroupStore = new ConnectionGroupStore(authStore, apiClient);
 
 const stores = {
     authStore: authStore,
@@ -59,7 +61,7 @@ const stores = {
     confirmAttributeStore: confirmAttributeStore,
     usersStore: usersStore,
     connectionsStore: connectionsStore,
-    createPermissionGroupStore: createPermissionGroupStore,
+    permissionGroupStore: permissionGroupStore,
     permissionGroupModalStore: permissionGroupModalStore,
     connectionGroupsStore: connectionGroupsStore,
     connectionGroupStore: connectionGroupStore

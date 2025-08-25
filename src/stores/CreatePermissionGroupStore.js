@@ -1,17 +1,20 @@
 import {makeAutoObservable} from "mobx";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
-class CreatePermissionGroupStore {
+class PermissionGroupStore {
     groupName = ""
     errorText = ""
     fields = []
     permissionGroupPromptOpen = false
     loading = false
+    editingGroup = null
+    deleteConfirmOpen = false
+    deletingGroup = null
 
-    constructor(authStore, accountStore) {
+    constructor(accountStore, apiClient) {
         makeAutoObservable(this)
-        this.authStore = authStore
         this.accountStore = accountStore
+        this.api = apiClient
     }
 
     async saveGroup() {
@@ -22,11 +25,32 @@ class CreatePermissionGroupStore {
                 return
             }
 
-            this.accountStore.addPermissionGroup(this.groupName, this.fields)
+            if (this.editingGroup) {
+                this.accountStore.updatePermissionGroup(this.editingGroup.name, this.groupName, this.fields)
+            } else {
+                this.accountStore.addPermissionGroup(this.groupName, this.fields)
+            }
+            
             await this.accountStore.saveUser()
-            this.setPermissionGroupPromptOpen(false)
+            this.closeModal()
         } catch (e) {
-            toast.error(`Failed to add group because ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
+            toast.error(`Failed to save group because ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
+        } finally {
+            this.setLoading(false)
+        }
+    }
+
+    async deleteGroup() {
+        if (!this.deletingGroup) return
+        
+        this.setLoading(true)
+        try {
+            this.accountStore.removePermissionGroup(this.deletingGroup.name)
+            await this.accountStore.saveUser()
+            this.closeDeleteConfirm()
+            toast.success('Permission group deleted successfully')
+        } catch (e) {
+            toast.error(`Failed to delete group because ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
             this.setLoading(false)
         }
@@ -55,6 +79,43 @@ class CreatePermissionGroupStore {
         this.permissionGroupPromptOpen = value;
     }
 
+    editGroup(group) {
+        this.editingGroup = group
+        this.groupName = group.name
+        this.fields = [...group.fields.filter(f => !['First Name', 'Last Name', 'Profile Picture'].includes(f))]
+        this.setPermissionGroupPromptOpen(true)
+    }
+
+    openDeleteConfirm(group) {
+        this.deletingGroup = group
+        this.deleteConfirmOpen = true
+    }
+
+    closeDeleteConfirm() {
+        this.deletingGroup = null
+        this.deleteConfirmOpen = false
+    }
+
+    closeModal() {
+        this.setPermissionGroupPromptOpen(false)
+        this.editingGroup = null
+        this.groupName = ""
+        this.fields = []
+        this.errorText = ""
+    }
+
+    get isEditing() {
+        return this.editingGroup !== null
+    }
+
+    get modalTitle() {
+        return this.isEditing ? 'Edit Permission Group' : 'Create New Permission Group'
+    }
+
+    get saveButtonText() {
+        return this.isEditing ? 'Update Group' : 'Create Group'
+    }
+
 }
 
-export default CreatePermissionGroupStore;
+export default PermissionGroupStore;

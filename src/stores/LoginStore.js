@@ -1,7 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
 import {router} from '../router'
-import {getUser} from "../components/utils/httpUtils";
 
 class LoginStore {
     username = ''
@@ -10,9 +9,10 @@ class LoginStore {
     errors = {}
     loading = false
 
-    constructor(authStore) {
+    constructor(authStore, apiClient) {
         makeAutoObservable(this)
         this.authStore = authStore
+        this.api = apiClient
     }
 
     async login() {
@@ -20,9 +20,9 @@ class LoginStore {
             this.setLoading(true)
             await this.authStore.login(this.username, this.password)
 
-            const user = await getUser(this.authStore.userId)
+            const user = await this.api.get(`/api/user/v1/users/${this.authStore.userId}`)
 
-            router.push(user.onboardingCompleted ? '/' : '/onboarding')
+            router.push(user.data.onboardingCompleted ? '/' : '/onboarding')
         } catch (e) {
             toast.error(`Login failed because ${e.message}`)
         } finally {

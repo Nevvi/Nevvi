@@ -31,7 +31,7 @@ class UserTable extends Component {
 
     renderLoadingSkeleton = () => (
         <Grid container spacing={3}>
-            {[1, 2, 3, 4, 5, 6].map(item => (
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(item => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={item}>
                     <Card>
                         <CardContent>

@@ -1,10 +1,10 @@
 import {makeAutoObservable, reaction} from "mobx";
-import axios from "axios";
 import {toast} from 'react-toastify';
 import {router} from "../router";
 import Resizer from "react-image-file-resizer";
 
 import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber'
+import axios from "axios";
 
 const PNU = PhoneNumberUtil.getInstance();
 
@@ -182,6 +182,17 @@ class AccountStore {
 
     addPermissionGroup(name, fields) {
         this.updatedUser.permissionGroups.push({name: name.trim(), fields})
+    }
+
+    updatePermissionGroup(oldName, newName, fields) {
+        const groupIndex = this.updatedUser.permissionGroups.findIndex(g => g.name === oldName)
+        if (groupIndex !== -1) {
+            this.updatedUser.permissionGroups[groupIndex] = {name: newName.trim(), fields}
+        }
+    }
+
+    removePermissionGroup(name) {
+        this.updatedUser.permissionGroups = this.updatedUser.permissionGroups.filter(g => g.name !== name)
     }
 
     setUserId(userId) {

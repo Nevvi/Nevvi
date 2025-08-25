@@ -1,6 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import axios from "axios";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import {router} from "../router";
 
 class ConnectionStore {
@@ -12,17 +11,18 @@ class ConnectionStore {
 
     permissionGroup = null
 
-    constructor(authStore, accountStore) {
+    constructor(authStore, accountStore, apiClient) {
         makeAutoObservable(this)
         this.authStore = authStore
         this.accountStore = accountStore
+        this.api = apiClient
     }
 
     async getConnection(connectionId) {
         this.setLoading(true)
         this.setConnection(null)
         try {
-            const res = await axios.get(`/api/user/v1/users/${this.authStore.userId}/connections/${connectionId}`)
+            const res = await this.api.get(`/api/user/v1/users/${this.authStore.userId}/connections/${connectionId}`)
             this.setConnection(res.data)
             this.setPermissionGroup(res.data.permissionGroup)
         } catch (e) {
@@ -39,7 +39,7 @@ class ConnectionStore {
             const updateRequest = {
                 permissionGroupName: this.permissionGroup
             }
-            const res = await axios.patch(`/api/user/v1/users/${this.authStore.userId}/connections/${this.connection.id}`, updateRequest)
+            const res = await this.api.patch(`/api/user/v1/users/${this.authStore.userId}/connections/${this.connection.id}`, updateRequest)
             this.setConnection(res.data)
             this.setPermissionGroup(res.data.permissionGroup)
         } catch (e) {
@@ -52,7 +52,7 @@ class ConnectionStore {
     async deleteConnection() {
         this.setDeleting(true)
         try {
-            await axios.delete(`/api/user/v1/users/${this.authStore.userId}/connections/${this.connection.id}`)
+            await this.api.delete(`/api/user/v1/users/${this.authStore.userId}/connections/${this.connection.id}`)
             await this.accountStore.getRejectedUsers()
             toast.success("Successfully deleted connection")
             router.push("/")

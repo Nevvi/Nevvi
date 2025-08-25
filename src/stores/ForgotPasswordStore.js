@@ -1,6 +1,5 @@
 import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
-import axios from "axios";
 import {router} from '../router'
 
 const DEFAULT_PROMPT = 'Enter the new password and confirmation code that we sent to your phone number'
@@ -13,14 +12,15 @@ class ForgotPasswordStore {
     errors = {}
     loading = false
 
-    constructor() {
+    constructor(apiClient) {
         makeAutoObservable(this)
+        this.api = apiClient
     }
 
     async sendForgotPasswordCode() {
         try {
             this.setLoading(true)
-            await axios.post(
+            await this.api.post(
                 `/api/authentication/v1/forgotPassword`,
                 {username: this.username}
             )
@@ -38,7 +38,7 @@ class ForgotPasswordStore {
     async confirmForgotPasswordCode() {
         try {
             this.setLoading(true)
-            await axios.post(
+            await this.api.post(
                 `/api/authentication/v1/confirmForgotPassword`,
                 {username: this.username, code: this.confirmationCode, password: this.newPassword}
             )

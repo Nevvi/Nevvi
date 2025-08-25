@@ -1,6 +1,5 @@
 import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
-import axios from "axios";
 
 const DEFAULT_PROMPT = 'Enter the confirmation code that we previously sent to your email'
 
@@ -10,8 +9,9 @@ class ConfirmAttributeStore {
     confirmationCode = ''
     loading = false
 
-    constructor(accountStore) {
+    constructor(accountStore, apiClient) {
         makeAutoObservable(this)
+        this.api = apiClient
         this.accountStore = accountStore
     }
 
@@ -19,7 +19,7 @@ class ConfirmAttributeStore {
         try {
             this.setLoading(true)
             // Create the unconfirmed account
-            const sendCodeResponse = await axios.post(`/api/authentication/v1/users/${this.accountStore.user.id}/sendCode?attribute=phone_number`)
+            const sendCodeResponse = await this.api.post(`/api/authentication/v1/users/${this.accountStore.user.id}/sendCode?attribute=phone_number`)
             const deliveryDetails = sendCodeResponse.data
             this.setConfirmationCodePrompt(`We have sent a text with a confirmation code to ${deliveryDetails.CodeDeliveryDetails.Destination}. Enter that code to confirm your phone number`)
             this.setWaitingConfirmationCode(true)
@@ -34,7 +34,7 @@ class ConfirmAttributeStore {
     async confirmPhone() {
         try {
             this.setLoading(true)
-            await axios.post(`/api/authentication/v1/users/${this.accountStore.user.id}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
+            await this.api.post(`/api/authentication/v1/users/${this.accountStore.user.id}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
             this.setConfirmationCodePrompt(DEFAULT_PROMPT)
 
             // Reload the latest user data

@@ -1,6 +1,5 @@
 import {makeAutoObservable, reaction} from "mobx";
-import axios from "axios";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import {debounce} from "@mui/material";
 
 class UsersStore {
@@ -12,11 +11,12 @@ class UsersStore {
     page = 1
     nameFilter = ""
 
-    constructor(authStore) {
+    constructor(authStore, apiClient) {
         makeAutoObservable(this)
         this.authStore = authStore
+        this.api = apiClient
         reaction(() => this.nameFilter, debounce((name) => this.loadUsers(), 500))
-        reaction(() => this.page,(page) => this.loadUsers())
+        reaction(() => this.page, (page) => this.loadUsers())
     }
 
     async loadUsers() {
@@ -30,11 +30,11 @@ class UsersStore {
             const skip = (this.page - 1) * this.usersPerPage
             const limit = this.usersPerPage
             const url = `/api/user/v1/users/search?name=${this.nameFilter}&skip=${skip}&limit=${limit}`
-            const res = await axios.get(url)
+            const res = await this.api.get(url)
             const users = res.data.users.filter((user) => user.id !== this.authStore.userId)
             this.setUsers(users)
             this.setTotalUsers(res.data.count)
-        } catch(e) {
+        } catch (e) {
             toast.error(`Failed to load users due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
             this.setLoading(false)
@@ -45,7 +45,7 @@ class UsersStore {
         try {
             this.setRequesting(true)
             let url = `/api/user/v1/users/${this.authStore.userId}/connections/requests`
-            const res = await axios.post(url, {otherUserId: otherUserId, permissionGroupName: group})
+            const res = await this.api.post(url, {otherUserId: otherUserId, permissionGroupName: group})
             toast.success('Connection request submitted')
             return res.data
         } catch (e) {

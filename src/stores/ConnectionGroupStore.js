@@ -1,6 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import axios from "axios";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
 class ConnectionGroupStore {
     group = null
@@ -9,19 +8,20 @@ class ConnectionGroupStore {
     deleting = false
     exporting = false
 
-    constructor(authStore) {
+    constructor(authStore, apiClient) {
         makeAutoObservable(this)
+        this.api = apiClient
         this.authStore = authStore
     }
 
-    async getGroup(groupId, groupName) {
+    async getGroup(groupId) {
         this.setLoading(true)
         this.setGroup(null)
         try {
-            const allGroups = await axios.get(`/api/user/v1/users/${this.authStore.userId}/connection-groups`)
+            const allGroups = await this.api.get(`/api/user/v1/users/${this.authStore.userId}/connection-groups`)
             const groupMeta = allGroups.data.find(g => g.id === groupId)
 
-            const groupConnections = await axios.get(`/api/user/v1/users/${this.authStore.userId}/connection-groups/${groupId}/connections`)
+            const groupConnections = await this.api.get(`/api/user/v1/users/${this.authStore.userId}/connection-groups/${groupId}/connections`)
             this.setGroup({
                 id: groupId,
                 name: groupMeta?.name,
@@ -37,11 +37,11 @@ class ConnectionGroupStore {
     async addToGroup(connectionId) {
         this.setSaving(true)
         try {
-            await axios.post(
+            await this.api.post(
                 `/api/user/v1/users/${this.authStore.userId}/connection-groups/${this.group.id}/connections`,
                 {userId: connectionId}
             )
-            await this.getGroup(this.group.id, this.group.name)
+            await this.getGroup(this.group.id)
         } catch (e) {
             toast.error(`Failed to add connection to group ${e.response.data}`)
         } finally {
@@ -52,11 +52,11 @@ class ConnectionGroupStore {
     async removeFromGroup(connectionId) {
         this.setSaving(true)
         try {
-            await axios.delete(
+            await this.api.delete(
                 `/api/user/v1/users/${this.authStore.userId}/connection-groups/${this.group.id}/connections`,
                 {data: {userId: connectionId}}
             )
-            await this.getGroup(this.group.id, this.group.name)
+            await this.getGroup(this.group.id)
         } catch (e) {
             toast.error(`Failed to remove connection from group ${e.response.data}`)
         } finally {
@@ -67,7 +67,7 @@ class ConnectionGroupStore {
     async exportGroup() {
         this.setExporting(true)
         try {
-            await axios.post(`/api/user/v1/users/${this.authStore.userId}/connection-groups/${this.group.id}/export`)
+            await this.api.post(`/api/user/v1/users/${this.authStore.userId}/connection-groups/${this.group.id}/export`)
             toast.success("Successfully exported group")
         } catch (e) {
             toast.error(`Failed to export group ${e.response.data}`)

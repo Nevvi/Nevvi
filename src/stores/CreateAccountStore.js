@@ -1,6 +1,5 @@
 import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
-import axios from "axios";
 import {router} from '../router'
 
 class CreateAccountStore {
@@ -10,17 +9,18 @@ class CreateAccountStore {
     errors = {}
     loading = false
 
-    constructor(authStore, confirmAccountStore) {
+    constructor(authStore, confirmAccountStore, apiClient) {
         makeAutoObservable(this)
-        this.authStore = authStore
         this.confirmAccountStore = confirmAccountStore
+        this.authStore = authStore
+        this.api = apiClient
     }
 
     async createAccount() {
         try {
             this.setLoading(true)
             // Create the unconfirmed account
-            const registerResponse = await axios.post(
+            const registerResponse = await this.api.post(
                 `/api/authentication/v1/register`,
                 {username: this.username, password: this.password}
             )

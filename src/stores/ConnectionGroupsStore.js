@@ -1,14 +1,14 @@
 import {makeAutoObservable, reaction} from "mobx";
-import axios from "axios";
 import {toast} from 'react-toastify';
 
 class ConnectionGroupsStore {
     connectionGroupsLoading = false
     connectionGroups = []
 
-    constructor(authStore) {
+    constructor(authStore, apiClient) {
         makeAutoObservable(this)
         this.authStore = authStore
+        this.api = apiClient
 
         reaction(() => authStore.userId, (userId) => {
             if (userId) {
@@ -21,7 +21,7 @@ class ConnectionGroupsStore {
         this.setConnectionGroupsLoading(true)
         try {
             let url = `/api/user/v1/users/${this.authStore.userId}/connection-groups`
-            const res = await axios.get(url)
+            const res = await this.api.get(url)
             this.setConnectionGroups(res.data)
         } catch (e) {
             toast.error(`Failed to load connection groups due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
@@ -34,7 +34,7 @@ class ConnectionGroupsStore {
         this.setConnectionGroupsLoading(true)
         try {
             let url = `/api/user/v1/users/${this.authStore.userId}/connection-groups`
-            await axios.post(url, {name: name})
+            await this.api.post(url, {name: name})
             await this.loadGroups()
             toast.success('Connection group created')
         } catch (e) {
@@ -46,7 +46,7 @@ class ConnectionGroupsStore {
         this.setConnectionGroupsLoading(true)
         try {
             let url = `/api/user/v1/users/${this.authStore.userId}/connection-groups/${groupId}`
-            await axios.delete(url)
+            await this.api.delete(url)
             await this.loadGroups()
             toast.success('Connection group deleted')
         } catch (e) {

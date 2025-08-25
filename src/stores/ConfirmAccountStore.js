@@ -1,6 +1,5 @@
 import {makeAutoObservable} from "mobx";
 import {toast} from "react-toastify";
-import axios from "axios";
 import {router} from '../router'
 
 const DEFAULT_PROMPT = 'Enter the confirmation code that we previously sent to your phone number'
@@ -13,15 +12,16 @@ class ConfirmAccountStore {
     callback = null
     loading = false
 
-    constructor() {
+    constructor(apiClient) {
         makeAutoObservable(this)
+        this.api = apiClient
     }
 
     async confirmAccount() {
         try {
             this.setLoading(true)
             // Confirm the account using username as the username
-            await axios.post(
+            await this.api.post(
                 `/api/authentication/v1/confirm`,
                 {username: this.username, confirmationCode: this.confirmationCode}
             )
