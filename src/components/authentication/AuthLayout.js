@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Paper, useMediaQuery, useTheme } from '@mui/material';
+import {Box, Container, Paper, useMediaQuery, useTheme} from '@mui/material';
 import Logo from '../utils/Logo';
 
 const AuthLayout = ({ children, maxWidth = 'sm' }) => {

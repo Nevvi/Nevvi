@@ -1,6 +1,6 @@
 import {makeAutoObservable, reaction} from "mobx";
 import axios from "axios";
-import { router } from "../router"; // Add this import
+import {router} from "../router"; // Add this import
 
 class AuthStore {
     idToken = null

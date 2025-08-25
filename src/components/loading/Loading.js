@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import { Box } from "@mui/material";
+import {Box} from "@mui/material";
 import "./Loading.css"; // We'll create this CSS file
 
 export default class Loading extends React.Component {

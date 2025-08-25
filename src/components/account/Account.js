@@ -1,30 +1,30 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
-    Grid,
-    TextField,
     Avatar,
-    CircularProgress,
     Box,
-    InputAdornment,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
     Button,
-    Paper,
-    Typography,
     Card,
     CardContent,
+    CircularProgress,
     Container,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Grid,
+    InputAdornment,
+    Paper,
+    TextField,
+    Typography,
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import { Check, Group, Block, ChevronRight } from '@mui/icons-material';
-import { inject, observer } from 'mobx-react';
+import {LoadingButton} from '@mui/lab';
+import {MobileDatePicker} from '@mui/x-date-pickers/MobileDatePicker';
+import {Block, Check, ChevronRight, Group} from '@mui/icons-material';
+import {inject, observer} from 'mobx-react';
 import dayjs from 'dayjs';
 import Loading from '../loading/Loading';
-import { router } from '../../router';
+import {router} from '../../router';
 
 class Account extends Component {
     constructor(props) {

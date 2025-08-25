@@ -1,31 +1,23 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import {
+    AppBar,
+    Avatar,
+    Box,
+    Divider,
     Drawer,
+    IconButton,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Box,
-    Typography,
-    Divider,
-    Avatar,
-    useTheme,
-    useMediaQuery,
-    IconButton,
-    AppBar,
     Toolbar,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
-import {
-    People,
-    PersonAdd,
-    AccountCircle,
-    Help,
-    Logout,
-    Menu as MenuIcon,
-    Group,
-} from '@mui/icons-material';
-import { router } from '../../router';
+import {AccountCircle, Group, Help, Logout, Menu as MenuIcon, People, PersonAdd,} from '@mui/icons-material';
+import {router} from '../../router';
 import Logo from '../utils/Logo';
 
 const Navigation = inject('authStore', 'accountStore')(observer(({ authStore, accountStore }) => {

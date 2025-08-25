@@ -1,14 +1,9 @@
-
 import React, {Component} from 'react';
 import {router} from './router'
-import { ThemeProvider, CssBaseline, Box } from '@mui/material';
+import {Box, CssBaseline, ThemeProvider} from '@mui/material';
 import theme from './theme/theme';
 
-import {
-    Switch,
-    Route,
-    Redirect,
-} from "react-router-dom";
+import {Redirect, Route, Switch,} from "react-router-dom";
 
 import {inject, observer} from "mobx-react";
 

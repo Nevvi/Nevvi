@@ -1,7 +1,6 @@
-
 import React from 'react';
-import { Box, useTheme, useMediaQuery } from '@mui/material';
-import { inject, observer } from 'mobx-react';
+import {Box, useMediaQuery, useTheme} from '@mui/material';
+import {inject, observer} from 'mobx-react';
 import Navigation from '../navbar/Navigation';
 
 const AppLayout = inject('authStore')(observer(({ children, authStore }) => {

@@ -1,20 +1,20 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
 import {
-    Button,
-    TextField,
-    Box,
-    Typography,
-    InputAdornment,
-    IconButton,
-    Stack,
-    Divider,
     Alert,
+    Box,
+    Button,
+    Divider,
+    IconButton,
+    InputAdornment,
     Link,
+    Stack,
+    TextField,
+    Typography,
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
 import {router} from '../../router'
-import {Visibility, VisibilityOff, Phone, Lock} from "@mui/icons-material";
+import {Lock, Phone, Visibility, VisibilityOff} from "@mui/icons-material";
 import {AppStoreButton} from "./AppStoreButton";
 import AuthLayout from "./AuthLayout";
 

@@ -1,29 +1,24 @@
 import React from 'react';
-import { inject, observer } from "mobx-react";
+import {inject, observer} from "mobx-react";
 import {
     Box,
-    Typography,
-    TextField,
-    Container,
-    Paper,
-    Stepper,
-    Step,
-    StepLabel,
-    Stack,
     Card,
     CardContent,
-    useTheme,
+    Container,
+    Paper,
+    Stack,
+    Step,
+    StepLabel,
+    Stepper,
+    TextField,
+    Typography,
     useMediaQuery,
+    useTheme,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { router } from '../../router';
+import {LoadingButton} from "@mui/lab";
+import {router} from '../../router';
 import Logo from "../utils/Logo";
-import {
-    PersonAdd,
-    Security,
-    ConnectWithoutContact,
-    CheckCircle,
-} from "@mui/icons-material";
+import {CheckCircle, ConnectWithoutContact, PersonAdd, Security,} from "@mui/icons-material";
 
 function Onboarding(props) {
     const theme = useTheme();

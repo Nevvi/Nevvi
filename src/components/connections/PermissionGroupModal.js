@@ -1,11 +1,15 @@
 import React, {Component} from 'react';
 import {
     Button,
-    Dialog, DialogActions,
+    Dialog,
+    DialogActions,
     DialogContent,
     DialogTitle,
-    FormControl, FormControlLabel,
-    FormLabel, Radio, RadioGroup
+    FormControl,
+    FormControlLabel,
+    FormLabel,
+    Radio,
+    RadioGroup
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
 import {inject, observer} from "mobx-react";

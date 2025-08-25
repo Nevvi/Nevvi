@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Grid, Paper, Typography, Box, Card, CardContent, Link, Divider} from "@mui/material";
+import {Box, Card, CardContent, Divider, Grid, Link, Paper, Typography} from "@mui/material";
 import EmailIcon from '@mui/icons-material/Email';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';

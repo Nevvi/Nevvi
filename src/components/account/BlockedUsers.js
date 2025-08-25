@@ -1,17 +1,8 @@
-import React, { Component } from 'react';
-import {
-    Container,
-    Paper,
-    Typography,
-    Card,
-    CardContent,
-    Button,
-    Box, Grid
-} from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
-import { inject, observer } from 'mobx-react';
-import { router } from '../../router';
-import { People } from '@mui/icons-material';
+import React, {Component} from 'react';
+import {Box, Button, Card, CardContent, Container, Grid, Paper, Typography} from '@mui/material';
+import {ArrowBack, People} from '@mui/icons-material';
+import {inject, observer} from 'mobx-react';
+import {router} from '../../router';
 import UserCard from '../connections/UserCard';
 import PermissionGroupModal from '../connections/PermissionGroupModal';
 

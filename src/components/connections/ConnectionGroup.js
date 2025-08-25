@@ -1,48 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { inject, observer } from 'mobx-react';
+import React, {useEffect, useState} from 'react';
+import {inject, observer} from 'mobx-react';
 import {
+    Avatar,
     Box,
-    Container,
-    Paper,
-    Typography,
-    IconButton,
-    Grid,
+    Button,
     Card,
     CardContent,
-    Avatar,
-    Stack,
     Chip,
-    useTheme,
-    useMediaQuery,
     CircularProgress,
-    Button,
+    Container,
     Dialog,
-    DialogTitle,
-    DialogContent,
     DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    IconButton,
+    InputAdornment,
     List,
     ListItemAvatar,
-    ListItemText,
     ListItemButton,
-    TextField,
-    InputAdornment,
+    ListItemText,
     Menu,
     MenuItem,
+    Paper,
     SpeedDial,
     SpeedDialAction,
     SpeedDialIcon,
+    Stack,
+    TextField,
+    Typography,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
-import {
-    ArrowBack,
-    Email,
-    Phone,
-    PersonAdd,
-    Search,
-    MoreVert,
-    FileDownload,
-} from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
-import { router } from '../../router';
+import {ArrowBack, Email, FileDownload, MoreVert, PersonAdd, Phone, Search,} from '@mui/icons-material';
+import {LoadingButton} from '@mui/lab';
+import {router} from '../../router';
 import Loading from "../loading/Loading";
 
 const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore, computedMatch, location }) => {

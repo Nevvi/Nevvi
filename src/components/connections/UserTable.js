@@ -1,26 +1,22 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
 import {
+    Alert,
     Box,
-    Container,
-    Typography,
-    TextField,
-    InputAdornment,
-    Grid,
     Card,
     CardContent,
-    Paper,
-    Stack,
-    Skeleton,
-    Alert,
-    Pagination,
     Chip,
+    Container,
+    Grid,
+    InputAdornment,
+    Pagination,
+    Paper,
+    Skeleton,
+    Stack,
+    TextField,
+    Typography,
 } from "@mui/material";
-import {
-    Search,
-    PersonSearch,
-    People,
-} from "@mui/icons-material";
+import {People, PersonSearch, Search,} from "@mui/icons-material";
 import UserCard from "./UserCard";
 
 class UserTable extends Component {

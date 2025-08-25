@@ -1,13 +1,6 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
-import {
-    TextField,
-    Box,
-    Typography,
-    InputAdornment,
-    Stack,
-    Alert,
-} from "@mui/material";
+import {Alert, Box, InputAdornment, Stack, TextField, Typography,} from "@mui/material";
 import {LoadingButton} from "@mui/lab";
 import {Phone, Security} from "@mui/icons-material";
 import {AppStoreButton} from "./AppStoreButton";
