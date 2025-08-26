@@ -27,7 +27,7 @@ export function createApiClient(authStore) {
 
                     console.log('Logging out due to 401');
                     await authStore.logout();
-                    return Promise.reject(error);
+                    return Promise.resolve();
                 }
                 throw error;
             }
