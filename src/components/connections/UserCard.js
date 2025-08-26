@@ -100,8 +100,8 @@ class UserCard extends Component {
                     }}
                 >
                     {/* Mobile Layout: Always horizontal */}
-                    <Box sx={{display: {xs: 'block', sm: 'none'}}}>
-                        <Stack direction="row" spacing={2} alignItems="center" sx={{mb: showPermissionSelect ? 2 : 0}}>
+                    <Box sx={{display: {xs: 'block', sm: 'none'}, width: '100%', overflow: 'hidden'}}>
+                        <Stack direction="row" spacing={2} alignItems="center" sx={{mb: showPermissionSelect ? 2 : 0, width: '100%', minWidth: 0}}>
                             {/* Avatar */}
                             <Avatar
                                 src={user.profileImage}
@@ -121,42 +121,41 @@ class UserCard extends Component {
                             </Avatar>
 
                             {/* User Info - takes available space */}
-                            <Stack direction="column" spacing={0.5} flex={1} alignItems="left">
-                                <Box sx={{flex: 1, minWidth: 0}}>
-                                    <Typography
-                                        variant="subtitle1"
-                                        component="h3"
-                                        sx={{
-                                            fontWeight: 600,
-                                            fontSize: '0.95rem',
-                                            lineHeight: 1.2,
-                                            mb: 0.25,
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                        }}
-                                    >
-                                        {user.firstName} {user.lastName}
-                                    </Typography>
-                                </Box>
+                            <Stack direction="column" spacing={0.5} flex={1} alignItems="left" sx={{minWidth: 0}}>
+                                <Typography
+                                    variant="subtitle1"
+                                    component="h3"
+                                    sx={{
+                                        fontWeight: 600,
+                                        fontSize: '0.95rem',
+                                        lineHeight: 1.2,
+                                        mb: 0.25,
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {user.firstName} {user.lastName}
+                                </Typography>
 
-                                {user.bio && (
-                                    <Typography
-                                        variant="caption"
-                                        component="p"
-                                        sx={{
-                                            fontWeight: 300,
-                                            fontSize: '0.7rem',
-                                            lineHeight: 1,
-                                            mb: 1.5,
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                        }}
-                                    >
-                                        {user.bio}
-                                    </Typography>
-                                )}
+                                {/* TODO - this is causing weird overflow on mobile */}
+                                {/*{user.bio && (*/}
+                                {/*    <Typography*/}
+                                {/*        variant="caption"*/}
+                                {/*        component="p"*/}
+                                {/*        sx={{*/}
+                                {/*            fontWeight: 300,*/}
+                                {/*            fontSize: '0.7rem',*/}
+                                {/*            lineHeight: 1,*/}
+                                {/*            mb: 1.5,*/}
+                                {/*            overflow: 'hidden',*/}
+                                {/*            textOverflow: 'ellipsis',*/}
+                                {/*            whiteSpace: 'nowrap',*/}
+                                {/*        }}*/}
+                                {/*    >*/}
+                                {/*        {user.bio}*/}
+                                {/*    </Typography>*/}
+                                {/*)}*/}
                             </Stack>
 
                             {isConnected && (
@@ -303,7 +302,7 @@ class UserCard extends Component {
                             </Avatar>
 
                             {/* User Info - Give more width */}
-                            <Box sx={{minWidth: 0, width: '100%', maxWidth: '280px', mx: 'auto'}}>
+                            <Box sx={{minWidth: 0, width: '100%', mx: 'auto'}}>
                                 <Typography
                                     variant="h6"
                                     component="h3"

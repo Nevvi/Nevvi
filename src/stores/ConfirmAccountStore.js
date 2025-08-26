@@ -34,7 +34,7 @@ class ConfirmAccountStore {
                 toast.success("Successfully verified account. You can now use that username to log in.")
             }
 
-            this.setEmail('')
+            this.setUsername('')
             this.setConfirmationCodePrompt(DEFAULT_PROMPT)
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
