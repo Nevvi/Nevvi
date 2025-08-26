@@ -138,24 +138,25 @@ class UserCard extends Component {
                                     {user.firstName} {user.lastName}
                                 </Typography>
 
-                                {/* TODO - this is causing weird overflow on mobile */}
-                                {/*{user.bio && (*/}
-                                {/*    <Typography*/}
-                                {/*        variant="caption"*/}
-                                {/*        component="p"*/}
-                                {/*        sx={{*/}
-                                {/*            fontWeight: 300,*/}
-                                {/*            fontSize: '0.7rem',*/}
-                                {/*            lineHeight: 1,*/}
-                                {/*            mb: 1.5,*/}
-                                {/*            overflow: 'hidden',*/}
-                                {/*            textOverflow: 'ellipsis',*/}
-                                {/*            whiteSpace: 'nowrap',*/}
-                                {/*        }}*/}
-                                {/*    >*/}
-                                {/*        {user.bio}*/}
-                                {/*    </Typography>*/}
-                                {/*)}*/}
+                                {user.bio && (
+                                    <Typography
+                                        variant="caption"
+                                        component="p"
+                                        sx={{
+                                            fontWeight: 300,
+                                            fontSize: '0.7rem',
+                                            lineHeight: 1.2,
+                                            overflow: 'hidden',
+                                            display: '-webkit-box',
+                                            WebkitBoxOrient: 'vertical',
+                                            WebkitLineClamp: 2,
+                                            wordBreak: 'break-word',
+                                            hyphens: 'auto',
+                                        }}
+                                    >
+                                        {user.bio}
+                                    </Typography>
+                                )}
                             </Stack>
 
                             {isConnected && (
@@ -319,23 +320,25 @@ class UserCard extends Component {
                                     {user.firstName} {user.lastName}
                                 </Typography>
 
-                                {/*{user.bio && (*/}
-                                {/*    <Typography*/}
-                                {/*        variant="caption"*/}
-                                {/*        component="p"*/}
-                                {/*        sx={{*/}
-                                {/*            fontWeight: 300,*/}
-                                {/*            fontSize: '0.8rem',*/}
-                                {/*            lineHeight: 1,*/}
-                                {/*            mb: 1.5,*/}
-                                {/*            overflow: 'hidden',*/}
-                                {/*            textOverflow: 'ellipsis',*/}
-                                {/*            whiteSpace: 'nowrap',*/}
-                                {/*        }}*/}
-                                {/*    >*/}
-                                {/*        {user.bio}*/}
-                                {/*    </Typography>*/}
-                                {/*)}*/}
+                                {/*<Typography*/}
+                                {/*    variant="caption"*/}
+                                {/*    component="p"*/}
+                                {/*    sx={{*/}
+                                {/*        fontWeight: 300,*/}
+                                {/*        fontSize: '0.8rem',*/}
+                                {/*        lineHeight: 1.3,*/}
+                                {/*        mb: 1.5,*/}
+                                {/*        height: '2.6rem', // Reserve space for 2 lines*/}
+                                {/*        overflow: 'hidden',*/}
+                                {/*        display: '-webkit-box',*/}
+                                {/*        WebkitBoxOrient: 'vertical',*/}
+                                {/*        WebkitLineClamp: 2,*/}
+                                {/*        wordBreak: 'break-word',*/}
+                                {/*        hyphens: 'auto',*/}
+                                {/*    }}*/}
+                                {/*>*/}
+                                {/*    {user.bio || ''}*/}
+                                {/*</Typography>*/}
 
                                 {isConnected && (
                                     <Chip

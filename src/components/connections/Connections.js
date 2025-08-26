@@ -34,7 +34,7 @@ const TabPanel = ({children, value, index, ...other}) => (
         aria-labelledby={`connections-tab-${index}`}
         {...other}
     >
-        {value === index && <Box sx={{pt: {xs: 2, sm: 3}}}>{children}</Box>}
+        {value === index && <Box sx={{pt: {xs: 1, sm: 1.5}}}>{children}</Box>}
     </div>
 );
 
@@ -131,12 +131,12 @@ class Connections extends Component {
                 <Container
                     maxWidth="xl"
                     sx={{
-                        py: {xs: 1, sm: 2},
+                        py: {xs: 0.5, sm: 1},
                         px: {xs: 1, sm: 3},
                     }}
                 >
                     {/* Compact Page Header */}
-                    <Box sx={{mb: {xs: 2, sm: 4}, px: {xs: 1, sm: 0}}}>
+                    <Box sx={{mb: {xs: 1, sm: 2}, px: {xs: 1, sm: 0}}}>
                         <Typography
                             variant="h4"
                             component="h1"
@@ -155,7 +155,7 @@ class Connections extends Component {
                     </Box>
 
                     {/* Compact Tabs */}
-                    <Paper elevation={0} sx={{mb: {xs: 2, sm: 3}, borderRadius: 2}}>
+                    <Paper elevation={0} sx={{mb: {xs: 1, sm: 2}, borderRadius: 2}}>
                         <Tabs
                             value={selectedTab}
                             onChange={(e, v) => this.setState({selectedTab: v})}
@@ -210,9 +210,55 @@ class Connections extends Component {
 
                     {/* Tab Content */}
                     <TabPanel value={selectedTab} index={0}>
-                        {/* Compact Search Bar */}
-                        <Card sx={{mb: {xs: 2, sm: 3}, mx: {xs: 0, sm: 0}}}>
-                            <CardContent sx={{p: {xs: 2, sm: 3}}}>
+                        {/* Desktop: Search + Pagination Bar */}
+                        <Box sx={{display: {xs: 'none', sm: 'flex'}, alignItems: 'center', gap: 3, mb: 2}}>
+                            {/* Search Bar */}
+                            <Card sx={{flex: 1}}>
+                                <CardContent sx={{p: 2}}>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        variant="outlined"
+                                        placeholder="Search connections..."
+                                        value={connectionsStore.nameFilter}
+                                        onChange={(e) => connectionsStore.setNameFilter(e.target.value)}
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Search color="action" sx={{fontSize: 20}}/>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                backgroundColor: 'grey.50',
+                                            },
+                                        }}
+                                    />
+                                </CardContent>
+                            </Card>
+
+                            {/* Pagination */}
+                            {!connectionsStore.connectionsLoading && connectionsStore.connections.length > 0 && (
+                                <Card sx={{p: 2}}>
+                                    <Stack direction="row" spacing={2} alignItems="center">
+                                        <Pagination
+                                            page={connectionsStore.page}
+                                            count={connectionsStore.pageCount}
+                                            color="primary"
+                                            size="medium"
+                                            siblingCount={1}
+                                            boundaryCount={1}
+                                            onChange={(e, page) => connectionsStore.setPage(page)}
+                                        />
+                                    </Stack>
+                                </Card>
+                            )}
+                        </Box>
+
+                        {/* Mobile: Compact Search Bar */}
+                        <Card sx={{display: {xs: 'block', sm: 'none'}, mb: 1.5}}>
+                            <CardContent sx={{p: 2}}>
                                 <TextField
                                     fullWidth
                                     size="small"
@@ -246,55 +292,52 @@ class Connections extends Component {
                         {/* Loading State */}
                         {connectionsStore.connectionsLoading && this.renderLoadingSkeleton()}
 
-                        {/* Connections Grid - Different layouts for mobile vs desktop */}
+                        {/* Connections Grid */}
                         {!connectionsStore.connectionsLoading && connectionsStore.connections.length > 0 && (
-                            <>
-                                <Grid container spacing={{xs: 1, sm: 3}}>
-                                    {connectionsStore.connections.map((connection, index) => (
-                                        <Grid
-                                            item
-                                            xs={12}  // Full width on mobile for list view
-                                            sm={6}   // Half width on small tablets
-                                            md={4}   // Third width on medium screens
-                                            lg={3}   // Quarter width on large screens
-                                            key={`connection-${connection.id}-${index}`}
+                            <Grid container spacing={{xs: 1, sm: 3}}>
+                                {connectionsStore.connections.map((connection, index) => (
+                                    <Grid
+                                        item
+                                        xs={12}  // Full width on mobile for list view
+                                        sm={6}   // Half width on small tablets
+                                        md={4}   // Third width on medium screens
+                                        lg={3}   // Quarter width on large screens
+                                        key={`connection-${connection.id}-${index}`}
+                                    >
+                                        <Box
+                                            onClick={() => router.push(`/connections/${connection.id}`)}
+                                            sx={{
+                                                cursor: 'pointer',
+                                                '&:hover .connection-card': {
+                                                    transform: {xs: 'none', sm: 'translateY(-2px)'},
+                                                    boxShadow: {xs: 1, sm: 4},
+                                                },
+                                            }}
                                         >
-                                            <Box
-                                                onClick={() => router.push(`/connections/${connection.id}`)}
-                                                sx={{
-                                                    cursor: 'pointer',
-                                                    '&:hover .connection-card': {
-                                                        transform: {xs: 'none', sm: 'translateY(-2px)'},
-                                                        boxShadow: {xs: 1, sm: 4},
-                                                    },
-                                                }}
-                                            >
-                                                <UserCard user={connection}/>
-                                            </Box>
-                                        </Grid>
-                                    ))}
-                                </Grid>
+                                            <UserCard user={connection}/>
+                                        </Box>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        )}
 
-                                {/* Connections Pagination */}
-                                <Box sx={{display: 'flex', justifyContent: 'center', mt: 4}}>
-                                    <Card sx={{p: 2}}>
-                                        <Stack spacing={2} alignItems="center">
-                                            <Pagination
-                                                page={connectionsStore.page}
-                                                count={connectionsStore.pageCount}
-                                                color="primary"
-                                                size="medium"
-                                                siblingCount={1}
-                                                boundaryCount={1}
-                                                onChange={(e, page) => connectionsStore.setPage(page)}
-                                            />
-                                            <Typography variant="body2" color="text.secondary">
-                                                Page {connectionsStore.page} of {connectionsStore.pageCount}
-                                            </Typography>
-                                        </Stack>
-                                    </Card>
-                                </Box>
-                            </>
+                        {/* Mobile-only Pagination */}
+                        {!connectionsStore.connectionsLoading && connectionsStore.connections.length > 0 && (
+                            <Box sx={{display: {xs: 'flex', sm: 'none'}, justifyContent: 'center', mt: 4}}>
+                                <Card sx={{p: 2}}>
+                                    <Stack spacing={2} alignItems="center">
+                                        <Pagination
+                                            page={connectionsStore.page}
+                                            count={connectionsStore.pageCount}
+                                            color="primary"
+                                            size="medium"
+                                            siblingCount={1}
+                                            boundaryCount={1}
+                                            onChange={(e, page) => connectionsStore.setPage(page)}
+                                        />
+                                    </Stack>
+                                </Card>
+                            </Box>
                         )}
 
                         {/* Empty State */}
