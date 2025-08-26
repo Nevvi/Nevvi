@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 export function createApiClient(authStore) {
     return {
         async apiCall(method, url, data = null, config = {}) {
@@ -11,6 +12,7 @@ export function createApiClient(authStore) {
                     ...config
                 });
             } catch (error) {
+                console.log(`Caught error calling [${method}] ${url}`);
                 if (error.response && error.response.status === 401) {
                     console.log("Caught 401. Attempting refresh");
                     try {

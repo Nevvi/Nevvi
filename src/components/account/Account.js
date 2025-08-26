@@ -32,6 +32,11 @@ class Account extends Component {
         this.updateAccount = this.updateAccount.bind(this);
     }
 
+    componentDidMount() {
+        const {accountStore} = this.props;
+        accountStore.getUser()
+    }
+
     async updateAccount(event) {
         event.preventDefault()
         const {accountStore} = this.props;

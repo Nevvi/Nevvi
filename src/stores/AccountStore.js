@@ -4,7 +4,6 @@ import {router} from "../router";
 import Resizer from "react-image-file-resizer";
 
 import {PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber'
-import axios from "axios";
 
 const PNU = PhoneNumberUtil.getInstance();
 
@@ -29,7 +28,6 @@ function isPopulated(val) {
 }
 
 class AccountStore {
-    userId = null
     user = null
     updatedUser = null
     loading = false
@@ -39,11 +37,16 @@ class AccountStore {
     rejectedUsers = []
     loadingRejectedUsers = false
 
-    constructor() {
+    constructor(authStore, apiClient) {
         makeAutoObservable(this)
-        reaction(() => this.userId, (userId) => {
-            this.getUser()
-            this.getRejectedUsers()
+        this.api = apiClient
+        this.authStore = authStore
+
+        reaction(() => this.authStore.userId, (userId) => {
+            if (userId) {
+                this.getUser()
+                this.getRejectedUsers()
+            }
         })
     }
 
@@ -51,14 +54,18 @@ class AccountStore {
         this.setLoading(true)
         this.setUpdatedUser(null)
         this.setUser(null)
-        if (!this.userId) {
+        if (!this.authStore.userId) {
             return
         }
 
         try {
-            const res = await axios.get(`/api/user/v1/users/${this.userId}`)
+            const res = await this.api.get(`/api/user/v1/users/${this.authStore.userId}`)
             this.setUser(res.data)
             this.setUpdatedUser(JSON.parse(JSON.stringify(res.data)))
+
+            if (!this.user.onboardingCompleted) {
+                router.push("/onboarding")
+            }
         } catch (e) {
             toast.error(`Failed to load user because ${e.response.data}`)
             router.push("/")
@@ -70,12 +77,12 @@ class AccountStore {
     async getRejectedUsers() {
         this.setLoadingRejectedUsers(true)
         this.setRejectedUsers([])
-        if (!this.userId) {
+        if (!this.authStore.userId) {
             return
         }
 
         try {
-            const res = await axios.get(`/api/user/v1/users/${this.userId}/connections/rejected`)
+            const res = await this.api.get(`/api/user/v1/users/${this.authStore.userId}/connections/rejected`)
             this.setRejectedUsers(res.data)
         } catch (e) {
             toast.error(`Failed to load users because ${e.response.data}`)
@@ -101,7 +108,7 @@ class AccountStore {
                     'content-type': 'multipart/form-data'
                 }
             }
-            await axios.post(url, formData, config)
+            await this.api.post(url, formData, config)
             await this.getUser(this.user.id)
         } catch (e) {
             toast.error(`Failed to save image because ${e.response.data}`)
@@ -150,7 +157,7 @@ class AccountStore {
                 }
             })
 
-            const res = await axios.patch(`/api/user/v1/users/${this.user.id}`, userUpdates)
+            const res = await this.api.patch(`/api/user/v1/users/${this.user.id}`, userUpdates)
             this.setUser(res.data)
             this.setUpdatedUser(res.data)
         } catch (e) {
@@ -193,10 +200,6 @@ class AccountStore {
 
     removePermissionGroup(name) {
         this.updatedUser.permissionGroups = this.updatedUser.permissionGroups.filter(g => g.name !== name)
-    }
-
-    setUserId(userId) {
-        this.userId = userId
     }
 
     setUser(user) {

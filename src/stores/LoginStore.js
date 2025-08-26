@@ -9,9 +9,10 @@ class LoginStore {
     errors = {}
     loading = false
 
-    constructor(authStore, apiClient) {
+    constructor(authStore, accountStore, apiClient) {
         makeAutoObservable(this)
         this.authStore = authStore
+        this.accountStore = accountStore
         this.api = apiClient
     }
 
@@ -19,10 +20,8 @@ class LoginStore {
         try {
             this.setLoading(true)
             await this.authStore.login(this.username, this.password)
-
-            const user = await this.api.get(`/api/user/v1/users/${this.authStore.userId}`)
-
-            router.push(user.data.onboardingCompleted ? '/' : '/onboarding')
+            await this.accountStore.getUser()
+            router.push(this.accountStore.user.onboardingCompleted ? '/' : '/onboarding')
         } catch (e) {
             toast.error(`Login failed because ${e.message}`)
         } finally {

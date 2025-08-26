@@ -33,13 +33,13 @@ import ConnectionGroupStore from "./stores/ConnectionGroupStore";
 import ForgotPasswordStore from "./stores/ForgotPasswordStore";
 import {createApiClient} from "./stores/BaseStore";
 
-const accountStore = new AccountStore();
-const authStore = new AuthStore(accountStore);
+const authStore = new AuthStore();
 const apiClient = createApiClient(authStore);
 
+const accountStore = new AccountStore(authStore, apiClient);
 const connectionStore = new ConnectionStore(authStore, accountStore, apiClient);
 const confirmAttributeStore = new ConfirmAttributeStore(accountStore, apiClient);
-const loginStore = new LoginStore(authStore, apiClient);
+const loginStore = new LoginStore(authStore, accountStore, apiClient);
 const confirmAccountStore = new ConfirmAccountStore(apiClient);
 const forgotPasswordStore = new ForgotPasswordStore(apiClient);
 const createAccountStore = new CreateAccountStore(authStore, confirmAccountStore, apiClient);

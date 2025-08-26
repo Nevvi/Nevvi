@@ -1,22 +1,21 @@
-import React from 'react';
-import {Box, Typography} from "@mui/material";
+class Mutex {
+    constructor() {
+        this.locked = false;
+        this.waiting = [];
+    }
 
-export function TabPanel(props) {
-    const {children, value, index, ...other} = props;
+    async acquire() {
+        while (this.locked) {
+            await new Promise(resolve => this.waiting.push(resolve));
+        }
+        this.locked = true;
+    }
 
-    return (
-        <span
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{pt: 1}}>
-                    <Typography component={"span"}>{children}</Typography>
-                </Box>
-            )}
-        </span>
-    );
+    release() {
+        this.locked = false;
+        if (this.waiting.length > 0) {
+            const resolve = this.waiting.shift();
+            resolve();
+        }
+    }
 }
