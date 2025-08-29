@@ -37,7 +37,6 @@ class ConfirmAccount extends Component {
                         label="Phone Number"
                         name="username"
                         autoComplete="tel"
-                        autoFocus
                         value={confirmAccountStore.username}
                         onChange={(e) => confirmAccountStore.setUsername(e.target.value)}
                         error={!!confirmAccountStore.errors.username}

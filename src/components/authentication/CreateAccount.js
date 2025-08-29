@@ -48,7 +48,6 @@ class CreateAccount extends Component {
                         label="Phone Number"
                         name="username"
                         autoComplete="tel"
-                        autoFocus
                         placeholder="+1 (555) 123-4567"
                         value={createAccountStore.username}
                         onChange={(e) => createAccountStore.setUsername(e.target.value)}
