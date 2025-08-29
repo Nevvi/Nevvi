@@ -49,6 +49,27 @@ class ConnectionGroupStore {
         }
     }
 
+    async addMultipleToGroup(connectionIds) {
+        this.setSaving(true)
+        try {
+            // Add connections in parallel for better performance
+            await Promise.all(
+                connectionIds.map(connectionId => 
+                    this.api.post(
+                        `/api/user/v1/users/${this.authStore.userId}/connection-groups/${this.group.id}/connections`,
+                        {userId: connectionId}
+                    )
+                )
+            )
+            await this.getGroup(this.group.id)
+            toast.success(`Successfully added ${connectionIds.length} connection${connectionIds.length !== 1 ? 's' : ''} to group`)
+        } catch (e) {
+            toast.error(`Failed to add connections to group ${e.response.data}`)
+        } finally {
+            this.setSaving(false)
+        }
+    }
+
     async removeFromGroup(connectionId) {
         this.setSaving(true)
         try {

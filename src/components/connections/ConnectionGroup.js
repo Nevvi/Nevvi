@@ -6,6 +6,7 @@ import {
     Button,
     Card,
     CardContent,
+    Checkbox,
     Chip,
     CircularProgress,
     Container,
@@ -19,6 +20,7 @@ import {
     List,
     ListItemAvatar,
     ListItemButton,
+    ListItemIcon,
     ListItemText,
     Menu,
     MenuItem,
@@ -37,15 +39,15 @@ import {LoadingButton} from '@mui/lab';
 import {router} from '../../router';
 import Loading from "../loading/Loading";
 
-const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore, computedMatch, location }) => {
+const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore, computedMatch }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const groupId = computedMatch.params.groupId;
 
     const [addDialogOpen, setAddDialogOpen] = useState(false);
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
-    const [selectedConnection, setSelectedConnection] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [connectionToRemove, setConnectionToRemove] = useState(null);
+    const [selectedConnections, setSelectedConnections] = useState([]);
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedConnectionMenu, setSelectedConnectionMenu] = useState(null);
     const [speedDialOpen, setSpeedDialOpen] = useState(false);
@@ -65,20 +67,28 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
         }
     }, [addDialogOpen, connectionsStore]);
 
+    useEffect(() => {
+        // Reset connections store search when dialog closes
+        if (!addDialogOpen) {
+            connectionsStore.setNameFilter('');
+        }
+    }, [addDialogOpen, connectionsStore]);
+
     const handleAddConnection = async () => {
-        if (selectedConnection) {
-            await connectionGroupStore.addToGroup(selectedConnection.id);
+        if (selectedConnections.length > 0) {
+            // Use bulk add method for better performance
+            const connectionIds = selectedConnections.map(connection => connection.id);
+            await connectionGroupStore.addMultipleToGroup(connectionIds);
             setAddDialogOpen(false);
-            setSelectedConnection(null);
-            setSearchTerm('');
+            setSelectedConnections([]);
         }
     };
 
-    const handleRemoveConnection = async () => {
-        if (selectedConnection) {
-            await connectionGroupStore.removeFromGroup(selectedConnection.id);
+    const handleRemoveConnection = async (connectionToRemove) => {
+        if (connectionToRemove) {
+            await connectionGroupStore.removeFromGroup(connectionToRemove.id);
             setRemoveDialogOpen(false);
-            setSelectedConnection(null);
+            setConnectionToRemove(null);
         }
     };
 
@@ -88,7 +98,7 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
     };
 
     const openRemoveDialog = (connection) => {
-        setSelectedConnection(connection);
+        setConnectionToRemove(connection);
         setRemoveDialogOpen(true);
         handleCloseMenu();
     };
@@ -122,16 +132,6 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
     const availableConnections = connectionsStore.connections.filter(
         connection => !groupConnectionIds.has(connection.id)
     );
-
-    // Filter available connections by search term
-    const filteredAvailableConnections = availableConnections.filter(connection => {
-        const fullName = `${connection.firstName} ${connection.lastName}`.toLowerCase();
-        const email = connection.email?.toLowerCase() || '';
-        const phone = connection.phoneNumber?.toLowerCase() || '';
-        const term = searchTerm.toLowerCase();
-
-        return fullName.includes(term) || email.includes(term) || phone.includes(term);
-    });
 
     return (
         <Container maxWidth="lg" sx={{ py: { xs: 1, sm: 3 } }}>
@@ -446,23 +446,27 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
                 open={addDialogOpen}
                 onClose={() => {
                     setAddDialogOpen(false);
-                    setSelectedConnection(null);
-                    setSearchTerm('');
+                    setSelectedConnections([]);
                 }}
                 maxWidth="sm"
                 fullWidth
             >
                 <DialogTitle>Add Connection to Group</DialogTitle>
                 <DialogContent>
-                    <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
-                        Select a connection to add to "{group?.name}".
+                    <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                        Select connections to add to "{group?.name}". You can select multiple connections.
                     </Typography>
+                    {selectedConnections.length > 0 && (
+                        <Typography variant="body2" color="primary" sx={{ mb: 2, fontWeight: 500 }}>
+                            {selectedConnections.length} connection{selectedConnections.length !== 1 ? 's' : ''} selected
+                        </Typography>
+                    )}
 
                     <TextField
                         fullWidth
                         placeholder="Search connections..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        value={connectionsStore.nameFilter}
+                        onChange={(e) => connectionsStore.setNameFilter(e.target.value)}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -477,51 +481,69 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
                         <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
                             <CircularProgress />
                         </Box>
-                    ) : filteredAvailableConnections.length === 0 ? (
+                    ) : availableConnections.length === 0 ? (
                         <Box sx={{ textAlign: 'center', py: 3 }}>
                             <Typography variant="body2" color="textSecondary">
-                                {availableConnections.length === 0
-                                    ? "All your connections are already in this group"
-                                    : "No connections match your search"}
+                                {connectionsStore.connections.length === 0 && connectionsStore.nameFilter
+                                    ? "No connections match your search"
+                                    : connectionsStore.connections.length === 0
+                                    ? "No connections found"
+                                    : "All your connections are already in this group"}
                             </Typography>
                         </Box>
                     ) : (
                         <List sx={{ maxHeight: 300, overflow: 'auto' }}>
-                            {filteredAvailableConnections.map((connection) => (
-                                <ListItemButton
-                                    key={connection.id}
-                                    selected={selectedConnection?.id === connection.id}
-                                    onClick={() => setSelectedConnection(connection)}
-                                >
-                                    <ListItemAvatar>
-                                        <Avatar src={connection.profileImage}>
-                                            {connection.firstName?.charAt(0)}{connection.lastName?.charAt(0)}
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary={`${connection.firstName} ${connection.lastName}`}
-                                        secondary={connection.email || connection.phoneNumber}
-                                    />
-                                </ListItemButton>
-                            ))}
+                            {availableConnections.map((connection) => {
+                                const isSelected = selectedConnections.some(sc => sc.id === connection.id);
+                                return (
+                                    <ListItemButton
+                                        key={connection.id}
+                                        selected={isSelected}
+                                        onClick={() => {
+                                            if (isSelected) {
+                                                setSelectedConnections(prev => prev.filter(sc => sc.id !== connection.id));
+                                            } else {
+                                                setSelectedConnections(prev => [...prev, connection]);
+                                            }
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <Checkbox
+                                                checked={isSelected}
+                                                tabIndex={-1}
+                                                disableRipple
+                                                color="primary"
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemAvatar>
+                                            <Avatar src={connection.profileImage}>
+                                                {connection.firstName?.charAt(0)}{connection.lastName?.charAt(0)}
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                            primary={`${connection.firstName} ${connection.lastName}`}
+                                            secondary={connection.email || connection.phoneNumber}
+                                        />
+                                    </ListItemButton>
+                                );
+                            })}
                         </List>
                     )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => {
                         setAddDialogOpen(false);
-                        setSelectedConnection(null);
-                        setSearchTerm('');
+                        setSelectedConnections([]);
                     }}>
                         Cancel
                     </Button>
                     <LoadingButton
                         variant="contained"
                         loading={connectionGroupStore.saving}
-                        disabled={!selectedConnection}
+                        disabled={selectedConnections.length === 0}
                         onClick={handleAddConnection}
                     >
-                        Add to Group
+                        Add {selectedConnections.length > 0 ? `${selectedConnections.length} ` : ''}Connection{selectedConnections.length !== 1 ? 's' : ''} to Group
                     </LoadingButton>
                 </DialogActions>
             </Dialog>
@@ -531,7 +553,7 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
                 open={removeDialogOpen}
                 onClose={() => {
                     setRemoveDialogOpen(false);
-                    setSelectedConnection(null);
+                    setConnectionToRemove(null);
                 }}
                 maxWidth="sm"
                 fullWidth
@@ -540,7 +562,7 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
                 <DialogContent>
                     <Typography variant="body2" color="textSecondary">
                         Are you sure you want to remove{' '}
-                        <strong>{selectedConnection?.firstName} {selectedConnection?.lastName}</strong>{' '}
+                        <strong>{connectionToRemove?.firstName} {connectionToRemove?.lastName}</strong>{' '}
                         from "{group?.name}"?
                     </Typography>
                     <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
@@ -550,7 +572,7 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
                 <DialogActions>
                     <Button onClick={() => {
                         setRemoveDialogOpen(false);
-                        setSelectedConnection(null);
+                        setConnectionToRemove(null);
                     }}>
                         Cancel
                     </Button>
@@ -558,7 +580,7 @@ const ConnectionGroup = ({ connectionGroupStore, connectionsStore, accountStore,
                         variant="contained"
                         color="error"
                         loading={connectionGroupStore.saving}
-                        onClick={handleRemoveConnection}
+                        onClick={() => handleRemoveConnection(connectionToRemove)}
                     >
                         Remove from Group
                     </LoadingButton>
