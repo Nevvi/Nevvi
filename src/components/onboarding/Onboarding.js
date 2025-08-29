@@ -41,9 +41,8 @@ function Onboarding(props) {
     // Refs to maintain focus
     const firstNameRef = React.useRef(null);
     const lastNameRef = React.useRef(null);
-    const addressRef = React.useRef(null);
 
-    const { accountStore } = props;
+    const {accountStore} = props;
 
     // Redirect if onboarding already completed
     React.useEffect(() => {
@@ -57,9 +56,9 @@ function Onboarding(props) {
     }, [accountStore.user]);
 
     const steps = [
-        { label: 'Welcome', icon: <CheckCircle /> },
-        { label: 'Your Info', icon: <PersonAdd /> },
-        { label: 'Get Started', icon: <ConnectWithoutContact /> }
+        {label: 'Welcome', icon: <CheckCircle/>},
+        {label: 'Your Info', icon: <PersonAdd/>},
+        {label: 'Get Started', icon: <ConnectWithoutContact/>}
     ];
 
     const updateUser = React.useCallback(async () => {
@@ -67,13 +66,13 @@ function Onboarding(props) {
         try {
             accountStore.updateUser("firstName", firstName);
             accountStore.updateUser("lastName", lastName);
-            
+
             // Check if any address fields have values
             const hasAddressData = Object.values(address).some(field => field.trim() !== "");
             if (hasAddressData) {
                 accountStore.updateUser("address", address);
             }
-            
+
             await accountStore.saveUser();
             setCurrentStep(2);
         } finally {
@@ -109,19 +108,19 @@ function Onboarding(props) {
     }, []);
 
     const WelcomeStep = () => (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
+        <Box sx={{textAlign: 'center', py: 4}}>
             <Typography variant="h3" component="h1" gutterBottom color="primary">
                 Welcome to Nevvi!
             </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ mb: 4, maxWidth: '600px', mx: 'auto' }}>
+            <Typography variant="h6" color="text.secondary" sx={{mb: 4, maxWidth: '600px', mx: 'auto'}}>
                 Keep your connections updated automatically when life changes happen
             </Typography>
 
-            <Stack spacing={3} sx={{ mt: 4, maxWidth: '500px', mx: 'auto' }}>
+            <Stack spacing={3} sx={{mt: 4, maxWidth: '500px', mx: 'auto'}}>
                 <Card elevation={2}>
-                    <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <PersonAdd color="primary" sx={{ fontSize: 40 }} />
-                        <Box sx={{ textAlign: 'left' }}>
+                    <CardContent sx={{display: 'flex', alignItems: 'center', gap: 2}}>
+                        <PersonAdd color="primary" sx={{fontSize: 40}}/>
+                        <Box sx={{textAlign: 'left'}}>
                             <Typography variant="h6" gutterBottom>
                                 Stay Connected
                             </Typography>
@@ -133,9 +132,9 @@ function Onboarding(props) {
                 </Card>
 
                 <Card elevation={2}>
-                    <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Security color="primary" sx={{ fontSize: 40 }} />
-                        <Box sx={{ textAlign: 'left' }}>
+                    <CardContent sx={{display: 'flex', alignItems: 'center', gap: 2}}>
+                        <Security color="primary" sx={{fontSize: 40}}/>
+                        <Box sx={{textAlign: 'left'}}>
                             <Typography variant="h6" gutterBottom>
                                 You're In Control
                             </Typography>
@@ -147,9 +146,9 @@ function Onboarding(props) {
                 </Card>
 
                 <Card elevation={2}>
-                    <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <ConnectWithoutContact color="primary" sx={{ fontSize: 40 }} />
-                        <Box sx={{ textAlign: 'left' }}>
+                    <CardContent sx={{display: 'flex', alignItems: 'center', gap: 2}}>
+                        <ConnectWithoutContact color="primary" sx={{fontSize: 40}}/>
+                        <Box sx={{textAlign: 'left'}}>
                             <Typography variant="h6" gutterBottom>
                                 Automatic Updates
                             </Typography>
@@ -165,7 +164,7 @@ function Onboarding(props) {
                 variant="contained"
                 size="large"
                 onClick={() => setCurrentStep(1)}
-                sx={{ mt: 4, px: 4, py: 1.5 }}
+                sx={{mt: 4, px: 4, py: 1.5}}
             >
                 Get Started
             </LoadingButton>
@@ -173,15 +172,15 @@ function Onboarding(props) {
     );
 
     const PersonalInfoStep = React.useMemo(() => (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
+        <Box sx={{textAlign: 'center', py: 4}}>
             <Typography variant="h4" component="h2" gutterBottom>
                 Tell Us About Yourself
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+            <Typography variant="body1" color="text.secondary" sx={{mb: 4}}>
                 This helps your connections identify you when they search
             </Typography>
 
-            <Box sx={{ maxWidth: '500px', mx: 'auto' }}>
+            <Box sx={{maxWidth: '500px', mx: 'auto'}}>
                 <Stack spacing={3}>
                     <TextField
                         ref={firstNameRef}
@@ -208,11 +207,11 @@ function Onboarding(props) {
                         autoComplete="family-name"
                     />
 
-                    <Typography variant="h6" sx={{ mt: 3, mb: 1, textAlign: 'left' }}>
+                    <Typography variant="h6" sx={{mt: 3, mb: 1, textAlign: 'left'}}>
                         Address (Optional)
                     </Typography>
-                    
-                    <Grid container spacing={2} sx={{ ml: 0, width: '100%', '& > .MuiGrid-item': { pl: 0 } }}>
+
+                    <Grid container spacing={2} sx={{ml: 0, width: '100%', '& > .MuiGrid-item': {pl: 0}}}>
                         <Grid item xs={12} sm={8}>
                             <TextField
                                 fullWidth
@@ -272,12 +271,13 @@ function Onboarding(props) {
                         </Grid>
                     </Grid>
 
-                    <Alert severity="info" sx={{ textAlign: 'left', mt: 2 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                    <Alert severity="info" sx={{textAlign: 'left', mt: 2}}>
+                        <Typography variant="body2" sx={{fontWeight: 500, mb: 0.5}}>
                             🔒 Your privacy matters
                         </Typography>
                         <Typography variant="body2">
-                            Your address won't be public and is only visible to people you give access to through permission groups.
+                            Your address won't be public and is only visible to people you give access to through
+                            permission groups.
                         </Typography>
                     </Alert>
 
@@ -288,7 +288,7 @@ function Onboarding(props) {
                         loading={loading}
                         disabled={firstName === "" || lastName === ""}
                         onClick={updateUser}
-                        sx={{ py: 1.5, mt: 3 }}
+                        sx={{py: 1.5, mt: 3}}
                     >
                         {loading ? 'Saving...' : 'Continue'}
                     </LoadingButton>
@@ -298,20 +298,20 @@ function Onboarding(props) {
     ), [firstName, lastName, address, loading, handleFirstNameChange, handleLastNameChange, handleAddressChange, updateUser]);
 
     const CompletionStep = () => (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-            <CheckCircle color="success" sx={{ fontSize: 80, mb: 2 }} />
+        <Box sx={{textAlign: 'center', py: 4}}>
+            <CheckCircle color="success" sx={{fontSize: 80, mb: 2}}/>
             <Typography variant="h4" component="h2" gutterBottom>
                 You're All Set!
             </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
+            <Typography variant="h6" color="text.secondary" sx={{mb: 4}}>
                 Ready to start making connections
             </Typography>
 
-            <Box sx={{ maxWidth: '500px', mx: 'auto', mb: 4 }}>
-                <Typography variant="body1" sx={{ mb: 2 }}>
+            <Box sx={{maxWidth: '500px', mx: 'auto', mb: 4}}>
+                <Typography variant="body1" sx={{mb: 2}}>
                     <strong>Next steps:</strong>
                 </Typography>
-                <Stack spacing={2} sx={{ textAlign: 'left' }}>
+                <Stack spacing={2} sx={{textAlign: 'left'}}>
                     <Typography variant="body2">
                         • Create permission groups to control what information you share
                     </Typography>
@@ -329,7 +329,7 @@ function Onboarding(props) {
                 size="large"
                 loading={loading}
                 onClick={completeOnboarding}
-                sx={{ px: 4, py: 1.5 }}
+                sx={{px: 4, py: 1.5}}
             >
                 {loading ? 'Finishing...' : 'Enter Nevvi'}
             </LoadingButton>
@@ -338,10 +338,14 @@ function Onboarding(props) {
 
     const renderStep = () => {
         switch (currentStep) {
-            case 0: return <WelcomeStep />;
-            case 1: return PersonalInfoStep;
-            case 2: return <CompletionStep />;
-            default: return <WelcomeStep />;
+            case 0:
+                return <WelcomeStep/>;
+            case 1:
+                return PersonalInfoStep;
+            case 2:
+                return <CompletionStep/>;
+            default:
+                return <WelcomeStep/>;
         }
     };
 
@@ -354,8 +358,8 @@ function Onboarding(props) {
             }}
         >
             <Container maxWidth="lg">
-                <Box sx={{ textAlign: 'center', mb: 4 }}>
-                    <Logo color="white" size={60} />
+                <Box sx={{textAlign: 'center', mb: 4}}>
+                    <Logo color="white" size={60}/>
                 </Box>
 
                 <Paper
@@ -369,7 +373,7 @@ function Onboarding(props) {
                     }}
                 >
                     {!isMobile && (
-                        <Box sx={{ p: 2 }}>
+                        <Box sx={{p: 2}}>
                             <Stepper
                                 activeStep={currentStep}
                                 alternativeLabel
@@ -383,7 +387,7 @@ function Onboarding(props) {
                         </Box>
                     )}
 
-                    <Box sx={{ p: { xs: 3, sm: 4, md: 5 } }}>
+                    <Box sx={{p: {xs: 3, sm: 4, md: 5}}}>
                         {renderStep()}
                     </Box>
                 </Paper>
