@@ -15,13 +15,13 @@ class ConfirmAttributeStore {
         this.accountStore = accountStore
     }
 
-    async sendPhoneConfirmCode() {
+    async sendEmailConfirmCode() {
         try {
             this.setLoading(true)
             // Create the unconfirmed account
-            const sendCodeResponse = await this.api.post(`/api/authentication/v1/users/${this.accountStore.user.id}/sendCode?attribute=phone_number`)
+            const sendCodeResponse = await this.api.post(`/api/authentication/v1/users/${this.accountStore.user.id}/sendCode?attribute=email`)
             const deliveryDetails = sendCodeResponse.data
-            this.setConfirmationCodePrompt(`We have sent a text with a confirmation code to ${deliveryDetails.CodeDeliveryDetails.Destination}. Enter that code to confirm your phone number`)
+            this.setConfirmationCodePrompt(`We have sent an email with a confirmation code to ${deliveryDetails.CodeDeliveryDetails.Destination}. Enter that code to confirm your email`)
             this.setWaitingConfirmationCode(true)
         } catch (e) {
             const message = e.response && e.response.data ? e.response.data : e
@@ -31,11 +31,12 @@ class ConfirmAttributeStore {
         }
     }
 
-    async confirmPhone() {
+    async confirmEmail() {
         try {
             this.setLoading(true)
-            await this.api.post(`/api/authentication/v1/users/${this.accountStore.user.id}/confirmCode?attribute=phone_number&code=${this.confirmationCode}`)
+            await this.api.post(`/api/authentication/v1/users/${this.accountStore.user.id}/confirmCode?attribute=email&code=${this.confirmationCode}`)
             this.setConfirmationCodePrompt(DEFAULT_PROMPT)
+            this.setConfirmationCode("")
 
             // Reload the latest user data
             await this.accountStore.getUser(this.accountStore.user.id)

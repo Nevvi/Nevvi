@@ -143,15 +143,16 @@ class Account extends Component {
                                         <TextField
                                             fullWidth
                                             variant="outlined"
-                                            id="email-input"
-                                            label="Email Address"
+                                            id="phone-input"
+                                            label="Phone Number"
                                             type="text"
-                                            value={user.email}
                                             disabled
+                                            value={user.phoneNumber}
+                                            onChange={(e) => accountStore.updateUser("phoneNumber", e.target.value)}
                                             InputProps={{
                                                 endAdornment: (
                                                     <InputAdornment position="end">
-                                                        {user.emailConfirmed ? (
+                                                        {user.phoneNumberConfirmed ? (
                                                             <Check sx={{ color: 'success.main' }} />
                                                         ) : null}
                                                     </InputAdornment>
@@ -160,51 +161,41 @@ class Account extends Component {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} md={6}>
+                                    <Grid item xs={12}>
                                         <TextField
                                             fullWidth
                                             variant="outlined"
-                                            id="phone-input"
-                                            label="Phone Number"
+                                            id="email-input"
+                                            label="Email Address"
                                             type="text"
-                                            disabled={user.phoneNumberConfirmed}
-                                            value={user.phoneNumber || ""}
-                                            onChange={(e) => accountStore.updateUser("phoneNumber", e.target.value)}
+                                            value={user.email || ""}
+                                            onChange={(e) => accountStore.updateUser("email", e.target.value)}
                                             InputProps={{
-                                                endAdornment: user.phoneNumber ? (
+                                                endAdornment: accountStore.user.email ? (
                                                     <InputAdornment position="end">
-                                                        {!user.phoneNumberConfirmed ? (
+                                                        {!user.emailConfirmed ? (
                                                             <LoadingButton
                                                                 size="small"
-                                                                variant="outlined"
+                                                                variant="contained"
+                                                                color="warning"
                                                                 loading={confirmAttributeStore.loading}
-                                                                onClick={() => confirmAttributeStore.sendPhoneConfirmCode()}
+                                                                onClick={() => confirmAttributeStore.sendEmailConfirmCode()}
+                                                                sx={{
+                                                                    minWidth: '80px',
+                                                                    fontWeight: 600,
+                                                                    fontSize: '0.75rem',
+                                                                }}
                                                             >
-                                                                Verify
+                                                                {confirmAttributeStore.loading ? 'Sending...' : 'Verify'}
                                                             </LoadingButton>
                                                         ) : (
-                                                            <Check sx={{ color: 'success.main' }} />
+                                                            <Check sx={{ color: 'success.main', fontSize: 24 }} />
                                                         )}
                                                     </InputAdornment>
                                                 ) : null
                                             }}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6}>
-                                        <MobileDatePicker
-                                            label="Date of Birth"
-                                            inputFormat="MM/DD/YYYY"
-                                            views={["year", "month", "day"]}
-                                            value={(user.birthday && dayjs(user.birthday)) || null}
-                                            onChange={(birthday) => accountStore.updateUser("birthday", birthday.format("YYYY-MM-DD"))}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    {...params}
-                                                />
-                                            )}
+                                            helperText={!user.emailConfirmed && user.email ? "Please verify your email address" : ""}
+                                            error={!user.emailConfirmed && user.email}
                                         />
                                     </Grid>
 
@@ -229,6 +220,23 @@ class Account extends Component {
                                             type="text"
                                             value={user.lastName || ""}
                                             onChange={(e) => accountStore.updateUser("lastName", e.target.value)}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6}>
+                                        <MobileDatePicker
+                                            label="Date of Birth"
+                                            inputFormat="MM/DD/YYYY"
+                                            views={["year", "month", "day"]}
+                                            value={(user.birthday && dayjs(user.birthday)) || null}
+                                            onChange={(birthday) => accountStore.updateUser("birthday", birthday.format("YYYY-MM-DD"))}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    {...params}
+                                                />
+                                            )}
                                         />
                                     </Grid>
                                 </Grid>
@@ -392,7 +400,7 @@ class Account extends Component {
                         fontWeight: 600,
                         color: 'primary.main'
                     }}>
-                        Confirm Phone Number
+                        Confirm Email
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText sx={{ mb: 3 }}>
@@ -417,7 +425,7 @@ class Account extends Component {
                         <LoadingButton
                             variant="contained"
                             loading={confirmAttributeStore.loading}
-                            onClick={() => confirmAttributeStore.confirmPhone()}
+                            onClick={() => confirmAttributeStore.confirmEmail()}
                         >
                             Confirm
                         </LoadingButton>

@@ -51,7 +51,7 @@ class ConnectionsStore {
             this.setConnections(res.data.users)
             this.setTotalConnections(res.data.count)
         } catch (e) {
-            toast.error(`Failed to load connections due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
+            console.log(`Failed to load connections due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
             this.setConnectionsLoading(false)
         }
@@ -64,7 +64,7 @@ class ConnectionsStore {
             const res = await this.api.get(url)
             this.setRequests(res.data)
         } catch (e) {
-            toast.error(`Failed to load connections due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
+            console.log(`Failed to load connections due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
             this.setRequestsLoading(false)
         }

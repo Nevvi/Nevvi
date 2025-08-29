@@ -15,7 +15,7 @@ export default class Logo extends React.Component {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    margin: '0 auto 16px',
+                    margin: '0 auto 0',
                     color: 'white',
                     fontSize: '24px'
                 }}

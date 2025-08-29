@@ -24,7 +24,7 @@ class ConnectionGroupsStore {
             const res = await this.api.get(url)
             this.setConnectionGroups(res.data)
         } catch (e) {
-            toast.error(`Failed to load connection groups due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
+            console.log(`Failed to load connection groups due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
             this.setConnectionGroupsLoading(false)
         }

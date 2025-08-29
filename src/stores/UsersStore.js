@@ -35,7 +35,7 @@ class UsersStore {
             this.setUsers(users)
             this.setTotalUsers(res.data.count)
         } catch (e) {
-            toast.error(`Failed to load users due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
+            console.log(`Failed to load users due to ${e.message ? e.message.toLowerCase() : e.response.data.toLowerCase()}`)
         } finally {
             this.setLoading(false)
         }

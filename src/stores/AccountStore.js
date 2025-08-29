@@ -67,7 +67,7 @@ class AccountStore {
                 router.push("/onboarding")
             }
         } catch (e) {
-            toast.error(`Failed to load user because ${e.response.data}`)
+            console.log(`Failed to load user because ${e.response.data}`)
             router.push("/")
         } finally {
             this.setLoading(false)
@@ -85,7 +85,7 @@ class AccountStore {
             const res = await this.api.get(`/api/user/v1/users/${this.authStore.userId}/connections/rejected`)
             this.setRejectedUsers(res.data)
         } catch (e) {
-            toast.error(`Failed to load users because ${e.response.data}`)
+            console.log(`Failed to load users because ${e.response.data}`)
         } finally {
             this.setLoadingRejectedUsers(false)
         }
@@ -121,6 +121,7 @@ class AccountStore {
         this.setLoading(true)
         try {
             const userUpdates = {}
+
             Object.keys(this.updatedUser).filter(key => {
                 return this.user[key] !== this.updatedUser[key];
             }).forEach(key => {

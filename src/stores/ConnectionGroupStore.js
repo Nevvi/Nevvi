@@ -28,7 +28,7 @@ class ConnectionGroupStore {
                 connections: groupConnections.data.users
             })
         } catch (e) {
-            toast.error(`Failed to load connection group ${e.response.data}`)
+            console.log(`Failed to load connection group ${e.response.data}`)
         } finally {
             this.setLoading(false)
         }

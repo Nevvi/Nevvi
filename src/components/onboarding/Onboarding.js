@@ -1,10 +1,12 @@
 import React from 'react';
 import {inject, observer} from "mobx-react";
 import {
+    Alert,
     Box,
     Card,
     CardContent,
     Container,
+    Grid,
     Paper,
     Stack,
     Step,
@@ -26,12 +28,20 @@ function Onboarding(props) {
 
     const [firstName, setFirstName] = React.useState("");
     const [lastName, setLastName] = React.useState("");
+    const [address, setAddress] = React.useState({
+        street: "",
+        unit: "",
+        city: "",
+        state: "",
+        zipCode: ""
+    });
     const [loading, setLoading] = React.useState(false);
     const [currentStep, setCurrentStep] = React.useState(0);
 
     // Refs to maintain focus
     const firstNameRef = React.useRef(null);
     const lastNameRef = React.useRef(null);
+    const addressRef = React.useRef(null);
 
     const { accountStore } = props;
 
@@ -57,12 +67,19 @@ function Onboarding(props) {
         try {
             accountStore.updateUser("firstName", firstName);
             accountStore.updateUser("lastName", lastName);
+            
+            // Check if any address fields have values
+            const hasAddressData = Object.values(address).some(field => field.trim() !== "");
+            if (hasAddressData) {
+                accountStore.updateUser("address", address);
+            }
+            
             await accountStore.saveUser();
             setCurrentStep(2);
         } finally {
             setLoading(false);
         }
-    }, [firstName, lastName, accountStore]);
+    }, [firstName, lastName, address, accountStore]);
 
     async function completeOnboarding() {
         setLoading(true);
@@ -82,6 +99,13 @@ function Onboarding(props) {
 
     const handleLastNameChange = React.useCallback((e) => {
         setLastName(e.target.value);
+    }, []);
+
+    const handleAddressChange = React.useCallback((field, value) => {
+        setAddress(prev => ({
+            ...prev,
+            [field]: value
+        }));
     }, []);
 
     const WelcomeStep = () => (
@@ -157,46 +181,121 @@ function Onboarding(props) {
                 This helps your connections identify you when they search
             </Typography>
 
-            <Stack spacing={3} sx={{ maxWidth: '400px', mx: 'auto' }}>
-                <TextField
-                    ref={firstNameRef}
-                    required
-                    fullWidth
-                    id="first-name-input"
-                    label="First Name"
-                    type="text"
-                    autoFocus
-                    value={firstName}
-                    onChange={handleFirstNameChange}
-                    autoComplete="given-name"
-                />
+            <Box sx={{ maxWidth: '500px', mx: 'auto' }}>
+                <Stack spacing={3}>
+                    <TextField
+                        ref={firstNameRef}
+                        required
+                        fullWidth
+                        id="first-name-input"
+                        label="First Name"
+                        type="text"
+                        autoFocus
+                        value={firstName}
+                        onChange={handleFirstNameChange}
+                        autoComplete="given-name"
+                    />
 
-                <TextField
-                    ref={lastNameRef}
-                    required
-                    fullWidth
-                    id="last-name-input"
-                    label="Last Name"
-                    type="text"
-                    value={lastName}
-                    onChange={handleLastNameChange}
-                    autoComplete="family-name"
-                />
+                    <TextField
+                        ref={lastNameRef}
+                        required
+                        fullWidth
+                        id="last-name-input"
+                        label="Last Name"
+                        type="text"
+                        value={lastName}
+                        onChange={handleLastNameChange}
+                        autoComplete="family-name"
+                    />
 
-                <LoadingButton
-                    fullWidth
-                    size="large"
-                    variant="contained"
-                    loading={loading}
-                    disabled={firstName === "" || lastName === ""}
-                    onClick={updateUser}
-                    sx={{ py: 1.5 }}
-                >
-                    {loading ? 'Saving...' : 'Continue'}
-                </LoadingButton>
-            </Stack>
+                    <Typography variant="h6" sx={{ mt: 3, mb: 1, textAlign: 'left' }}>
+                        Address (Optional)
+                    </Typography>
+                    
+                    <Grid container spacing={2} sx={{ ml: 0, width: '100%', '& > .MuiGrid-item': { pl: 0 } }}>
+                        <Grid item xs={12} sm={8}>
+                            <TextField
+                                fullWidth
+                                id="street-address-input"
+                                label="Street Address"
+                                type="text"
+                                value={address.street}
+                                onChange={(e) => handleAddressChange("street", e.target.value)}
+                                autoComplete="street-address"
+                                helperText="e.g., 123 Main Street"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <TextField
+                                fullWidth
+                                id="unit-input"
+                                label="Unit/Apt"
+                                type="text"
+                                value={address.unit}
+                                onChange={(e) => handleAddressChange("unit", e.target.value)}
+                                autoComplete="address-line2"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={5}>
+                            <TextField
+                                fullWidth
+                                id="city-input"
+                                label="City"
+                                type="text"
+                                value={address.city}
+                                onChange={(e) => handleAddressChange("city", e.target.value)}
+                                autoComplete="address-level2"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <TextField
+                                fullWidth
+                                id="state-input"
+                                label="State/Province"
+                                type="text"
+                                value={address.state}
+                                onChange={(e) => handleAddressChange("state", e.target.value)}
+                                autoComplete="address-level1"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
+                            <TextField
+                                fullWidth
+                                id="zipCode-input"
+                                label="Zip/Postal"
+                                type="text"
+                                inputProps={{maxLength: 10}}
+                                value={address.zipCode}
+                                onChange={(e) => handleAddressChange("zipCode", e.target.value)}
+                                autoComplete="postal-code"
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <Alert severity="info" sx={{ textAlign: 'left', mt: 2 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                            🔒 Your privacy matters
+                        </Typography>
+                        <Typography variant="body2">
+                            Your address won't be public and is only visible to people you give access to through permission groups.
+                        </Typography>
+                    </Alert>
+
+                    <LoadingButton
+                        fullWidth
+                        size="large"
+                        variant="contained"
+                        loading={loading}
+                        disabled={firstName === "" || lastName === ""}
+                        onClick={updateUser}
+                        sx={{ py: 1.5, mt: 3 }}
+                    >
+                        {loading ? 'Saving...' : 'Continue'}
+                    </LoadingButton>
+                </Stack>
+            </Box>
         </Box>
-    ), [firstName, lastName, loading, handleFirstNameChange, handleLastNameChange, updateUser]);
+    ), [firstName, lastName, address, loading, handleFirstNameChange, handleLastNameChange, handleAddressChange, updateUser]);
 
     const CompletionStep = () => (
         <Box sx={{ textAlign: 'center', py: 4 }}>

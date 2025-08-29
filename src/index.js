@@ -37,8 +37,8 @@ const authStore = new AuthStore();
 const apiClient = createApiClient(authStore);
 
 const accountStore = new AccountStore(authStore, apiClient);
-const connectionStore = new ConnectionStore(authStore, accountStore, apiClient);
 const confirmAttributeStore = new ConfirmAttributeStore(accountStore, apiClient);
+const connectionStore = new ConnectionStore(authStore, accountStore, apiClient);
 const loginStore = new LoginStore(authStore, accountStore, apiClient);
 const confirmAccountStore = new ConfirmAccountStore(apiClient);
 const forgotPasswordStore = new ForgotPasswordStore(apiClient);

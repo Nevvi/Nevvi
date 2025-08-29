@@ -26,7 +26,7 @@ class ConnectionStore {
             this.setConnection(res.data)
             this.setPermissionGroup(res.data.permissionGroup)
         } catch (e) {
-            toast.error(`Failed to load connection because ${e.response.data}`)
+            console.log(`Failed to load connection because ${e.response.data}`)
             router.push("/")
         } finally {
             this.setLoading(false)
