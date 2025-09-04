@@ -25,12 +25,21 @@ import Connection from "./components/connections/Connection";
 import ConnectionGroups from "./components/connections/ConnectionGroups";
 import ConnectionGroup from "./components/connections/ConnectionGroup";
 import AppLayout from "./components/layout/AppLayout";
+import Home from "./components/home/Home";
 
 
 const SharedRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
     <Route {...rest} render={(props) => {
         return (authStore.isLoggedIn
             ? <AppLayout><Component {...rest} /></AppLayout>
+            : <Component {...rest} />)
+    }}/>
+)))
+
+const HomeRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
+    <Route {...rest} render={(props) => {
+        return (authStore.isLoggedIn
+            ? <Redirect to='/connections'/>
             : <Component {...rest} />)
     }}/>
 )))
@@ -74,12 +83,12 @@ class App extends Component {
                 <CssBaseline />
                 <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
                     <Switch location={router.location}>
-                        <SecureRoute path="/" exact={true} component={Connections}/>
+                        <HomeRoute path="/" exact={true} component={Home}/>
+                        <SecureRoute path="/connections" exact={true} component={Connections}/>
                         <SecureRoute path="/onboarding" exact={true} component={Onboarding}/>
                         <SecureRoute path="/account" exact={true} component={Account}/>
                         <SecureRoute path="/account/permissions" exact={true} component={PermissionGroups}/>
                         <SecureRoute path="/account/blocked-users" exact={true} component={BlockedUsers}/>
-                        <SecureRoute path="/connections" exact={true} component={Connections}/>
                         <SecureRoute path="/connections/new" exact={true} component={UserTable}/>
                         <SecureRoute path="/connections/groups" exact={true} component={ConnectionGroups}/>
                         <SecureRoute path="/connections/groups/:groupId" exact={true} component={ConnectionGroup}/>
