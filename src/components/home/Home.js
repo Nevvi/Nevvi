@@ -20,6 +20,7 @@ import {
 import {router} from '../../router';
 import Logo from '../utils/Logo';
 import {AppStoreButton} from '../authentication/AppStoreButton';
+import AppPromotionBanner from './AppPromotionBanner';
 
 const FeatureCard = ({ icon, title, description }) => (
     <Paper
@@ -372,6 +373,9 @@ const Home = () => {
                     </Paper>
                 </Container>
             </Box>
+
+            {/* iOS App Promotion Banner */}
+            <AppPromotionBanner />
         </Box>
     );
 };
