@@ -26,6 +26,7 @@ import ConnectionGroups from "./components/connections/ConnectionGroups";
 import ConnectionGroup from "./components/connections/ConnectionGroup";
 import AppLayout from "./components/layout/AppLayout";
 import Home from "./components/home/Home";
+import Weddings from "./components/weddings/Weddings";
 
 
 const SharedRoute = inject("authStore")(observer(({authStore, component: Component, ...rest}) => (
@@ -84,6 +85,7 @@ class App extends Component {
                 <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
                     <Switch location={router.location}>
                         <HomeRoute path="/" exact={true} component={Home}/>
+                        <HomeRoute path="/weddings" exact={true} component={Weddings}/>
                         <SecureRoute path="/connections" exact={true} component={Connections}/>
                         <SecureRoute path="/onboarding" exact={true} component={Onboarding}/>
                         <SecureRoute path="/account" exact={true} component={Account}/>
