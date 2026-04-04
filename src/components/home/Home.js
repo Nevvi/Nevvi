@@ -65,6 +65,116 @@ const FeatureCard = ({ icon, title, description }) => (
     </Paper>
 );
 
+const PhoneMockup = ({ children }) => (
+    <Box
+        sx={{
+            position: 'relative',
+            width: { xs: 280, sm: 320 },
+            mx: 'auto',
+        }}
+    >
+        {/* Phone frame */}
+        <Box
+            sx={{
+                background: '#1a1a1a',
+                borderRadius: '40px',
+                p: '12px',
+                boxShadow: '0 25px 80px rgba(0, 0, 0, 0.4)',
+            }}
+        >
+            {/* Screen */}
+            <Box
+                sx={{
+                    borderRadius: '32px',
+                    overflow: 'hidden',
+                    background: '#000',
+                }}
+            >
+                {children}
+            </Box>
+        </Box>
+    </Box>
+);
+
+// Configurable list of background blurbs - positions are auto-calculated
+const BACKGROUND_BLURBS = [
+    "Did you move?",
+    "What's your new email?",
+    "Is this still your number?",
+    "Can you send me your address?",
+    "Is this number still good?",
+    "Everyone reply with your address!",
+    "Can you text me your address again?",
+    "Who's got the updated list?",
+    "My contacts are a mess",
+    "Another spreadsheet?",
+    "Just moved, here's my new info...",
+];
+
+const BackgroundBadge = ({ children, sx }) => (
+    <Box
+        sx={{
+            position: 'absolute',
+            px: 2,
+            py: 1,
+            borderRadius: 2,
+            background: 'rgba(255, 255, 255, 0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none',
+            ...sx,
+        }}
+    >
+        <Typography
+            variant="body2"
+            sx={{
+                fontWeight: 400,
+                color: 'rgba(255, 255, 255, 0.5)',
+                fontSize: '0.85rem',
+            }}
+        >
+            {children}
+        </Typography>
+    </Box>
+);
+
+const HeroBackground = ({ children, isMobile }) => {
+    // Staggered diagonal pattern across the right half
+    const getPosition = (index, total) => {
+        // Spread evenly across full height
+        const topSpacing = 85 / (total + 1);
+        const top = topSpacing * (index + 1);
+
+        // Zigzag horizontally across right half (43% - 83%)
+        const leftMin = 43;
+        const leftMax = 83;
+        const leftRange = leftMax - leftMin;
+        // Alternate between different horizontal zones
+        const zones = [0.1, 0.8, 0.3, 0.9, 0.5, 0.2, 0.7, 0.4, 0.95, 0.15, 0.6];
+        const left = leftMin + (zones[index % zones.length] * leftRange);
+
+        return {
+            top: `${top}%`,
+            left: `${left}%`,
+        };
+    };
+
+    return (
+        <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+            {/* Subtle background badges - hidden on mobile */}
+            {!isMobile && BACKGROUND_BLURBS.map((text, index) => (
+                <BackgroundBadge
+                    key={index}
+                    sx={getPosition(index, BACKGROUND_BLURBS.length)}
+                >
+                    "{text}"
+                </BackgroundBadge>
+            ))}
+            {children}
+        </Box>
+    );
+};
+
 const Home = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -76,114 +186,122 @@ const Home = () => {
                 background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
             }}
         >
-            {/* Hero Section */}
-            <Container maxWidth="lg">
-                <Box
-                    sx={{
-                        pt: { xs: 4, sm: 6, md: 8 },
-                        pb: { xs: 6, sm: 8, md: 10 },
-                        textAlign: 'center',
-                        color: 'white',
-                    }}
-                >
-                    <Box sx={{ mb: 4 }}>
-                        <Logo color="white" size={isMobile ? 64 : 80} />
-                    </Box>
-
-                    <Typography
-                        variant={isMobile ? 'h4' : 'h2'}
-                        component="h1"
-                        gutterBottom
+            {/* Hero Section with Video */}
+            <HeroBackground isMobile={isMobile}>
+                <Container maxWidth="lg">
+                    <Box
                         sx={{
-                            fontWeight: 700,
-                            mb: 2,
+                            pt: { xs: 4, sm: 6, md: 8 },
+                            pb: { xs: 6, sm: 8, md: 10 },
                             color: 'white',
-                            fontSize: { xs: '1.75rem', sm: '2.5rem' },
                         }}
                     >
-                        Nevvi
-                    </Typography>
+                        <Grid container spacing={4} alignItems="center">
+                        {/* Left side - Text content */}
+                        <Grid item xs={12} md={6} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+                            <Box sx={{ mb: 3 }}>
+                                <Logo color="white" size={isMobile ? 56 : 72} />
+                            </Box>
 
-                    <Typography
-                        variant={isMobile ? 'h5' : 'h3'}
-                        component="h2"
-                        gutterBottom
-                        sx={{
-                            fontWeight: 600,
-                            mb: 3,
-                            color: 'rgba(255, 255, 255, 0.95)',
-                        }}
-                    >
-                        Manage Your Own Information,
-                        <br />
-                        Not Everyone Else's
-                    </Typography>
+                            <Typography
+                                variant={isMobile ? 'h5' : 'h3'}
+                                component="h1"
+                                gutterBottom
+                                sx={{
+                                    fontWeight: 700,
+                                    mb: 2,
+                                    color: 'white',
+                                }}
+                            >
+                                Tired of Hunting Down Addresses?
+                            </Typography>
 
-                    <Typography
-                        variant={isMobile ? 'h6' : 'h5'}
-                        component="h2"
-                        sx={{
-                            mb: 4,
-                            maxWidth: 600,
-                            mx: 'auto',
-                            fontWeight: 400,
-                            color: 'rgba(255, 255, 255, 0.9)',
-                            lineHeight: 1.5,
-                        }}
-                    >
-                        Take control of your personal data with smart permission groups
-                        and seamless connection management.
-                    </Typography>
+                            <Typography
+                                variant={isMobile ? 'body1' : 'h6'}
+                                component="p"
+                                sx={{
+                                    mb: 4,
+                                    fontWeight: 400,
+                                    color: 'rgba(255, 255, 255, 0.9)',
+                                    lineHeight: 1.6,
+                                }}
+                            >
+                                Wedding invites, holiday cards, life updates — stop chasing outdated
+                                contact info. With Nevvi, your connections share their info with you
+                                and it stays up to date automatically.
+                            </Typography>
 
-                    <Stack
-                        direction={isMobile ? 'column' : 'row'}
-                        spacing={2}
-                        sx={{ justifyContent: 'center', mb: 2 }}
-                    >
-                        <Button
-                            variant="contained"
-                            size="large"
-                            endIcon={<ArrowForward />}
-                            onClick={() => router.push('/createAccount')}
-                            sx={{
-                                px: 4,
-                                py: 1.5,
-                                fontSize: '1.1rem',
-                                background: 'rgba(255, 255, 255, 0.15)',
-                                backdropFilter: 'blur(20px)',
-                                border: '1px solid rgba(255, 255, 255, 0.3)',
-                                color: 'white',
-                                '&:hover': {
-                                    background: 'rgba(255, 255, 255, 0.25)',
-                                    transform: 'translateY(-2px)',
-                                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                                },
-                            }}
-                        >
-                            Get Started Free
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            size="large"
-                            onClick={() => router.push('/login')}
-                            sx={{
-                                px: 4,
-                                py: 1.5,
-                                fontSize: '1.1rem',
-                                borderColor: 'rgba(255, 255, 255, 0.5)',
-                                color: 'white',
-                                '&:hover': {
-                                    borderColor: 'white',
-                                    background: 'rgba(255, 255, 255, 0.1)',
-                                    transform: 'translateY(-2px)',
-                                },
-                            }}
-                        >
-                            Sign In
-                        </Button>
-                    </Stack>
-                </Box>
-            </Container>
+                            <Stack
+                                direction={{ xs: 'column', sm: 'row' }}
+                                spacing={2}
+                                sx={{ justifyContent: { xs: 'center', md: 'flex-start' }, mb: { xs: 4, md: 0 } }}
+                            >
+                                <Button
+                                    variant="contained"
+                                    size="large"
+                                    endIcon={<ArrowForward />}
+                                    onClick={() => router.push('/createAccount')}
+                                    sx={{
+                                        px: 4,
+                                        py: 1.5,
+                                        fontSize: '1.1rem',
+                                        background: 'rgba(255, 255, 255, 0.15)',
+                                        backdropFilter: 'blur(20px)',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        color: 'white',
+                                        '&:hover': {
+                                            background: 'rgba(255, 255, 255, 0.25)',
+                                            transform: 'translateY(-2px)',
+                                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                                        },
+                                    }}
+                                >
+                                    Get Started Free
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    size="large"
+                                    onClick={() => router.push('/login')}
+                                    sx={{
+                                        px: 4,
+                                        py: 1.5,
+                                        fontSize: '1.1rem',
+                                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                                        color: 'white',
+                                        '&:hover': {
+                                            borderColor: 'white',
+                                            background: 'rgba(255, 255, 255, 0.1)',
+                                            transform: 'translateY(-2px)',
+                                        },
+                                    }}
+                                >
+                                    Sign In
+                                </Button>
+                            </Stack>
+                        </Grid>
+
+                        {/* Right side - Phone Mockup with Video */}
+                        <Grid item xs={12} md={6}>
+                            <PhoneMockup>
+                                <video
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    style={{
+                                        width: '100%',
+                                        display: 'block',
+                                    }}
+                                >
+                                    <source src="/nevvi.mp4" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </PhoneMockup>
+                        </Grid>
+                        </Grid>
+                    </Box>
+                </Container>
+            </HeroBackground>
 
             {/* Features Section */}
             <Box
