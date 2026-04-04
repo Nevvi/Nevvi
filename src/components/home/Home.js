@@ -293,7 +293,7 @@ const Home = () => {
                                         display: 'block',
                                     }}
                                 >
-                                    <source src="/nevvi.mp4" type="video/mp4" />
+                                    <source src="https://nevvi-user-images-dev.s3.us-east-1.amazonaws.com/nevvi.mp4" type="video/mp4" />
                                     Your browser does not support the video tag.
                                 </video>
                             </PhoneMockup>
